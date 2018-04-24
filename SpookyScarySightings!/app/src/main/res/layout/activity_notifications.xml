@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/notify_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="edu.tacoma.uw.css.haylee11.spookyscarysightings.NotificationsActivity">
+
+    <Switch
+        android:id="@+id/notifications"
+        android:layout_width="81dp"
+        android:layout_height="43dp"
+        android:layout_marginEnd="67dp"
+        android:layout_marginTop="100dp"
+        android:checked="false"
+        android:fontFamily="serif-monospace"
+        android:showText="true"
+        android:splitTrack="false"
+        android:switchMinWidth="50dp"
+        android:switchPadding="24dp"
+        android:switchTextAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textOff="OFF"
+        android:textOn="ON"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:trackTint="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Switch
+        android:id="@+id/notifications2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:checked="false"
+        android:fontFamily="serif-monospace"
+        android:showText="true"
+        android:splitTrack="false"
+        android:switchMinWidth="50dp"
+        android:switchPadding="24dp"
+        android:switchTextAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:text="Notifications"
+        android:textOff="OFF"
+        android:textOn="ON"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:trackTint="@color/colorPrimary"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button2"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="237dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="310dp"
+        android:background="@android:color/black"
+        android:fontFamily="serif-monospace"
+        android:onClick="getList"
+        android:text="Choose Monsters"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/distance_within"
+        android:layout_width="299dp"
+        android:layout_height="63dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="240dp"
+        android:fontFamily="serif-monospace"
+        android:text="Notify me when these monsters are spotted:"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/distance_within2"
+        android:layout_width="241dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="100dp"
+        android:fontFamily="serif-monospace"
+        android:text="Notify me when a monster is within:"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/distance"
+        android:layout_width="395dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="170dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</android.support.constraint.ConstraintLayout>
