@@ -128,6 +128,7 @@ public class CreateAccountFragment extends Fragment {
         StringBuilder sb = new StringBuilder(COURSE_ADD_URL);
 
         try {
+
             String first = mFirstName.getText().toString();
             sb.append("first=");
             sb.append(URLEncoder.encode(first, "UTF-8"));
@@ -140,13 +141,13 @@ public class CreateAccountFragment extends Fragment {
             sb.append("&username=");
             sb.append(URLEncoder.encode(username, "UTF-8"));
 
-            String pwd = mPassword.getText().toString();
-            sb.append("&password=");
-            sb.append(URLEncoder.encode(pwd, "UTF-8"));
-
             String email = mEmail.getText().toString();
             sb.append("&email=");
             sb.append(URLEncoder.encode(email, "UTF-8"));
+
+            String pwd = mPassword.getText().toString();
+            sb.append("&password=");
+            sb.append(URLEncoder.encode(pwd, "UTF-8"));
 
             Log.i(TAG, sb.toString());
         } catch(Exception e) {
