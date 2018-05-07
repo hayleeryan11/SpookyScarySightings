@@ -14,8 +14,8 @@
     <string name="email">Email</string>
 
     //reporting
-    <string name="date">Date</string>
-    <string name="time">Time</string>
+    <string name="date">mm/dd/yyyy</string>
+    <string name="time">00:00 AM/PM</string>
     <string name="notes">Enter Some Details</string>
 
     //info
@@ -47,6 +47,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_sighting_local">Map</string>
+    <string name="title_activity_signed_in">SignedInActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
 
 </resources>

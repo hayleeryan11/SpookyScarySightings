@@ -7,7 +7,7 @@
     tools:context="edu.tacoma.uw.css.haylee11.spookyboiz.ReportFragment">
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="397dp"
@@ -34,10 +34,9 @@
         android:layout_height="43dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="100dp"
-        android:ems="10"
         android:fontFamily="serif-monospace"
         android:hint="@string/date"
-        android:inputType="date"
+        android:singleLine="false"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -50,10 +49,8 @@
         android:layout_marginRight="16dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="100dp"
-        android:ems="10"
         android:fontFamily="serif-monospace"
         android:hint="@string/time"
-        android:inputType="time"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -148,7 +145,6 @@
         android:layout_width="255dp"
         android:layout_height="51dp"
         android:layout_marginTop="250dp"
-        android:background="@android:color/black"
         android:fontFamily="serif-monospace"
         android:onClick="chooseLocal"
         android:text="Choose from Map"

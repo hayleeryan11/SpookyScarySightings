@@ -4,10 +4,15 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import java.net.URLEncoder;
 
 
 /**
@@ -28,7 +33,13 @@ public class SignInFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private OnSignInFragmentInteractionListener mListener;
+    private EditText mUsername;
+    private EditText mPassword;
+
+    private final static String SIGN_IN_URL = "http://spookyscarysightings.000webhostapp.com/login.php?";
+    private static final String TAG = "SignInFragment";
+
+    private UserAddListener mListener;
 
     public SignInFragment() {
         // Required empty public constructor
@@ -67,14 +78,29 @@ public class SignInFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_sign_in, container, false);
 
-        Button signIn = (Button) v.findViewById(R.id.sign_in);
+        //Button signIn = (Button) v.findViewById(R.id.sign_in);
 
-        signIn.setOnClickListener(new View.OnClickListener()  {
+//        signIn.setOnClickListener(new View.OnClickListener()  {
+//            @Override
+//            public void onClick(View view) {
+//                mListener.onSignInInteraction();
+//            }
+//        });
+
+        mUsername = (EditText) v.findViewById(R.id.username);
+        mPassword = (EditText) v.findViewById(R.id.password);
+
+
+        Button create = (Button) v.findViewById(R.id.sign_in);
+        create.setOnClickListener(new View.OnClickListener()  {
             @Override
             public void onClick(View view) {
-                mListener.onSignInInteraction();
+                String url = buildUserURL(view);
+                mListener.addUser(url);
+                mListener.loading();
             }
         });
+
 
         Button createAcc = (Button) v.findViewById(R.id.create);
         createAcc.setOnClickListener(new View.OnClickListener()  {
@@ -87,18 +113,12 @@ public class SignInFragment extends Fragment {
         return v;
     }
 
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnSignInFragmentInteractionListener) {
-            mListener = (OnSignInFragmentInteractionListener) context;
+        if (context instanceof UserAddListener) {
+            mListener = (UserAddListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -111,6 +131,30 @@ public class SignInFragment extends Fragment {
         mListener = null;
     }
 
+    private String buildUserURL(View v) {
+        StringBuilder sb = new StringBuilder(SIGN_IN_URL);
+
+        try {
+
+            String user = mUsername.getText().toString();
+            sb.append("username=");
+            sb.append(URLEncoder.encode(user, "UTF-8"));
+
+            String pass = mPassword.getText().toString();
+            sb.append("&password=");
+            sb.append(URLEncoder.encode(pass, "UTF-8"));
+
+
+            Log.i(TAG, sb.toString());
+        } catch(Exception e) {
+            Toast.makeText(v.getContext(), "Something wrong with the url" + e.getMessage(), Toast.LENGTH_LONG)
+                    .show();
+        }
+        return sb.toString();
+    }
+
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -122,10 +166,14 @@ public class SignInFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnSignInFragmentInteractionListener {
-        void onSignInInteraction();
-        void onCreateAccountInteraction();
+
     }
 
+    public interface UserAddListener {
+        void addUser(String url);
+        void onCreateAccountInteraction();
+        void loading();
+    }
 
 
 }

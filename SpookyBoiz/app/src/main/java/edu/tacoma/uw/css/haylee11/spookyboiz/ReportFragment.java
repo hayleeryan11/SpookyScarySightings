@@ -6,12 +6,19 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.Spinner;
+import android.widget.TimePicker;
+import android.widget.Toast;
+
+import java.net.URLEncoder;
+import java.util.Date;
 
 
 /**
@@ -33,6 +40,11 @@ public class ReportFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private Spinner mMonster;
+    private DatePicker mDate;
+    private TimePicker mTime;
+
 
     public ReportFragment() {
         // Required empty public constructor
@@ -107,6 +119,40 @@ public class ReportFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
+
+//    private String buildUserURL(View v) {
+//        StringBuilder sb = new StringBuilder(COURSE_ADD_URL);
+//
+//        try {
+//
+//            String first = mFirstName.getText().toString();
+//            sb.append("first=");
+//            sb.append(URLEncoder.encode(first, "UTF-8"));
+//
+//            String last = mLastName.getText().toString();
+//            sb.append("&last=");
+//            sb.append(URLEncoder.encode(last, "UTF-8"));
+//
+//            String username = mUsername.getText().toString();
+//            sb.append("&username=");
+//            sb.append(URLEncoder.encode(username, "UTF-8"));
+//
+//            String email = mEmail.getText().toString();
+//            sb.append("&email=");
+//            sb.append(URLEncoder.encode(email, "UTF-8"));
+//
+//            String pwd = mPassword.getText().toString();
+//            sb.append("&password=");
+//            sb.append(URLEncoder.encode(pwd, "UTF-8"));
+//
+//            Log.i(TAG, sb.toString());
+//        } catch(Exception e) {
+//            Toast.makeText(v.getContext(), "Something wrong with the url" + e.getMessage(), Toast.LENGTH_LONG)
+//                    .show();
+//        }
+//        return sb.toString();
+//    }
 
     public class SpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
 

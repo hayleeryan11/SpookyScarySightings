@@ -1,10 +1,13 @@
 package edu.tacoma.uw.css.haylee11.spookyboiz;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -20,15 +23,14 @@ import edu.tacoma.uw.css.haylee11.spookyboiz.Monster.MonsterContent;
 import edu.tacoma.uw.css.haylee11.spookyboiz.MonsterInfo.MonsterInfoContent;
 import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.SightingContent;
 
-public class MainActivity extends AppCompatActivity implements SignInFragment.OnSignInFragmentInteractionListener,
-        HomePageFragment.OnHomeFragmentInteractionListener, CreateAccountFragment.OnFragmentInteractionListener,
-        PreferencesFragment.OnPreferFragmentInteractionListener, ReportFragment.OnFragmentInteractionListener,
-        NotifySettingsFragment.OnNotifyFragmentInteractionListener, MonsterNotifyFragment.OnListFragmentInteractionListener,
-        SightingsFragment.OnListFragmentInteractionListener, MonsterInfoFragment.OnListFragmentInteractionListener,
-        CreateAccountFragment.UserAddListener {
+public class MainActivity extends AppCompatActivity implements SignInFragment.UserAddListener{
 
 
     private static final String TAG = "MainActivity";
+    Activity that  = this;
+    private View mLoadingView;
+    private int mLongAnimationDuration;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +46,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     }
 
     @Override
-    public void onSignInInteraction() {
-        HomePageFragment home = new HomePageFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, home)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    @Override
     public void onCreateAccountInteraction() {
         CreateAccountFragment create = new CreateAccountFragment();
         getSupportFragmentManager().beginTransaction()
@@ -62,66 +55,14 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
     }
 
     @Override
-    public void onPreferInteraction() {
-        PreferencesFragment prefer = new PreferencesFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, prefer)
-                .addToBackStack(null)
-                .commit();
-    }
+    public void loading() {
+        mLoadingView = this.findViewById(R.id.loading_spinner);
 
-    @Override
-    public void onReportInteraction() {
-        ReportFragment report = new ReportFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, report)
-                .addToBackStack(null)
-                .commit();
-    }
+        mLoadingView.setVisibility(View.VISIBLE);
 
-    @Override
-    public void onSightingInteraction() {
-        SightingsFragment sightings = new SightingsFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, sightings)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    @Override
-    public void onExploreInteraction() {
-        MonsterInfoFragment explore = new MonsterInfoFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, explore)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    @Override
-    public void onNotifySettingsInteraction() {
-        NotifySettingsFragment notify = new NotifySettingsFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, notify)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    @Override
-    public void onNotifyMonsterSettingsInteraction() {
-        MonsterNotifyFragment monster = new MonsterNotifyFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, monster)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    @Override
-    public void onUpdateProfileInteraction() {
-        UpdateProfileFragment update = new UpdateProfileFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, update)
-                .addToBackStack(null)
-                .commit();
+        //Retrieve and cache the system's defaul "short" animation time
+        mLongAnimationDuration = getResources().getInteger(
+                android.R.integer.config_longAnimTime);
     }
 
     @Override
@@ -129,10 +70,11 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
         AddUserTask task = new AddUserTask();
         task.execute(new String[]{url.toString()});
 
-        getSupportFragmentManager().popBackStackImmediate();
     }
 
+
     private class AddUserTask extends AsyncTask<String, Void, String> {
+
 
         @Override
         protected void onPreExecute() {
@@ -148,10 +90,10 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                     URL urlObject = new URL(url);
                     urlConnection = (HttpURLConnection) urlObject.openConnection();
 
-                    Log.i(TAG, urlConnection.toString());
+
 
                     InputStream content = urlConnection.getInputStream();
-
+                    Log.i(TAG, content.toString());
 
                     BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
 
@@ -160,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
                         response += s;
                     }
                 } catch (Exception e) {
-                    response = "Unable to add user, Reason: " + e.getMessage();
+                    response = "Unable to add user/sign in, Reason: " + e.getMessage();
                 } finally {
                     if(urlConnection != null) {
                         urlConnection.disconnect();
@@ -172,46 +114,51 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.On
 
         @Override
         protected void onPostExecute(String result) {
-            Log.d(TAG, result);
+            Log.i(TAG, result);
             try {
 
 
                 JSONObject jsonObject = new JSONObject(result);
                 String status = (String) jsonObject.get("result");
-                if(status.equals("success")) {
-                    Toast.makeText(getApplicationContext(), "Course successfully added!",
+                if(status.equals("success_create")) {
+                    Toast.makeText(getApplicationContext(), "Account Created!",
                             Toast.LENGTH_LONG)
                             .show();
+//                    HomePageFragment home = new HomePageFragment();
+//                    getSupportFragmentManager().beginTransaction()
+//                            .replace(R.id.fragment_container, home)
+//                            .addToBackStack(null)
+//                            .commit();
+                    Intent intent = new Intent(that, SignedInActivity.class);
+                    startActivity(intent);
+
+                } else if (status.equals("success_signIn")) {
+                    Toast.makeText(getApplicationContext(), "Signed In!",
+                            Toast.LENGTH_LONG)
+                            .show();
+//                    HomePageFragment home = new HomePageFragment();
+//                    getSupportFragmentManager().beginTransaction()
+//                            .replace(R.id.fragment_container, home)
+//                            .addToBackStack(null)
+//                            .commit();
+                    Intent intent = new Intent(that, SignedInActivity.class);
+                    startActivity(intent);
+
                 } else {
-                    Toast.makeText(getApplicationContext(), "failed to add: " + jsonObject.get("error"),
+                    Toast.makeText(getApplicationContext(), "failed: " + jsonObject.get("error"),
                             Toast.LENGTH_LONG)
                             .show();
+                    mLoadingView.setVisibility(View.INVISIBLE);
                 }
             } catch (JSONException e) {
                 Toast.makeText(getApplicationContext(), "Something wrong with the data" +
                         e.getMessage(), Toast.LENGTH_LONG)
                         .show();
+                mLoadingView.setVisibility(View.INVISIBLE);
+
             }
         }
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
 
-    }
-
-    @Override
-    public void onListFragmentInteraction(MonsterContent.MonsterItem item) {
-
-    }
-
-    @Override
-    public void onListFragmentInteraction(SightingContent.SightingItem item) {
-
-    }
-
-    @Override
-    public void onListFragmentInteraction(MonsterInfoContent.MonsterInfoItem item) {
-
-    }
 }
