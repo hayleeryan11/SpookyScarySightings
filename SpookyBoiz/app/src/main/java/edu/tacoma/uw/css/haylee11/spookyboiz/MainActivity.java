@@ -2,7 +2,6 @@ package edu.tacoma.uw.css.haylee11.spookyboiz;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,10 +17,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-import edu.tacoma.uw.css.haylee11.spookyboiz.Monster.MonsterContent;
-import edu.tacoma.uw.css.haylee11.spookyboiz.MonsterInfo.MonsterInfoContent;
-import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.SightingContent;
 
 public class MainActivity extends AppCompatActivity implements SignInFragment.UserAddListener{
 

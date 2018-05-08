@@ -6,17 +6,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import edu.tacoma.uw.css.haylee11.spookyboiz.MonsterNotifyFragment.OnListFragmentInteractionListener;
-import edu.tacoma.uw.css.haylee11.spookyboiz.Monster.MonsterContent.MonsterItem;
+import edu.tacoma.uw.css.haylee11.spookyboiz.Monster.Monster;
+import edu.tacoma.uw.css.haylee11.spookyboiz.MonsterFragment.OnListFragmentInteractionListener;
 
 import java.util.List;
 
+/**
+ * {@link RecyclerView.Adapter} that can display a {@link Monster} and makes a call to the
+ * specified {@link OnListFragmentInteractionListener}.
+ * TODO: Replace the implementation with code for your data type.
+ */
 public class MyMonsterRecyclerViewAdapter extends RecyclerView.Adapter<MyMonsterRecyclerViewAdapter.ViewHolder> {
 
-    private final List<MonsterItem> mValues;
+    private final List<Monster> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyMonsterRecyclerViewAdapter(List<MonsterItem> items, OnListFragmentInteractionListener listener) {
+    public MyMonsterRecyclerViewAdapter(List<Monster> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -31,8 +36,8 @@ public class MyMonsterRecyclerViewAdapter extends RecyclerView.Adapter<MyMonster
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(mValues.get(position).getmMonster());
+        holder.mContentView.setText(mValues.get(position).getmLastSeen());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +60,7 @@ public class MyMonsterRecyclerViewAdapter extends RecyclerView.Adapter<MyMonster
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public MonsterItem mItem;
+        public Monster mItem;
 
         public ViewHolder(View view) {
             super(view);

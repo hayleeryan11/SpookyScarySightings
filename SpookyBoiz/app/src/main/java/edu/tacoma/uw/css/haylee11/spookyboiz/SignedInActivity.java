@@ -2,16 +2,12 @@ package edu.tacoma.uw.css.haylee11.spookyboiz;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -20,7 +16,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -34,13 +29,13 @@ import java.net.URL;
 
 import edu.tacoma.uw.css.haylee11.spookyboiz.Monster.MonsterContent;
 import edu.tacoma.uw.css.haylee11.spookyboiz.MonsterInfo.MonsterInfoContent;
-import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.SightingContent;
+import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
 
 public class SignedInActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, PreferencesFragment.OnPreferFragmentInteractionListener, ReportFragment.OnFragmentInteractionListener,
         NotifySettingsFragment.OnNotifyFragmentInteractionListener, MonsterNotifyFragment.OnListFragmentInteractionListener,
         SightingsFragment.OnListFragmentInteractionListener, MonsterInfoFragment.OnListFragmentInteractionListener, SignInFragment.OnSignInFragmentInteractionListener,
-        CreateAccountFragment.OnFragmentInteractionListener  {
+        CreateAccountFragment.OnFragmentInteractionListener, SightingDetailFragment.OnFragmentInteractionListener  {
 
     private static final String TAG = "SignedInActivity";
 
@@ -298,8 +293,16 @@ public class SignedInActivity extends AppCompatActivity
 
 
         @Override
-        public void onListFragmentInteraction(SightingContent.SightingItem item) {
+        public void onListFragmentInteraction(Sighting item) {
+            SightingDetailFragment sightDetailFragment = new SightingDetailFragment();
+            Bundle args = new Bundle();
+            args.putSerializable(SightingDetailFragment.SIGHTING_SELECTED, item);
+            sightDetailFragment.setArguments(args);
 
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container_2, sightDetailFragment)
+                    .addToBackStack(null)
+                    .commit();
         }
 
         @Override

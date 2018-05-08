@@ -22,7 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
+import edu.tacoma.uw.css.haylee11.spookyboiz.Monster.Monster;
 
 /**
  * A fragment representing a list of Items.
@@ -30,34 +30,33 @@ import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class SightingsFragment extends Fragment {
+public class MonsterFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
-
-    private List<Sighting> mSightingList;
     private OnListFragmentInteractionListener mListener;
+
+    private List<Monster> mMonsterList;
 
     private RecyclerView mRecyclerView;
 
-    private static final String TAG = "SightingsList";
+    private static final String TAG = "MonsterList";
 
-    private static final String COURSE_URL = "http://spookyscarysightings.000webhostapp.com/list.php?cmd=sightings";
-
+    private static final String COURSE_URL = "http://spookyscarysightings.000webhostapp.com/listMonster.php?cmd=monster";
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public SightingsFragment() {
+    public MonsterFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static SightingsFragment newInstance(int columnCount) {
-        SightingsFragment fragment = new SightingsFragment();
+    public static MonsterFragment newInstance(int columnCount) {
+        MonsterFragment fragment = new MonsterFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -76,7 +75,7 @@ public class SightingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_sightings_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_monster_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -87,7 +86,7 @@ public class SightingsFragment extends Fragment {
             } else {
                 mRecyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            SightingsTask courseAsyncTask = new SightingsTask();
+            MonsterFragment.MonsterTask courseAsyncTask = new MonsterFragment.MonsterTask();
             courseAsyncTask.execute(new String[]{COURSE_URL});
         }
         return view;
@@ -123,10 +122,10 @@ public class SightingsFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Sighting item);
+        void onListFragmentInteraction(Monster item);
     }
 
-    private class SightingsTask extends AsyncTask<String, Void, String> {
+    private class MonsterTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... urls) {
@@ -167,7 +166,7 @@ public class SightingsFragment extends Fragment {
             }
 
             try {
-                mSightingList = Sighting.parseCourseJSON(result);
+                mMonsterList = Monster.parseCourseJSON(result);
             } catch (JSONException e) {
                 Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
                         .show();
@@ -175,8 +174,8 @@ public class SightingsFragment extends Fragment {
                 return;
             }
 
-            if (!mSightingList.isEmpty()) {
-                mRecyclerView.setAdapter(new MySightingsRecyclerViewAdapter(mSightingList, mListener));
+            if (!mMonsterList.isEmpty()) {
+                mRecyclerView.setAdapter(new MyMonsterRecyclerViewAdapter(mMonsterList, mListener));
             }
         }
     }

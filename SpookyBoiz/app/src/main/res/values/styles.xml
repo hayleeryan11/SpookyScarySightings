@@ -16,6 +16,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+
     <style name="ButtonStyle">
         <item name="android:textColor">@color/onyx</item>
         <item name="android:background">@color/carrot</item>

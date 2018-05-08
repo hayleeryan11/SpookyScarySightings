@@ -6,17 +6,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
 import edu.tacoma.uw.css.haylee11.spookyboiz.SightingsFragment.OnListFragmentInteractionListener;
-import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.SightingContent.SightingItem;
 
 import java.util.List;
 
 public class MySightingsRecyclerViewAdapter extends RecyclerView.Adapter<MySightingsRecyclerViewAdapter.ViewHolder> {
 
-    private final List<SightingItem> mValues;
+    private final List<Sighting> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MySightingsRecyclerViewAdapter(List<SightingItem> items, OnListFragmentInteractionListener listener) {
+    public MySightingsRecyclerViewAdapter(List<Sighting> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -31,8 +31,8 @@ public class MySightingsRecyclerViewAdapter extends RecyclerView.Adapter<MySight
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(mValues.get(position).getmMonster());
+        holder.mContentView.setText(mValues.get(position).getmLocation());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +55,7 @@ public class MySightingsRecyclerViewAdapter extends RecyclerView.Adapter<MySight
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public SightingItem mItem;
+        public Sighting mItem;
 
         public ViewHolder(View view) {
             super(view);

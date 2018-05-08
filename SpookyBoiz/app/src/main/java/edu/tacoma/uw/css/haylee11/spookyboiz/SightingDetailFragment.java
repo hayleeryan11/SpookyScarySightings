@@ -7,6 +7,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
 
 
 /**
@@ -26,6 +29,14 @@ public class SightingDetailFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private TextView mUsername;
+    private TextView mDate;
+    private TextView mTime;
+    private TextView mLocation;
+    private TextView mMonster;
+
+    public static final String SIGHTING_SELECTED = "sighting_selected";
 
     private OnFragmentInteractionListener mListener;
 
@@ -64,7 +75,27 @@ public class SightingDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sighting_detail, container, false);
+        View v = inflater.inflate(R.layout.fragment_sighting_detail, container, false);
+        mUsername = (TextView) v.findViewById(R.id.username);
+        mMonster = (TextView) v.findViewById(R.id.monster);
+        mLocation = (TextView) v.findViewById(R.id.location);
+        mDate = (TextView) v.findViewById(R.id.date);
+        mTime = (TextView) v.findViewById(R.id.time);
+
+
+
+        return v;
+    }
+
+    public void updateView(Sighting sight) {
+        if (sight != null) {
+            mUsername.setText(sight.getmUsername());
+            mLocation.setText(sight.getmLocation());
+            mDate.setText(sight.getmDate());
+            mTime.setText(sight.getmTime());
+            mMonster.setText(sight.getmMonster());
+        }
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -89,6 +120,15 @@ public class SightingDetailFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Bundle args = getArguments();
+        if(args != null) {
+            updateView((Sighting)args.getSerializable(SIGHTING_SELECTED));
+        }
     }
 
     /**
