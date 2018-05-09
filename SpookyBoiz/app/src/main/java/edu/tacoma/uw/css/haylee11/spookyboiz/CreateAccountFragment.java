@@ -40,6 +40,7 @@ public class CreateAccountFragment extends Fragment {
     private EditText mUsername;
     private EditText mPassword;
     private EditText mEmail;
+    private EditText mConfirm;
 
     private final static String COURSE_ADD_URL = "http://spookyscarysightings.000webhostapp.com/addUser.php?";
     private static final String TAG = "CreateAccountFragment";
@@ -89,6 +90,7 @@ public class CreateAccountFragment extends Fragment {
         mUsername = (EditText) v.findViewById(R.id.username);
         mPassword = (EditText) v.findViewById(R.id.password);
         mEmail = (EditText) v.findViewById(R.id.email);
+        mConfirm = (EditText) v.findViewById(R.id.confirm);
 
 
         Button create = (Button) v.findViewById(R.id.create);
@@ -97,6 +99,7 @@ public class CreateAccountFragment extends Fragment {
             public void onClick(View view) {
                 String url = buildUserURL(view);
                 Log.i(TAG, url);
+                mListener.loading();
                 mListener.addUser(url);
             }
         });
@@ -149,6 +152,10 @@ public class CreateAccountFragment extends Fragment {
             sb.append("&password=");
             sb.append(URLEncoder.encode(pwd, "UTF-8"));
 
+            String confirm = mConfirm.getText().toString();
+            sb.append("&confirm=");
+            sb.append(URLEncoder.encode(confirm, "UTF-8"));
+
             Log.i(TAG, sb.toString());
         } catch(Exception e) {
             Toast.makeText(v.getContext(), "Something wrong with the url" + e.getMessage(), Toast.LENGTH_LONG)
@@ -174,6 +181,7 @@ public class CreateAccountFragment extends Fragment {
 
     public interface UserAddListener {
         void addUser(String url);
+        void loading();
     }
 
 }

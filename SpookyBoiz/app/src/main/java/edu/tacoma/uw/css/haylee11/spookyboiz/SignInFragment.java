@@ -36,6 +36,8 @@ public class SignInFragment extends Fragment {
     private EditText mUsername;
     private EditText mPassword;
 
+    public String User;
+
     private final static String SIGN_IN_URL = "http://spookyscarysightings.000webhostapp.com/login.php?";
     private static final String TAG = "SignInFragment";
 
@@ -130,6 +132,10 @@ public class SignInFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
+//    public static String getUser() {
+//        return mUsername.getText().toString();
+//    }
 
     private String buildUserURL(View v) {
         StringBuilder sb = new StringBuilder(SIGN_IN_URL);

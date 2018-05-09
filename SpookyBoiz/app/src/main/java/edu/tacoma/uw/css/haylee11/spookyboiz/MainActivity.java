@@ -18,13 +18,15 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity implements SignInFragment.UserAddListener{
+public class MainActivity extends AppCompatActivity implements SignInFragment.UserAddListener, CreateAccountFragment.UserAddListener{
 
 
     private static final String TAG = "MainActivity";
     Activity that  = this;
     private View mLoadingView;
     private int mLongAnimationDuration;
+
+    public String User;
 
 
     @Override
@@ -136,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
 //                            .replace(R.id.fragment_container, home)
 //                            .addToBackStack(null)
 //                            .commit();
+//                    User = SignInFragment.getUser();
                     Intent intent = new Intent(that, SignedInActivity.class);
                     startActivity(intent);
 

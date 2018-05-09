@@ -44,7 +44,7 @@ public class MonsterFragment extends Fragment {
 
     private static final String TAG = "MonsterList";
 
-    private static final String COURSE_URL = "http://spookyscarysightings.000webhostapp.com/listMonster.php?cmd=monster";
+    private static final String COURSE_URL = "http://spookyscarysightings.000webhostapp.com/listMonster.php?cmd=monsters";
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the

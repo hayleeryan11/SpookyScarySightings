@@ -27,22 +27,27 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import edu.tacoma.uw.css.haylee11.spookyboiz.Monster.MonsterContent;
-import edu.tacoma.uw.css.haylee11.spookyboiz.MonsterInfo.MonsterInfoContent;
+import edu.tacoma.uw.css.haylee11.spookyboiz.Monster.Monster;
 import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
 
 public class SignedInActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, PreferencesFragment.OnPreferFragmentInteractionListener, ReportFragment.OnFragmentInteractionListener,
-        NotifySettingsFragment.OnNotifyFragmentInteractionListener, MonsterNotifyFragment.OnListFragmentInteractionListener,
-        SightingsFragment.OnListFragmentInteractionListener, MonsterInfoFragment.OnListFragmentInteractionListener, SignInFragment.OnSignInFragmentInteractionListener,
-        CreateAccountFragment.OnFragmentInteractionListener, SightingDetailFragment.OnFragmentInteractionListener  {
+        implements NavigationView.OnNavigationItemSelectedListener, PreferencesFragment.OnPreferFragmentInteractionListener,
+        ReportFragment.OnFragmentInteractionListener, MonsterDetailFragment.OnFragmentInteractionListener,
+        NotifySettingsFragment.OnNotifyFragmentInteractionListener, SightingsFragment.OnListFragmentInteractionListener,
+        MonsterFragment.OnListFragmentInteractionListener, SignInFragment.OnSignInFragmentInteractionListener,
+        CreateAccountFragment.OnFragmentInteractionListener, SightingDetailFragment.OnFragmentInteractionListener,
+        ReportFragment.SightingAddListener {
 
     private static final String TAG = "SignedInActivity";
+
+    public String User;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signed_in);
+
+
 
         SightingsFragment home = new SightingsFragment();
         getSupportFragmentManager().beginTransaction()
@@ -53,14 +58,6 @@ public class SignedInActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -132,7 +129,7 @@ public class SignedInActivity extends AppCompatActivity
                     .commit();
 
         } else if (id == R.id.nav_explore) {
-            MonsterInfoFragment explore = new MonsterInfoFragment();
+            MonsterFragment explore = new MonsterFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container_2, explore)
                     .addToBackStack(null)
@@ -174,7 +171,7 @@ public class SignedInActivity extends AppCompatActivity
 
         @Override
         public void onNotifyMonsterSettingsInteraction() {
-            MonsterNotifyFragment monster = new MonsterNotifyFragment();
+            MonsterFragment monster = new MonsterFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container_2, monster)
                     .addToBackStack(null)
@@ -190,7 +187,30 @@ public class SignedInActivity extends AppCompatActivity
                     .commit();
         }
 
-         public static class AboutDialogFragment extends DialogFragment {
+    @Override
+    public void onListFragmentInteraction(Monster item) {
+        MonsterDetailFragment monsterDetailFragment = new MonsterDetailFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(MonsterDetailFragment.MONSTER_SELECTED, item);
+        monsterDetailFragment.setArguments(args);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container_2, monsterDetailFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void addSighting(String url) {
+
+        ReportTask task = new ReportTask();
+        task.execute(new String[]{url.toString()});
+
+        getSupportFragmentManager().popBackStackImmediate();
+    }
+
+
+    public static class AboutDialogFragment extends DialogFragment {
 
             @Override
             public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -217,6 +237,9 @@ public class SignedInActivity extends AppCompatActivity
                 return builder.create();
             }
         }
+
+
+
 
     private class ReportTask extends AsyncTask<String, Void, String> {
 
@@ -305,15 +328,6 @@ public class SignedInActivity extends AppCompatActivity
                     .commit();
         }
 
-        @Override
-        public void onListFragmentInteraction(MonsterContent.MonsterItem item) {
-
-        }
-
-        @Override
-        public void onListFragmentInteraction(MonsterInfoContent.MonsterInfoItem item) {
-
-        }
 
         @Override
         public void onFragmentInteraction(Uri uri) {

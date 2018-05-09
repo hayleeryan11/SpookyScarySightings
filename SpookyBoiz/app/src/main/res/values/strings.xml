@@ -14,9 +14,11 @@
     <string name="email">Email</string>
 
     //reporting
-    <string name="date">mm/dd/yyyy</string>
-    <string name="time">00:00 AM/PM</string>
+    <string name="date">YYYY-MM-DD</string>
+    <string name="time">00:00</string>
     <string name="notes">Enter Some Details</string>
+    <string name="city">City</string>
+    <string name="state">State</string>
 
     //info
     <string name="info">This is Spooky Scary Sightings

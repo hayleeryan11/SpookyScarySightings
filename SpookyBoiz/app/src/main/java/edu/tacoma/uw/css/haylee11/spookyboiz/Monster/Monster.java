@@ -1,5 +1,7 @@
 package edu.tacoma.uw.css.haylee11.spookyboiz.Monster;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,11 +19,13 @@ import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
 public class Monster implements Serializable {
 
     String mMonster;
-    String mId;
+    int mId;
     String mDescription;
     String mLastSeen;
 
-    public Monster(String id, String monster, String description, String lastSeen) {
+    private static final String TAG = "Monster";
+
+    public Monster(int id, String monster, String description, String lastSeen) {
         mId = id;
         mMonster = monster;
         mLastSeen = lastSeen;
@@ -43,11 +47,11 @@ public class Monster implements Serializable {
         this.mMonster = mMonster;
     }
 
-    public String getmId() {
+    public int getmId() {
         return mId;
     }
 
-    public void setmId(String mId) {
+    public void setmId(int mId) {
         this.mId = mId;
     }
 
@@ -72,11 +76,11 @@ public class Monster implements Serializable {
         List<Monster> monsterList = new ArrayList<Monster>();
         if (courseJSON != null) {
             JSONArray arr = new JSONArray(courseJSON);
-
+            Log.i(TAG, "why");
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject obj = arr.getJSONObject(i);
-                Monster monster = new Monster(obj.getString(Monster.ID), obj.getString(Monster.MONSTER), obj.getString(Monster.DESC)
-                        , obj.getString(Monster.LAST_SEEN));
+                Monster monster = new Monster(obj.getInt(Monster.ID), obj.getString(Monster.MONSTER), obj.getString(Monster.DESC),
+                        obj.getString(Monster.LAST_SEEN));
                 monsterList.add(monster);
             }
         }

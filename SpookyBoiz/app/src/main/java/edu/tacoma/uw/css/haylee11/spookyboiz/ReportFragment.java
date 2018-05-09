@@ -3,8 +3,10 @@ package edu.tacoma.uw.css.haylee11.spookyboiz;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -42,9 +46,19 @@ public class ReportFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     private Spinner mMonster;
-    private DatePicker mDate;
-    private TimePicker mTime;
+    private EditText mDate;
+    private EditText mTime;
+    private EditText mCity;
+    private EditText mState;
+    private EditText mDetails;
 
+    private int mSightCount;
+
+    private final static String REPORT_URL = "http://spookyscarysightings.000webhostapp.com/addSighting.php?";
+
+    private static final String TAG = "ReportFragment";
+
+    private SightingAddListener mSightListener;
 
     public ReportFragment() {
         // Required empty public constructor
@@ -93,6 +107,23 @@ public class ReportFragment extends Fragment {
 // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
+
+        mMonster = (Spinner) v.findViewById(R.id.spinner);
+        mDate = (EditText) v.findViewById(R.id.date);
+        mTime = (EditText) v.findViewById(R.id.time);
+        mCity = (EditText) v.findViewById(R.id.city);
+        mState = (EditText) v.findViewById(R.id.state);
+        mDetails = (EditText) v.findViewById(R.id.notes);
+
+        Button addSightingButton = (Button) v.findViewById(R.id.add_button);
+        addSightingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = buildSightingURL(v);
+                mSightListener.addSighting(url);
+            }
+        });
+
         return v;
     }
 
@@ -106,8 +137,8 @@ public class ReportFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof SightingAddListener) {
+            mSightListener = (SightingAddListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -118,41 +149,55 @@ public class ReportFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        mSightListener = null;
     }
 
 
-//    private String buildUserURL(View v) {
-//        StringBuilder sb = new StringBuilder(COURSE_ADD_URL);
-//
-//        try {
-//
-//            String first = mFirstName.getText().toString();
-//            sb.append("first=");
-//            sb.append(URLEncoder.encode(first, "UTF-8"));
-//
-//            String last = mLastName.getText().toString();
-//            sb.append("&last=");
-//            sb.append(URLEncoder.encode(last, "UTF-8"));
-//
-//            String username = mUsername.getText().toString();
-//            sb.append("&username=");
-//            sb.append(URLEncoder.encode(username, "UTF-8"));
-//
-//            String email = mEmail.getText().toString();
-//            sb.append("&email=");
-//            sb.append(URLEncoder.encode(email, "UTF-8"));
-//
-//            String pwd = mPassword.getText().toString();
-//            sb.append("&password=");
-//            sb.append(URLEncoder.encode(pwd, "UTF-8"));
-//
-//            Log.i(TAG, sb.toString());
-//        } catch(Exception e) {
-//            Toast.makeText(v.getContext(), "Something wrong with the url" + e.getMessage(), Toast.LENGTH_LONG)
-//                    .show();
-//        }
-//        return sb.toString();
-//    }
+    private String buildSightingURL(View v) {
+        StringBuilder sb = new StringBuilder(REPORT_URL);
+
+        try {
+
+            String id = Integer.toString(0);
+            sb.append("&id=");
+            sb.append(URLEncoder.encode(id, "UTF-8"));
+
+            String user = "haylee11";
+            sb.append("&user=");
+            sb.append(URLEncoder.encode(user, "UTF-8"));
+
+            String monster = mMonster.getSelectedItem().toString();
+            sb.append("&monster=");
+            sb.append(URLEncoder.encode(monster, "UTF-8"));
+
+
+            String datetime = mDate.getText().toString() + " " + mTime.getText().toString() + ":00";
+            Log.i(TAG, datetime);
+            sb.append("&date=");
+            sb.append(URLEncoder.encode(datetime, "UTF-8"));
+
+
+            String city = mCity.getText().toString();
+            sb.append("&city=");
+            sb.append(URLEncoder.encode(city, "UTF-8"));
+
+            String state = mState.getText().toString();
+            sb.append("&state=");
+            sb.append(URLEncoder.encode(state, "UTF-8"));
+
+            String details = mDetails.getText().toString();
+            sb.append("&description=");
+            sb.append(URLEncoder.encode(details, "UTF-8"));
+
+            Log.i(TAG, sb.toString());
+        } catch(Exception e) {
+            Toast.makeText(v.getContext(), "Something wrong with the url" + e.getMessage(), Toast.LENGTH_LONG)
+                    .show();
+        }
+
+
+        return sb.toString();
+    }
 
     public class SpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
 
@@ -166,6 +211,10 @@ public class ReportFragment extends Fragment {
         public void onNothingSelected(AdapterView<?> parent) {
             // Another interface callback
         }
+    }
+
+    public interface SightingAddListener {
+        public void addSighting(String url);
     }
 
 

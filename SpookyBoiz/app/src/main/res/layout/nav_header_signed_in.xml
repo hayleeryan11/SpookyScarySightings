@@ -14,15 +14,16 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         app:srcCompat="@drawable/add" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="160dp"
+        android:layout_marginLeft="120dp"
         android:layout_marginTop="5dp"
         android:fontFamily="serif-monospace"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
@@ -34,7 +35,7 @@
         android:id="@+id/user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="160dp"
+        android:layout_marginLeft="120dp"
         android:layout_marginTop="50dp"
         android:fontFamily="serif-monospace"
         android:text="Username"
@@ -44,7 +45,7 @@
         android:id="@+id/sightings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="160dp"
+        android:layout_marginLeft="120dp"
         android:layout_marginTop="80dp"
         android:fontFamily="serif-monospace"
         android:text="Sightings:"
