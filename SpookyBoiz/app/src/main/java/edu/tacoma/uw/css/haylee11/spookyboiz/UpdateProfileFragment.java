@@ -10,25 +10,34 @@ import android.view.ViewGroup;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link UpdateProfileFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link UpdateProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment that handles the updating of a user's profile and basic information
+ *
+ * @author Haylee Ryan. Matt Frazier, Kai Stansfield
  */
 public class UpdateProfileFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
+    /**
+     * First parameter
+     */
     private static final String ARG_PARAM1 = "param1";
+
+    /**
+     * Second parameter
+     */
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
+    //First parameter
     private String mParam1;
+
+    //Second parameter
     private String mParam2;
 
+    //Listener for fragment interaction
     private OnFragmentInteractionListener mListener;
 
+    /**
+     * Required empty constructor
+     */
     public UpdateProfileFragment() {
         // Required empty public constructor
     }
@@ -41,7 +50,6 @@ public class UpdateProfileFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment UpdateProfileFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static UpdateProfileFragment newInstance(String param1, String param2) {
         UpdateProfileFragment fragment = new UpdateProfileFragment();
         Bundle args = new Bundle();
@@ -51,6 +59,10 @@ public class UpdateProfileFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * When the fragment is created, this method instantiates it
+     * @param savedInstanceState The saved instance
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +72,13 @@ public class UpdateProfileFragment extends Fragment {
         }
     }
 
+    /**
+     * When the fragment is create, this instantiates the view
+     * @param inflater The layout inflater
+     * @param container The container the fragment is in
+     * @param savedInstanceState The saved instance state
+     * @return The view to be presented
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -67,13 +86,10 @@ public class UpdateProfileFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_update_profile, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
+    /**
+     * When the fragment is attached to the app, this instantiates the listener
+     * @param context The context the fragment is in
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -85,6 +101,9 @@ public class UpdateProfileFragment extends Fragment {
         }
     }
 
+    /**
+     * Handles when the fragment is detached, nullifying the listener
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -96,10 +115,6 @@ public class UpdateProfileFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name

@@ -16,37 +16,63 @@ import java.net.URLEncoder;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link CreateAccountFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link CreateAccountFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment for creating a new account. Allows users to create a new account
+ * which is then put into the database. Also logs the user in.
+ *
+ * @author Haylee Ryan, Matt Frazier, Kai Stansfield
  */
 public class CreateAccountFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
+    /**
+     * First parameter
+     */
     private static final String ARG_PARAM1 = "param1";
+
+    /**
+     * Second parameter
+     */
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private UserAddListener mListener;
-
-    private EditText mFirstName;
-    private EditText mLastName;
-    private EditText mUsername;
-    private EditText mPassword;
-    private EditText mEmail;
-    private EditText mConfirm;
-
+    /**
+     * URL to append values to to create a new account in the database
+     */
     private final static String COURSE_ADD_URL = "http://spookyscarysightings.000webhostapp.com/addUser.php?";
+
+    /**
+     * Tag for debugging
+     */
     private static final String TAG = "CreateAccountFragment";
 
+    // First parameter
+    private String mParam1;
 
+    //Second parameter
+    private String mParam2;
 
+    //Listener for adding a new user
+    private UserAddListener mListener;
+
+    //First name of new user
+    private EditText mFirstName;
+
+    //Last name of new user
+    private EditText mLastName;
+
+    //Username of new user
+    private EditText mUsername;
+
+    //Password for new user
+    private EditText mPassword;
+
+    //Email for new user
+    private EditText mEmail;
+
+    //Confirmation for password
+    private EditText mConfirm;
+
+    /**
+     * Required empty constructor
+     */
     public CreateAccountFragment() {
         // Required empty public constructor
     }
@@ -59,7 +85,6 @@ public class CreateAccountFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment CreateAccountFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static CreateAccountFragment newInstance(String param1, String param2) {
         CreateAccountFragment fragment = new CreateAccountFragment();
         Bundle args = new Bundle();
@@ -69,6 +94,10 @@ public class CreateAccountFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * When the fragment is created, this method instantiates it
+     * @param savedInstanceState The saved instance
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +107,14 @@ public class CreateAccountFragment extends Fragment {
         }
     }
 
+    /**
+     * When the fragment is create, this instantiates the view. In this case, takes
+     * all the EditText values.
+     * @param inflater The layout inflater
+     * @param container The container the fragment is in
+     * @param savedInstanceState The saved instance state
+     * @return The view to be presented
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,6 +122,7 @@ public class CreateAccountFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_create_account, container, false);
 
+        //Assigns fields to user entries
         mFirstName = (EditText) v.findViewById(R.id.f_name);
         mLastName = (EditText) v.findViewById(R.id.l_name);
         mUsername = (EditText) v.findViewById(R.id.username);
@@ -93,6 +131,7 @@ public class CreateAccountFragment extends Fragment {
         mConfirm = (EditText) v.findViewById(R.id.confirm);
 
 
+        //Creates button that creates a new user. Builds URL and starts AsyncTask
         Button create = (Button) v.findViewById(R.id.create);
         create.setOnClickListener(new View.OnClickListener()  {
             @Override
@@ -108,8 +147,10 @@ public class CreateAccountFragment extends Fragment {
 
     }
 
-
-
+    /**
+     * When the fragment is attached to the app, this instantiates the listener
+     * @param context The context the fragment is in
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -121,12 +162,21 @@ public class CreateAccountFragment extends Fragment {
         }
     }
 
+    /**
+     * Handles when the fragment is detached, nullifying the listener
+     */
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
+    /**
+     * Based on the user input into the sign in fields, this builds a URL that will
+     * be sent to the database for inputting.
+     * @param v The view the user is in
+     * @return A string representing the URL created
+     */
     private String buildUserURL(View v) {
         StringBuilder sb = new StringBuilder(COURSE_ADD_URL);
 
@@ -169,18 +219,19 @@ public class CreateAccountFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 
+    /**
+     * Interface that provides way to begin AsyncTask and the progress bar
+     */
     public interface UserAddListener {
+        //Starts AsyncTask
         void addUser(String url);
+
+        //Progress bar
         void loading();
     }
 

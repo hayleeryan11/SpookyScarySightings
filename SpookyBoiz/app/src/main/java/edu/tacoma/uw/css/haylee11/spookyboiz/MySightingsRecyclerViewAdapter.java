@@ -11,16 +11,36 @@ import edu.tacoma.uw.css.haylee11.spookyboiz.SightingsFragment.OnListFragmentInt
 
 import java.util.List;
 
+/**
+ * {@link RecyclerView.Adapter} that can display a {@link Sighting} and makes a call to the
+ * specified {@link OnListFragmentInteractionListener}.
+ *
+ * @author Haylee Ryan, Matt Frazier, Kai Stansfield
+ */
 public class MySightingsRecyclerViewAdapter extends RecyclerView.Adapter<MySightingsRecyclerViewAdapter.ViewHolder> {
 
+    //List of sightings
     private final List<Sighting> mValues;
+
+    //Listener for interaction with list fragment
     private final OnListFragmentInteractionListener mListener;
 
+    /**
+     * Constructor instantiates listener and list of monsters
+     * @param items List of monsters in view
+     * @param listener Listener of the fragment
+     */
     public MySightingsRecyclerViewAdapter(List<Sighting> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
 
+    /**
+     * Called in the holder view is created. Inflates the layout
+     * @param parent The parent ViewGroup
+     * @param viewType The type of view
+     * @return The new ViewHolder for the list
+     */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -28,6 +48,11 @@ public class MySightingsRecyclerViewAdapter extends RecyclerView.Adapter<MySight
         return new ViewHolder(view);
     }
 
+    /**
+     * Sets up the values displayed in the list and handles click of the view
+     * @param holder The view holder
+     * @param position The position of the list
+     */
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
@@ -47,17 +72,30 @@ public class MySightingsRecyclerViewAdapter extends RecyclerView.Adapter<MySight
         });
     }
 
+
+    /**
+     * Gives the number of items in list
+     * @return The number of items in list
+     */
     @Override
     public int getItemCount() {
         return mValues.size();
     }
 
+    /**
+     * View Holder class creates a ViewHolder object that describes an item view
+     * and metadata about its place within the RecyclerView
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
         public Sighting mItem;
 
+        /**
+         * Constructor for ViewHolder. Instantiates fields
+         * @param view The view its holding
+         */
         public ViewHolder(View view) {
             super(view);
             mView = view;
@@ -65,6 +103,10 @@ public class MySightingsRecyclerViewAdapter extends RecyclerView.Adapter<MySight
             mContentView = (TextView) view.findViewById(R.id.content);
         }
 
+        /**
+         * Gives the string of the view holder
+         * @return ViewHolder in String form
+         */
         @Override
         public String toString() {
             return super.toString() + " '" + mContentView.getText() + "'";

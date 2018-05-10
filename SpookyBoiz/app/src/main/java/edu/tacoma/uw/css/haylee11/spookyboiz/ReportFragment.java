@@ -26,40 +26,66 @@ import java.util.Date;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ReportFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ReportFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment for the report fragment. Allows users to log their sightings
+ * with the necessary information.
+ *
+ * @author Haylee Ryan, Matt Frazier, Kai Stansfield
  */
 public class ReportFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
+    /**
+     * First parameter
+     */
     private static final String ARG_PARAM1 = "param1";
+
+    /**
+     * Second parameter
+     */
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
-
-    private Spinner mMonster;
-    private EditText mDate;
-    private EditText mTime;
-    private EditText mCity;
-    private EditText mState;
-    private EditText mDetails;
-
-    private int mSightCount;
-
+    /**
+     * URL to add report values to to input into database
+     */
     private final static String REPORT_URL = "http://spookyscarysightings.000webhostapp.com/addSighting.php?";
 
+    /**
+     * Tag for debugging
+     */
     private static final String TAG = "ReportFragment";
 
+    // First parameter
+    private String mParam1;
+
+    //Second parameter
+    private String mParam2;
+
+    //Listener for fragment interaction
+    private OnFragmentInteractionListener mListener;
+
+    //Spinner containing monster values
+    private Spinner mMonster;
+
+    //EditText for date
+    private EditText mDate;
+
+    //EditText for time
+    private EditText mTime;
+
+    //EditText for city
+    private EditText mCity;
+
+    //EditText for state
+    private EditText mState;
+
+    //EditText for details
+    private EditText mDetails;
+
+    //Listener for adding a sighting to the list/database
     private SightingAddListener mSightListener;
 
+    /**
+     * Required empty constructor
+     */
     public ReportFragment() {
         // Required empty public constructor
     }
@@ -82,6 +108,10 @@ public class ReportFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * When the fragment is created, this method instantiates it
+     * @param savedInstanceState The saved instance
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +121,14 @@ public class ReportFragment extends Fragment {
         }
     }
 
+    /**
+     * When the fragment is create, this instantiates the view. In this case, all
+     * of the UI elements that hold the information we want in our URL.
+     * @param inflater The layout inflater
+     * @param container The container the fragment is in
+     * @param savedInstanceState The saved instance state
+     * @return The view to be presented
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -98,16 +136,16 @@ public class ReportFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_report, container, false);
 
         Spinner spinner = (Spinner) v.findViewById(R.id.spinner);
-// Create an ArrayAdapter using the string array and a default spinner layout
+        // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.monsters, android.R.layout.simple_spinner_item);
-// Specify the layout to use when the list of choices appears
+        // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //spinner.setOnItemSelectedListener(this);
-// Apply the adapter to the spinner
+        // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
-
+        //Assigns values in Spinner/EditText fields to our class fields
         mMonster = (Spinner) v.findViewById(R.id.spinner);
         mDate = (EditText) v.findViewById(R.id.date);
         mTime = (EditText) v.findViewById(R.id.time);
@@ -115,6 +153,7 @@ public class ReportFragment extends Fragment {
         mState = (EditText) v.findViewById(R.id.state);
         mDetails = (EditText) v.findViewById(R.id.notes);
 
+        //Assign "done" button to build URL and start AsyncTask
         Button addSightingButton = (Button) v.findViewById(R.id.add_button);
         addSightingButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,13 +166,10 @@ public class ReportFragment extends Fragment {
         return v;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
+    /**
+     * When the fragment is attached to the app, this instantiates the listener
+     * @param context The context the fragment is in
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -145,6 +181,9 @@ public class ReportFragment extends Fragment {
         }
     }
 
+    /**
+     * Handles when the fragment is detached, nullifying the listener
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -152,7 +191,12 @@ public class ReportFragment extends Fragment {
         mSightListener = null;
     }
 
-
+    /**
+     * Based on the user input into the sign in fields, this builds a URL that will
+     * be sent to the database for inputting.
+     * @param v The view the user is in
+     * @return A string representing the URL created
+     */
     private String buildSightingURL(View v) {
         StringBuilder sb = new StringBuilder(REPORT_URL);
 
@@ -199,21 +243,39 @@ public class ReportFragment extends Fragment {
         return sb.toString();
     }
 
+    /**
+     * Class that creates the spinner object (drop down menu) for the
+     * distances
+     */
     public class SpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
 
-
+        /**
+         * When an item is selected, do the following
+         * @param parent Parent AdapterView
+         * @param view View user is in
+         * @param pos Position of item selected
+         * @param id Id of the item selected
+         */
         public void onItemSelected(AdapterView<?> parent, View view,
                                    int pos, long id) {
             // An item was selected. You can retrieve the selected item using
             // parent.getItemAtPosition(pos)
         }
 
+        /**
+         * When nothing is selected, do the following
+         * @param parent Parent AdapterView
+         */
         public void onNothingSelected(AdapterView<?> parent) {
             // Another interface callback
         }
     }
 
+    /**
+     * Interface that provides way to begin AsyncTask
+     */
     public interface SightingAddListener {
+        //Begins AsyncTask
         public void addSighting(String url);
     }
 
@@ -223,13 +285,8 @@ public class ReportFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

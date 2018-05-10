@@ -9,20 +9,87 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by hayleeryan on 5/7/18.
+ * Sighting Item class, defines a Sighting
+ *
+ * @author Haylee Ryan, Matt Frazier, Kai Stansfield
  */
-
 public class Sighting implements Serializable {
 
+    /**
+     * Sighting ID
+     */
+    public static final String ID = "id";
+
+    /**
+     * Username of who reported
+     */
+    public static final String USERNAME = "user";
+
+    /**
+     * Date of sighting
+     */
+    public static final String DATE = "date";
+
+    /**
+     * Time of sighting
+     */
+    public static final String TIME = "time";
+
+    /**
+     * City where sighting was
+     */
+    public static final String CITY = "city";
+
+    /**
+     * State where sighting was
+     */
+    public static final String STATE = "state";
+
+    /**
+     * Monster sighted
+     */
+    public static final String MONSTER = "monster";
+
+    /**
+     * Description of sighting
+     */
+    public static final String DESC = "description";
+
+    //Username of who reported
     String mUsername;
+
+    //Sighting ID
     String mId;
+
+    //Date of sighting
     String mDate;
+
+    //Time of sighting
     String mTime;
+
+    //City where mosnter sighted
     String mCity;
+
+    //State where monster sighting
     String mState;
+
+    //Monster sighted
     String mMonster;
+
+    //Decription of sighting
     String mDesc;
 
+    /**
+     * Constructs a new Sighting item
+     * @param id ID of sighting
+     * @param un Username of user
+     * @param monster Monster name
+     * @param date Date of sighting
+     * @param time Time of sighting
+     * @param city City where sighting was
+     * @param state State where sighting was
+     * @param desc Description of sighting
+     */
     public Sighting(String id, String un, String monster, String date, String time, String city, String state, String desc) {
         mUsername = un;
         mId = id;
@@ -34,14 +101,6 @@ public class Sighting implements Serializable {
         mDesc = desc;
     }
 
-    public static final String ID = "id";
-    public static final String USERNAME = "user";
-    public static final String DATE = "date";
-    public static final String TIME = "time";
-    public static final String CITY = "city";
-    public static final String STATE = "state";
-    public static final String MONSTER = "monster";
-    public static final String DESC = "description";
 
     public String getmUsername() {
         return mUsername;
@@ -99,10 +158,17 @@ public class Sighting implements Serializable {
         this.mDesc = mDesc;
     }
 
-    public static List<Sighting> parseCourseJSON(String courseJSON) throws JSONException {
+    /**
+     * Takes a JSON and parses it into strings, then putting those in a list
+     * of sightings to display
+     * @param sightJSON The JSON with sighting information
+     * @return A list of monsters to display
+     * @throws JSONException
+     */
+    public static List<Sighting> parseCourseJSON(String sightJSON) throws JSONException {
         List<Sighting> sightList = new ArrayList<Sighting>();
-        if (courseJSON != null) {
-            JSONArray arr = new JSONArray(courseJSON);
+        if (sightJSON != null) {
+            JSONArray arr = new JSONArray(sightJSON);
 
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject obj = arr.getJSONObject(i);

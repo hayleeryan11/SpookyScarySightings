@@ -18,17 +18,32 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * SignedInActivity is the activity that manages all fragments that the user can access before they
+ * log into the app. It is the backbone on which the fragments are placed and communicate over.
+ *
+ * @author Haylee Ryan, Matt Frazier, Kai Stansfield
+ */
 public class MainActivity extends AppCompatActivity implements SignInFragment.UserAddListener, CreateAccountFragment.UserAddListener{
 
-
+    /**
+     * Tag for debugging
+     */
     private static final String TAG = "MainActivity";
+
+    //Variable for current activity to use for inner class
     Activity that  = this;
+
+    //Loading view for progress bar
     private View mLoadingView;
+
+    //Animation length for progress bar
     private int mLongAnimationDuration;
 
-    public String User;
-
-
+    /**
+     *Method for creating the activity, and what should be done on creation.
+     * @param savedInstanceState The saved instance state as a bundle
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,8 +57,13 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
         }
     }
 
+    /**
+     * Interaction method for when a user presses the button to go
+     * to the Create and Account page.
+     */
     @Override
     public void onCreateAccountInteraction() {
+        //Starts new fragment
         CreateAccountFragment create = new CreateAccountFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, create)
@@ -51,6 +71,10 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
                 .commit();
     }
 
+    /**
+     * Method for setting the progress bar to visible and to display
+     * the loading screen
+     */
     @Override
     public void loading() {
         mLoadingView = this.findViewById(R.id.loading_spinner);
@@ -62,6 +86,11 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
                 android.R.integer.config_longAnimTime);
     }
 
+    /**
+     * Starts AsyncTask for adding a user to the database through the
+     * CreateAccountFragment
+     * @param url The URL created from the user's inputs into the fields
+     */
     @Override
     public void addUser(String url) {
         AddUserTask task = new AddUserTask();
@@ -69,15 +98,31 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
 
     }
 
-
+    /**
+     * Inner class that extends AsynchTask. This class handles the creation of a user
+     * and sends it off to the database to be inputted. This handles all the background
+     * work that has to do with data sending in regards to creating an account
+     *
+     * @author Haylee Ryan, Matt Frazier, Kai Stansfield
+     */
     private class AddUserTask extends AsyncTask<String, Void, String> {
 
-
+        /**
+         * Overrides onPreExecute. Performs super task
+         */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
         }
 
+        /**
+         * Creates a URL connection to which we can send our URL carrying the data we want
+         * to put into the database. This does all work in the background for the user when
+         * creating a new account.
+         * @param urls The URLs to be sent through the connection that hold the information
+         *             to be passed to the database
+         * @return The successful or failed result of connecting with the URL
+         */
         @Override
         protected String doInBackground(String... urls) {
             String response = "";
@@ -109,6 +154,13 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
             return response;
         }
 
+        /**
+         * After the background work has been executed, the result comes into this method
+         * to be read. From there, we determine what to do (has it succeeded? Failed? Is
+         * the data wrong?)
+         * @param result The result from doInBackground (If the insertion/retrieving was
+         *               successful or not.
+         */
         @Override
         protected void onPostExecute(String result) {
             Log.i(TAG, result);
@@ -121,11 +173,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
                     Toast.makeText(getApplicationContext(), "Account Created!",
                             Toast.LENGTH_LONG)
                             .show();
-//                    HomePageFragment home = new HomePageFragment();
-//                    getSupportFragmentManager().beginTransaction()
-//                            .replace(R.id.fragment_container, home)
-//                            .addToBackStack(null)
-//                            .commit();
                     Intent intent = new Intent(that, SignedInActivity.class);
                     startActivity(intent);
 
@@ -133,12 +180,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
                     Toast.makeText(getApplicationContext(), "Signed In!",
                             Toast.LENGTH_LONG)
                             .show();
-//                    HomePageFragment home = new HomePageFragment();
-//                    getSupportFragmentManager().beginTransaction()
-//                            .replace(R.id.fragment_container, home)
-//                            .addToBackStack(null)
-//                            .commit();
-//                    User = SignInFragment.getUser();
                     Intent intent = new Intent(that, SignedInActivity.class);
                     startActivity(intent);
 

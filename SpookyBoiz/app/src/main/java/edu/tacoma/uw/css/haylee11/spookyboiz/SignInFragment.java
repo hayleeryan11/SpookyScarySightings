@@ -16,33 +16,54 @@ import java.net.URLEncoder;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SignInFragment.OnSignInFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SignInFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * The fragment that contains the sign in page for the user. This is
+ * the first page the user will see upon entering the app, and not
+ * being logged in already.
+ *
+ * @author Haylee Ryan, Matt Frazier, Kai Stansfield
  */
 public class SignInFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
+    /**
+     * First param when creating new fragment
+     */
     private static final String ARG_PARAM1 = "param1";
+
+    /**
+     * Second param when creating new fragment
+     */
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private EditText mUsername;
-    private EditText mPassword;
-
-    public String User;
-
+    /**
+     * URL used to send sign in parameters to the database for checking
+     */
     private final static String SIGN_IN_URL = "http://spookyscarysightings.000webhostapp.com/login.php?";
+
+    /**
+     * Tag used for debugging
+     */
     private static final String TAG = "SignInFragment";
 
+    // First parameter
+    private String mParam1;
+
+    //Second parameter
+    private String mParam2;
+
+    //Username of the user trying to log in
+    private EditText mUsername;
+
+    //Password of the user trying to log in
+    private EditText mPassword;
+
+    //Listener that listens for interaction with the fragment/buttons
     private UserAddListener mListener;
 
+    /**
+     * Empty constructor (not needed)
+     */
     public SignInFragment() {
         // Required empty public constructor
     }
@@ -55,7 +76,6 @@ public class SignInFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment SignInFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static SignInFragment newInstance(String param1, String param2) {
         SignInFragment fragment = new SignInFragment();
         Bundle args = new Bundle();
@@ -65,6 +85,10 @@ public class SignInFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * When the fragment is created, this method instantiates it
+     * @param savedInstanceState The saved instance
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,25 +98,26 @@ public class SignInFragment extends Fragment {
         }
     }
 
+    /**
+     * When the fragment view is created, this method instantiates it. We instantiate
+     * the Create Account button, and the Sign In button
+     * @param inflater  Layout inflater
+     * @param container Container of the fragment
+     * @param savedInstanceState Saved instance state
+     * @return The view of the fragment
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_sign_in, container, false);
 
-        //Button signIn = (Button) v.findViewById(R.id.sign_in);
-
-//        signIn.setOnClickListener(new View.OnClickListener()  {
-//            @Override
-//            public void onClick(View view) {
-//                mListener.onSignInInteraction();
-//            }
-//        });
-
+        //Sets fields to what the user has entered
         mUsername = (EditText) v.findViewById(R.id.username);
         mPassword = (EditText) v.findViewById(R.id.password);
 
 
+        //When sign in is pushed, listener builds URL and shows progress bar
         Button create = (Button) v.findViewById(R.id.sign_in);
         create.setOnClickListener(new View.OnClickListener()  {
             @Override
@@ -103,7 +128,7 @@ public class SignInFragment extends Fragment {
             }
         });
 
-
+        //When create account pressed, listener opens new fragment
         Button createAcc = (Button) v.findViewById(R.id.create);
         createAcc.setOnClickListener(new View.OnClickListener()  {
             @Override
@@ -115,7 +140,11 @@ public class SignInFragment extends Fragment {
         return v;
     }
 
-
+    /**
+     * When the fragment is initially attached to the app, we instantiate
+     * the listener
+     * @param context Context that the fragment is in
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -127,25 +156,31 @@ public class SignInFragment extends Fragment {
         }
     }
 
+    /**
+     * When the fragment is detached, we nullify the listener
+     */
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
-//    public static String getUser() {
-//        return mUsername.getText().toString();
-//    }
-
+    /**
+     * Based on the user input into the sign in fields, this builds a URL that will
+     * be sent to the database for checking.
+     * @param v The view the user is in
+     * @return A string representing the URL created
+     */
     private String buildUserURL(View v) {
         StringBuilder sb = new StringBuilder(SIGN_IN_URL);
 
         try {
-
+            //Append username
             String user = mUsername.getText().toString();
             sb.append("username=");
             sb.append(URLEncoder.encode(user, "UTF-8"));
 
+            //Append password
             String pass = mPassword.getText().toString();
             sb.append("&password=");
             sb.append(URLEncoder.encode(pass, "UTF-8"));
@@ -165,16 +200,17 @@ public class SignInFragment extends Fragment {
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * activity.cating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnSignInFragmentInteractionListener {
 
     }
 
+    /**
+     * Provides a listener for the buttons on the fragment, as well as the
+     * progress bar
+     */
     public interface UserAddListener {
         void addUser(String url);
         void onCreateAccountInteraction();

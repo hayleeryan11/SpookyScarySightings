@@ -15,25 +15,35 @@ import android.widget.Spinner;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link NotifySettingsFragment.OnNotifyFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link NotifySettingsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment for the notification aspect of the settings. Allows a user
+ * to alter the amount of notifications they get and what kinds
+ *
+ * @author Haylee Ryan, Matt Frazier, Kai Stansfield
  */
 public class NotifySettingsFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
+    /**
+     * First parameter
+     */
     private static final String ARG_PARAM1 = "param1";
+
+    /**
+     * Second parameter
+     */
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
+    // First parameter
     private String mParam1;
+
+    //Second parameter
     private String mParam2;
 
+    //Listener for fragment interaction
     private OnNotifyFragmentInteractionListener mListener;
 
+    /**
+     * Required empty constructor
+     */
     public NotifySettingsFragment() {
         // Required empty public constructor
     }
@@ -46,7 +56,6 @@ public class NotifySettingsFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment NotifySettingsFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static NotifySettingsFragment newInstance(String param1, String param2) {
         NotifySettingsFragment fragment = new NotifySettingsFragment();
         Bundle args = new Bundle();
@@ -56,6 +65,10 @@ public class NotifySettingsFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * When the fragment is created, this method instantiates it
+     * @param savedInstanceState The saved instance
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +78,14 @@ public class NotifySettingsFragment extends Fragment {
         }
     }
 
+    /**
+     * When the fragment is create, this instantiates the view. In this case, a
+     * button and a spinner
+     * @param inflater The layout inflater
+     * @param container The container the fragment is in
+     * @param savedInstanceState The saved instance state
+     * @return The view to be presented
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -72,17 +93,19 @@ public class NotifySettingsFragment extends Fragment {
         View v =  inflater.inflate(R.layout.fragment_notify_settings, container, false);
 
         Spinner spinner = (Spinner) v.findViewById(R.id.distance);
-// Create an ArrayAdapter using the string array and a default spinner layout
+        // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.distance, android.R.layout.simple_spinner_item);
-// Specify the layout to use when the list of choices appears
+        // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //spinner.setOnItemSelectedListener(this);
-// Apply the adapter to the spinner
+        // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
+        //Creates button to view monster types
         Button monster = (Button) v.findViewById(R.id.choose_monsters);
 
+        //Adds click action to open new fragment
         monster.setOnClickListener(new View.OnClickListener()  {
             @Override
             public void onClick(View view) {
@@ -93,7 +116,10 @@ public class NotifySettingsFragment extends Fragment {
         return v;
     }
 
-
+    /**
+     * When the fragment is attached to the app, this instantiates the listener
+     * @param context The context the fragment is in
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -105,21 +131,39 @@ public class NotifySettingsFragment extends Fragment {
         }
     }
 
+    /**
+     * Handles when the fragment is detached, nullifying the listener
+     */
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
+    /**
+     * Class that creates the spinner object (drop down menu) for the
+     * distances
+     */
     public class SpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
 
 
+        /**
+         * When an item is selected, do the following
+         * @param parent Parent AdapterView
+         * @param view View user is in
+         * @param pos Position of item selected
+         * @param id Id of the item selected
+         */
         public void onItemSelected(AdapterView<?> parent, View view,
                                    int pos, long id) {
             // An item was selected. You can retrieve the selected item using
             // parent.getItemAtPosition(pos)
         }
 
+        /**
+         * When nothing is selected, do the following
+         * @param parent Parent AdapterView
+         */
         public void onNothingSelected(AdapterView<?> parent) {
             // Another interface callback
         }
@@ -130,10 +174,6 @@ public class NotifySettingsFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnNotifyFragmentInteractionListener {
         void onNotifyMonsterSettingsInteraction();

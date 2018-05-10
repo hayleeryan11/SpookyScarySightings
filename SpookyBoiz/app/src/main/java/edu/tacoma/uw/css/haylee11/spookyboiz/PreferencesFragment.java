@@ -9,27 +9,36 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link PreferencesFragment.OnPreferFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link PreferencesFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment for the preferences page. Allows a user to change
+ * basic aspects of the app.
+ *
+ * @author Haylee Ryan, Matt Frazier, Kai Stansfield
  */
 public class PreferencesFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
+    /**
+     * First parameter
+     */
     private static final String ARG_PARAM1 = "param1";
+
+    /**
+     * Second parameter
+     */
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
+    // First parameter
     private String mParam1;
+
+    //Second parameter
     private String mParam2;
 
+    //Listener for fragment interaction
     private OnPreferFragmentInteractionListener mListener;
 
+    /**
+     * Required empty constructor
+     */
     public PreferencesFragment() {
         // Required empty public constructor
     }
@@ -42,7 +51,6 @@ public class PreferencesFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment PreferencesFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static PreferencesFragment newInstance(String param1, String param2) {
         PreferencesFragment fragment = new PreferencesFragment();
         Bundle args = new Bundle();
@@ -52,6 +60,10 @@ public class PreferencesFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * When the fragment is created, this method instantiates it
+     * @param savedInstanceState The saved instance
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,14 +73,24 @@ public class PreferencesFragment extends Fragment {
         }
     }
 
+    /**
+     * When the fragment is create, this instantiates the view. In this case, a
+     * few buttons
+     * @param inflater The layout inflater
+     * @param container The container the fragment is in
+     * @param savedInstanceState The saved instance state
+     * @return The view to be presented
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_preferences, container, false);
 
+        //Creates button for notifications
         Button notify = (Button) v.findViewById(R.id.notifications);
 
+        //Sets button click to open notification fragment
         notify.setOnClickListener(new View.OnClickListener()  {
             @Override
             public void onClick(View view) {
@@ -76,8 +98,10 @@ public class PreferencesFragment extends Fragment {
             }
         });
 
+        //Creates button for updating profile
         Button update = (Button) v.findViewById(R.id.update);
 
+        //Opens update profile fragment
         update.setOnClickListener(new View.OnClickListener()  {
             @Override
             public void onClick(View view) {
@@ -88,7 +112,10 @@ public class PreferencesFragment extends Fragment {
         return v;
     }
 
-
+    /**
+     * When the fragment is attached to the app, this instantiates the listener
+     * @param context The context the fragment is in
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -100,6 +127,9 @@ public class PreferencesFragment extends Fragment {
         }
     }
 
+    /**
+     * Handles when the fragment is detached, nullifying the listener
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -111,10 +141,6 @@ public class PreferencesFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnPreferFragmentInteractionListener {
         void onNotifySettingsInteraction();

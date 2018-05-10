@@ -14,32 +14,49 @@ import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MonsterDetailFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MonsterDetailFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment for the details of a monster. Opened when user clicks on
+ * monster in list view.
+ *
+ * @author Haylee Ryan, Matt Frazier, Kai Stansfield
  */
 public class MonsterDetailFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
+    /**
+     * First parameter
+     */
     private static final String ARG_PARAM1 = "param1";
+
+    /**
+     * Second parameter
+     */
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private TextView mMonster;
-    private TextView  mId;
-    private TextView  mDescription;
-    private TextView  mLastSeen;
-
-    private OnFragmentInteractionListener mListener;
-
+    /**
+     * The monster that has been selected to see the details of
+     */
     public static final String MONSTER_SELECTED = "monster_selected";
 
+    // First parameter
+    private String mParam1;
+
+    //Second parameter
+    private String mParam2;
+
+    //Monster name
+    private TextView  mMonster;
+
+    //Monster description
+    private TextView  mDescription;
+
+    //When monster was last seen
+    private TextView  mLastSeen;
+
+    //Listener for fragment interaction
+    private OnFragmentInteractionListener mListener;
+
+    /**
+     * Required empty constructor
+     */
     public MonsterDetailFragment() {
         // Required empty public constructor
     }
@@ -52,7 +69,6 @@ public class MonsterDetailFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment MonsterDetailFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static MonsterDetailFragment newInstance(String param1, String param2) {
         MonsterDetailFragment fragment = new MonsterDetailFragment();
         Bundle args = new Bundle();
@@ -62,6 +78,10 @@ public class MonsterDetailFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * When the fragment is created, this method instantiates it
+     * @param savedInstanceState The saved instance
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,12 +91,21 @@ public class MonsterDetailFragment extends Fragment {
         }
     }
 
+    /**
+     * When the fragment is create, this instantiates the view. In this case,
+     * set the values of the TextViews
+     * @param inflater The layout inflater
+     * @param container The container the fragment is in
+     * @param savedInstanceState The saved instance state
+     * @return The view to be presented
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v =  inflater.inflate(R.layout.fragment_monster_detail, container, false);
 
+        //Set values of TextViews with retrieved data
         mMonster = (TextView) v.findViewById(R.id.monster);
         mLastSeen = (TextView) v.findViewById(R.id.last_seen);
         mDescription = (TextView) v.findViewById(R.id.description);
@@ -84,13 +113,10 @@ public class MonsterDetailFragment extends Fragment {
         return v;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
+    /**
+     * When the fragment is attached to the app, this instantiates the listener
+     * @param context The context the fragment is in
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -102,12 +128,19 @@ public class MonsterDetailFragment extends Fragment {
         }
     }
 
+    /**
+     * Handles when the fragment is detached, nullifying the listener
+     */
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
+    /**
+     * Decides what happens when the app is resumed. In this care, the detail page
+     * is updated
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -117,6 +150,10 @@ public class MonsterDetailFragment extends Fragment {
         }
     }
 
+    /**
+     * Sets the text of the TextViews in the layout to the details
+     * @param monster The monster the user is viewing the details of
+     */
     public void onUpdate(Monster monster) {
         if(monster != null) {
             mMonster.setText(monster.getmMonster());
@@ -130,13 +167,8 @@ public class MonsterDetailFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

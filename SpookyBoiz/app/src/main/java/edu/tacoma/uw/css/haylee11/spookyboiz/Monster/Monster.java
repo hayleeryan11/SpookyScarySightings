@@ -13,31 +13,62 @@ import java.util.List;
 import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
 
 /**
- * Created by hayleeryan on 5/7/18.
+ * Monster Item class, defines a monster
+ *
+ * @author Haylee Ryan, Matt Frazier, Kai Stansfield
  */
-
 public class Monster implements Serializable {
 
-    String mMonster;
-    int mId;
-    String mDescription;
-    String mLastSeen;
-
+    /**
+     * Tag for debugging
+     */
     private static final String TAG = "Monster";
 
+    /**
+     * Monster ID
+     */
+    public static final String ID = "monster_id";
+
+    /**
+     * Monster name
+     */
+    public static final String MONSTER = "name";
+
+    /**
+     * Date monster last seen
+     */
+    public static final String LAST_SEEN = "last_seen";
+
+    /**
+     * Description of monster
+     */
+    public static final String DESC = "description";
+
+    //Name of the monster
+    String mMonster;
+
+    //Monster ID
+    int mId;
+
+    //Monster description
+    String mDescription;
+
+    //Date the mosnter was last seen based on sightings
+    String mLastSeen;
+
+    /**
+     * Constructs a new monster item
+     * @param id Monster ID
+     * @param monster Name
+     * @param description Details of monster
+     * @param lastSeen Date last spotted
+     */
     public Monster(int id, String monster, String description, String lastSeen) {
         mId = id;
         mMonster = monster;
         mLastSeen = lastSeen;
         mDescription = description;
     }
-
-    public static final String ID = "monster_id";
-    public static final String MONSTER = "name";
-    public static final String LAST_SEEN = "last_seen";
-    public static final String DESC = "description";
-
-
 
     public String getmMonster() {
         return mMonster;
@@ -72,10 +103,17 @@ public class Monster implements Serializable {
     }
 
 
-    public static List<Monster> parseCourseJSON(String courseJSON) throws JSONException {
+    /**
+     * Takes a JSON and parses it into strings, then putting those in a list
+     * of monsters to display
+     * @param monsterJSON The JSON with monster information
+     * @return A list of monsters to display
+     * @throws JSONException
+     */
+    public static List<Monster> parseCourseJSON(String monsterJSON) throws JSONException {
         List<Monster> monsterList = new ArrayList<Monster>();
-        if (courseJSON != null) {
-            JSONArray arr = new JSONArray(courseJSON);
+        if (monsterJSON != null) {
+            JSONArray arr = new JSONArray(monsterJSON);
             Log.i(TAG, "why");
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject obj = arr.getJSONObject(i);
