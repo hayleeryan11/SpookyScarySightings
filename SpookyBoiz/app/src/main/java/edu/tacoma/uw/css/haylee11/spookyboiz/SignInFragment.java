@@ -1,6 +1,7 @@
 package edu.tacoma.uw.css.haylee11.spookyboiz;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -60,6 +61,8 @@ public class SignInFragment extends Fragment {
 
     //Listener that listens for interaction with the fragment/buttons
     private UserAddListener mListener;
+
+    private SharedPreferences mSharedPreferences;
 
     /**
      * Empty constructor (not needed)
@@ -177,6 +180,7 @@ public class SignInFragment extends Fragment {
         try {
             //Append username
             String user = mUsername.getText().toString();
+            mListener.setPreferences(user);
             sb.append("username=");
             sb.append(URLEncoder.encode(user, "UTF-8"));
 
@@ -207,6 +211,8 @@ public class SignInFragment extends Fragment {
 
     }
 
+
+
     /**
      * Provides a listener for the buttons on the fragment, as well as the
      * progress bar
@@ -214,6 +220,7 @@ public class SignInFragment extends Fragment {
     public interface UserAddListener {
         void addUser(String url);
         void onCreateAccountInteraction();
+        void setPreferences(String user);
         void loading();
     }
 

@@ -1,7 +1,10 @@
 package edu.tacoma.uw.css.haylee11.spookyboiz;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -120,16 +123,26 @@ public class SignedInActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_pref) { //if the preferences button has been pressed, open new fragment
+        if (id == R.id.action_pref) {           //if the preferences button has been pressed, open new fragment
             PreferencesFragment prefer = new PreferencesFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container_2, prefer)
                     .addToBackStack(null)
                     .commit();
-        } else if (id == R.id.action_info) { //if info button pressed, open About dialog
+        } else if (id == R.id.action_info) {    //if info button pressed, open About dialog
             AboutDialogFragment newFragment = new AboutDialogFragment();
             newFragment.show(getSupportFragmentManager(), "about");
 
+        } else if (id == R.id.action_logout) {
+            SharedPreferences sharedPreferences =
+                    getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+            sharedPreferences.edit().putBoolean(getString(R.string.LOGGEDIN), false)
+                    .apply();
+
+            Intent i = new Intent(this, MainActivity.class);
+            startActivity(i);
+
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
@@ -416,5 +429,6 @@ public class SignedInActivity extends AppCompatActivity
         public void onFragmentInteraction(Uri uri) {
 
         }
+
 
     }

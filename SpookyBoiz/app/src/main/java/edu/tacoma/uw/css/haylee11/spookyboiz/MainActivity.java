@@ -1,7 +1,9 @@
 package edu.tacoma.uw.css.haylee11.spookyboiz;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -40,6 +42,9 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
     //Animation length for progress bar
     private int mLongAnimationDuration;
 
+    //Shared Preferences object to keep track of login
+    private SharedPreferences mSharedPreferences;
+
     /**
      *Method for creating the activity, and what should be done on creation.
      * @param savedInstanceState The saved instance state as a bundle
@@ -49,11 +54,18 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (findViewById(R.id.fragment_container) != null) {
+//
+
+        mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS),
+                Context.MODE_PRIVATE);
+        if (!mSharedPreferences.getBoolean(getString(R.string.LOGGEDIN), false)) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, new SignInFragment())
-
                     .commit();
+        } else {
+            Intent i = new Intent(this, SignedInActivity.class);
+            startActivity(i);
+            finish();
         }
     }
 
@@ -95,6 +107,19 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
     public void addUser(String url) {
         AddUserTask task = new AddUserTask();
         task.execute(new String[]{url.toString()});
+
+    }
+
+    /**
+     * Used to store the username of the person currently logged on
+     * @param user The name of the user
+     */
+    @Override
+    public void setPreferences(String user) {
+        mSharedPreferences
+                .edit()
+                .putString(getString(R.string.CURRENT_USER), user)
+                .apply();
 
     }
 
@@ -180,20 +205,35 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
                     Toast.makeText(getApplicationContext(), "Signed In!",
                             Toast.LENGTH_LONG)
                             .show();
-                    Intent intent = new Intent(that, SignedInActivity.class);
-                    startActivity(intent);
+
+                    mSharedPreferences
+                            .edit()
+                            .putBoolean(getString(R.string.LOGGEDIN), true)
+                            .apply();
+
+                    Intent i = new Intent(that, SignedInActivity.class);
+                    startActivity(i);
+//                    finish();
 
                 } else {
                     Toast.makeText(getApplicationContext(), "failed: " + jsonObject.get("error"),
                             Toast.LENGTH_LONG)
                             .show();
                     mLoadingView.setVisibility(View.INVISIBLE);
+                    mSharedPreferences
+                            .edit()
+                            .putString(getString(R.string.CURRENT_USER), null)
+                            .apply();
                 }
             } catch (JSONException e) {
                 Toast.makeText(getApplicationContext(), "Something wrong with the data" +
                         e.getMessage(), Toast.LENGTH_LONG)
                         .show();
                 mLoadingView.setVisibility(View.INVISIBLE);
+                mSharedPreferences
+                        .edit()
+                        .putString(getString(R.string.CURRENT_USER), null)
+                        .apply();
 
             }
         }

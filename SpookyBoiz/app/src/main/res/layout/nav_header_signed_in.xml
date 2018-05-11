@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="120dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="65dp"
         android:fontFamily="serif-monospace"
         android:text="Username"
         android:textSize="18sp" />
@@ -46,7 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="120dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="85dp"
         android:fontFamily="serif-monospace"
         android:text="Sightings:"
         android:textSize="18sp" />

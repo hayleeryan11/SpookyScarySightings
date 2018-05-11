@@ -62,16 +62,17 @@
         android:textSize="20dp"
         android:textStyle="bold" />
 
-    <TextView
-        android:layout_marginTop="190dp"
-        android:paddingLeft="5dp"
-        android:layout_marginRight="20dp"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:fontFamily="serif-monospace"
-        android:id="@+id/state"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <!--<TextView-->
+        <!--android:layout_marginTop="190dp"-->
+        <!--android:paddingLeft="5dp"-->
+        <!--android:layout_marginLeft="200dp"-->
+        <!--android:layout_marginRight="20dp"-->
+        <!--android:textSize="20dp"-->
+        <!--android:textStyle="bold"-->
+        <!--android:fontFamily="serif-monospace"-->
+        <!--android:id="@+id/state"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content" />-->
 
 
     <TextView

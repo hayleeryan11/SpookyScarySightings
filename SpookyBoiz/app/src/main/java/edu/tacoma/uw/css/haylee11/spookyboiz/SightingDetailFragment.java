@@ -137,8 +137,8 @@ public class SightingDetailFragment extends Fragment {
     public void updateView(Sighting sight) {
         if (sight != null) {
             mUsername.setText("User: " + sight.getmUsername());
-            mCity.setText(sight.getmCity() + ",");
-            mState.setText(sight.getmState());
+            mCity.setText(sight.getmCity() + ", " + sight.getmState());
+            //mState.setText(sight.getmState());
             mDate.setText("Date: " + sight.getmDate());
             mTime.setText("Time: " + sight.getmTime());
             mMonster.setText(sight.getmMonster());
