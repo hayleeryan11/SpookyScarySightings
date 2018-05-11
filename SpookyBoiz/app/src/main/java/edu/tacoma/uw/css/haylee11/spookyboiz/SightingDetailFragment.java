@@ -122,7 +122,7 @@ public class SightingDetailFragment extends Fragment {
         mUsername = (TextView) v.findViewById(R.id.username);
         mMonster = (TextView) v.findViewById(R.id.monster);
         mCity = (TextView) v.findViewById(R.id.city);
-        mState = (TextView) v.findViewById(R.id.state);
+        //mState = (TextView) v.findViewById(R.id.state);
         mDate = (TextView) v.findViewById(R.id.date);
         mTime = (TextView) v.findViewById(R.id.time);
         mDesc = (TextView) v.findViewById(R.id.description);
