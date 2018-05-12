@@ -377,14 +377,14 @@ public class SignedInActivity extends AppCompatActivity
 
                     JSONObject jsonObject = new JSONObject(result);
                     String status = (String) jsonObject.get("result");
-                    if(status.equals("success_create")) {   //Successfully created account
+                    if(status.equals("success_report")) {   //Successfully created account
 
 
 
-                    } else if (status.equals("success_signIn")) {   //Successfully signed in
-                        Toast.makeText(getApplicationContext(), "Signed In!",
-                                Toast.LENGTH_LONG)
-                                .show();
+                    } else if (status.equals("success_profile")) {   //Successfully signed in
+//                        Toast.makeText(getApplicationContext(), "Signed In!",
+//                                Toast.LENGTH_LONG)
+//                                .show();
     //
 
                     } else {

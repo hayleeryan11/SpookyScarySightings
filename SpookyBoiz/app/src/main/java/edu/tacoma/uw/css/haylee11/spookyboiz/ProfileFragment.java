@@ -28,7 +28,7 @@ public class ProfileFragment extends Fragment {
     private String mParam2;
 
 
-    private static final String COURSE_URL = "http://spookyscarysightings.000webhostapp.com/list.php?cmd=profile&username=" ;
+    private static final String PROFILE_URL = "http://spookyscarysightings.000webhostapp.com/userProfile.php?cmd=profile&username=" ;
 
     private OnFragmentInteractionListener mListener;
 
