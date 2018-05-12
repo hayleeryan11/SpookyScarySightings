@@ -24,7 +24,7 @@ Haylee Ryan, Matthew Frazier, and Kai Stansfield
 * Signing into user does not access specific profile
 * Sightings cannot be filtered yet  
 
-###Sign In
+### sign In
 username: haylee11  
 password: blahblah  
 
