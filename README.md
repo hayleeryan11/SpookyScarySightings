@@ -1,7 +1,7 @@
 # Spooky Scary Sightings
 
-App made for TCSS 450 at University of Washington Tacoma
-Made by Group 4
+App made for TCSS 450 at University of Washington Tacoma  
+Made by Group 4  
 Haylee Ryan, Matthew Frazier, and Kai Stansfield
 
 ## Features
@@ -22,6 +22,10 @@ Haylee Ryan, Matthew Frazier, and Kai Stansfield
 ## Deficiencies
 * OnBackPressed not working on initial log in
 * Signing into user does not access specific profile
-* Sightings cannot be filtered yet
+* Sightings cannot be filtered yet  
+
+### sign In
+username: haylee11  
+password: blahblah  
 
 
