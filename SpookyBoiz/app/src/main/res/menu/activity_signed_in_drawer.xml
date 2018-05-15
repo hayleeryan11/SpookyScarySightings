@@ -28,6 +28,7 @@
                 android:id="@+id/nav_profile"
                 android:icon="@drawable/user"
                 android:title="My Profile" />
+
         </menu>
     </item>
 
@@ -37,6 +38,7 @@
                 android:id="@+id/nav_update"
                 android:icon="@drawable/settings"
                 android:title="Update Profile" />
+
             <item
                 android:id="@+id/nav_notifications"
                 android:icon="@drawable/bell"

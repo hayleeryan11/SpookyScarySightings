@@ -1,6 +1,9 @@
 package edu.tacoma.uw.css.haylee11.spookyboiz;
 
 import android.app.Dialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -29,9 +33,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 import edu.tacoma.uw.css.haylee11.spookyboiz.Monster.Monster;
+import edu.tacoma.uw.css.haylee11.spookyboiz.Profile.Profile;
 import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
+
+import static edu.tacoma.uw.css.haylee11.spookyboiz.Profile.Profile.parseCourseJSON;
 
 /**
  * SignedInActivity is the activity that manages all fragments that the user can access after they
@@ -45,10 +53,18 @@ public class SignedInActivity extends AppCompatActivity
         NotifySettingsFragment.OnNotifyFragmentInteractionListener, SightingsFragment.OnListFragmentInteractionListener,
         MonsterFragment.OnListFragmentInteractionListener, SignInFragment.OnSignInFragmentInteractionListener,
         CreateAccountFragment.OnFragmentInteractionListener, SightingDetailFragment.OnFragmentInteractionListener,
-        ReportFragment.SightingAddListener {
+        ReportFragment.SightingAddListener, ProfileFragment.OnFragmentInteractionListener {
 
     /* Tag for debugging */
     private static final String TAG = "SignedInActivity";
+
+    private List<Profile> mProfile;
+
+    private TextView mNavUsername;
+    private TextView mNavName;
+    private TextView mNavSightings;
+
+    SharedPreferences mSharedPref;
 
 
     /**
@@ -60,11 +76,10 @@ public class SignedInActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signed_in);
 
-
         //Starts sighting view fragment (as a homepage)
-        SightingsFragment home = new SightingsFragment();
+        ProfileFragment home = new ProfileFragment();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container_2, home)
+                .replace(R.id.fragment_container_2, home, "PROFILE")
                 .addToBackStack(null)
                 .commit();
 
@@ -81,6 +96,14 @@ public class SignedInActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        mSharedPref =
+                getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+
+        Toast.makeText(getApplicationContext(), mSharedPref.getString(getString(R.string.CURRENT_USER), "user"), Toast.LENGTH_SHORT)
+                       .show();
+
     }
 
     /**
@@ -106,6 +129,15 @@ public class SignedInActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_home, menu);
+
+
+        mNavName = (TextView) findViewById(R.id.name_nav);
+        mNavUsername = (TextView) findViewById(R.id.user_nav);
+        mNavSightings = (TextView) findViewById(R.id.sightings_nav);
+
+        mNavName.setText(mSharedPref.getString(getString(R.string.NAME), null));
+        mNavUsername.setText(mSharedPref.getString(getString(R.string.CURRENT_USER), null));
+        mNavSightings.setText(Integer.toString(mSharedPref.getInt(getString(R.string.SIGHTINGS), 0)));
         return true;
     }
 
@@ -134,10 +166,11 @@ public class SignedInActivity extends AppCompatActivity
             newFragment.show(getSupportFragmentManager(), "about");
 
         } else if (id == R.id.action_logout) {
-            SharedPreferences sharedPreferences =
-                    getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
-            sharedPreferences.edit().putBoolean(getString(R.string.LOGGEDIN), false)
+            mSharedPref.edit().putBoolean(getString(R.string.LOGGEDIN), false)
                     .apply();
+
+
+
 
             Intent i = new Intent(this, MainActivity.class);
             startActivity(i);
@@ -165,7 +198,7 @@ public class SignedInActivity extends AppCompatActivity
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.nav_view) {   //if we want to view sightings, open sighings list (fragment)
-            SightingsFragment sightings = new SightingsFragment();
+            SightingsFragment sightings = new SightingsFragment(0);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container_2, sightings)
                     .addToBackStack(null)
@@ -178,13 +211,18 @@ public class SignedInActivity extends AppCompatActivity
                     .addToBackStack(null)
                     .commit();
         }  else if (id == R.id.nav_mine) {      //If we want to see the sightings we have posted, open sightings list (fragment)
-            SightingsFragment sightings = new SightingsFragment();
+            SightingsFragment sightings = new SightingsFragment(1);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container_2, sightings)
                     .addToBackStack(null)
                     .commit();
         //Not yet implemented
         } else if (id == R.id.nav_profile) {
+            ProfileFragment profile = new ProfileFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container_2, profile)
+                    .addToBackStack(null)
+                    .commit();
         } else if (id == R.id.nav_update) {
         } else if (id == R.id.nav_notifications) {  //If we want to change notification settings, open notify settings fragment
             NotifySettingsFragment notify = new NotifySettingsFragment();
@@ -272,6 +310,22 @@ public class SignedInActivity extends AppCompatActivity
             getSupportFragmentManager().popBackStackImmediate();
         }
 
+
+        @Override
+        public void profileView(String url) {
+
+            ProfileTask task = new ProfileTask();
+            task.execute(new String[]{url.toString()});
+
+
+        }
+
+
+        @Override
+        public List<Profile> getProfile() {
+            return mProfile;
+        }
+
         /**
          * Inner class that allows the creation and use of the About dialog
          *
@@ -343,7 +397,7 @@ public class SignedInActivity extends AppCompatActivity
 
 
                         InputStream content = urlConnection.getInputStream();
-                        Log.i(TAG, content.toString());
+                        //Log.i(TAG, content.toString());
 
                         BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
 
@@ -359,6 +413,7 @@ public class SignedInActivity extends AppCompatActivity
                         }
                     }
                 }
+                //Log.i(TAG, response);
                 return response;
             }
 
@@ -371,20 +426,19 @@ public class SignedInActivity extends AppCompatActivity
              */
             @Override
             protected void onPostExecute(String result) {
-                Log.i(TAG, result);
                 try {
 
-
+//                    mProfile = Profile.parseCourseJSON(result);
                     JSONObject jsonObject = new JSONObject(result);
                     String status = (String) jsonObject.get("result");
-                    if(status.equals("success_report")) {   //Successfully created account
-
-
-
-                    } else if (status.equals("success_profile")) {   //Successfully signed in
-//                        Toast.makeText(getApplicationContext(), "Signed In!",
-//                                Toast.LENGTH_LONG)
-//                                .show();
+                      //Successfully created account
+//                    Toast.makeText(getApplicationContext(), mProfile.toString(),
+//                            Toast.LENGTH_LONG)
+//                            .show();
+                    if (status.equals("Sighting Added")) {   //Successfully signed in
+                        Toast.makeText(getApplicationContext(), "Sighting Added!",
+                                Toast.LENGTH_LONG)
+                                .show();
     //
 
                     } else {
@@ -402,6 +456,100 @@ public class SignedInActivity extends AppCompatActivity
             }
         }
 
+
+    /**
+     * Inner class that extends AsynchTask. This class handles the creation of a report
+     * and sends it off to the database to be inputted. This handles all the background
+     * work that has to do with data sending in regards to report posting
+     *
+     * @author Haylee Ryan, Matt Frazier, Kai Stansfield
+     */
+    private class ProfileTask extends AsyncTask<String, Void, String> {
+
+        SharedPreferences mSharedPrefs;
+        /**
+         * Overrides onPreExecute. Performs super task
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        /**
+         * Creates a URL connection to which we can send our URL carrying the data we want
+         * to put into the database. This does all work in the background for the user when
+         * generating a report.
+         * @param urls The URLs to be sent through the connection that hold the information
+         *             to be passed to the database
+         * @return The successful or failed result of connecting with the URL
+         */
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+
+
+
+                    InputStream content = urlConnection.getInputStream();
+                    //Log.i(TAG, content.toString());
+
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+                } catch (Exception e) {
+                    response = "Unable to make report, Reason: " + e.getMessage();
+                } finally {
+                    if(urlConnection != null) {
+                        urlConnection.disconnect();
+                    }
+                }
+            }
+            //Log.i(TAG, response);
+            return response;
+        }
+
+        /**
+         * After the background work has been executed, the result comes into this method
+         * to be read. From there, we determine what to do (has it succeeded? Failed? Is
+         * the data wrong?)
+         * @param result The result from doInBackground (If the insertion/retrieving was
+         *               successful or not.
+         */
+        @Override
+        protected void onPostExecute(String result) {
+
+            if (result.startsWith("Unable to")) {
+                Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT)
+                        .show();
+                return;
+            }
+
+
+                mSharedPrefs = getSharedPreferences(getString(R.string.LOGIN_PREFS),
+                        Context.MODE_PRIVATE);
+
+                mSharedPrefs
+                        .edit()
+                        .putString(getString(R.string.PROFILE), result)
+                        .commit();
+//                mProfile = Profile.parseCourseJSON(result);
+
+//                Toast.makeText(getApplicationContext(), result + "," + mProfile.get(0).getmLName(), Toast.LENGTH_SHORT)
+//                        .show();
+
+                return;
+
+
+
+        }
+    }
 
         /**
          * When the SightingFragment (lsit of sightings0 iss interacted with, this
@@ -431,4 +579,4 @@ public class SignedInActivity extends AppCompatActivity
         }
 
 
-    }
+}

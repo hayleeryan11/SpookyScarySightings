@@ -83,6 +83,8 @@ public class ReportFragment extends Fragment {
     //Listener for adding a sighting to the list/database
     private SightingAddListener mSightListener;
 
+    SharedPreferences mSharedPref;
+
     /**
      * Required empty constructor
      */
@@ -145,6 +147,8 @@ public class ReportFragment extends Fragment {
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
+        getActivity().setTitle("Report a Sighting");
+
         //Assigns values in Spinner/EditText fields to our class fields
         mMonster = (Spinner) v.findViewById(R.id.spinner);
         mDate = (EditText) v.findViewById(R.id.date);
@@ -152,6 +156,10 @@ public class ReportFragment extends Fragment {
         mCity = (EditText) v.findViewById(R.id.city);
         mState = (EditText) v.findViewById(R.id.state);
         mDetails = (EditText) v.findViewById(R.id.notes);
+
+
+        mSharedPref =
+                getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
 
         //Assign "done" button to build URL and start AsyncTask
         Button addSightingButton = (Button) v.findViewById(R.id.add_button);
@@ -206,7 +214,7 @@ public class ReportFragment extends Fragment {
             sb.append("&id=");
             sb.append(URLEncoder.encode(id, "UTF-8"));
 
-            String user = "haylee11";
+            String user = mSharedPref.getString(getString(R.string.CURRENT_USER), null);
             sb.append("&user=");
             sb.append(URLEncoder.encode(user, "UTF-8"));
 

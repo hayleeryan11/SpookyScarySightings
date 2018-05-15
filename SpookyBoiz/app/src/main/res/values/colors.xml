@@ -5,8 +5,8 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="onyx">#31393c</color>
-    <color name="crayola_blue">#2176FF</color>
-    <color name="azure">#33A1FD</color>
+    <color name="crayola_blue">#2176ff</color>
+    <color name="azure">#33a1fd</color>
     <color name="sunglow">#FDCA40</color>
-    <color name="carrot">#F79824</color>
+    <color name="carrot">#f79824</color>
 </resources>

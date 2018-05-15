@@ -1,5 +1,9 @@
 package edu.tacoma.uw.css.haylee11.spookyboiz.Sighting;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -7,6 +11,8 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import edu.tacoma.uw.css.haylee11.spookyboiz.R;
 
 /**
  * Sighting Item class, defines a Sighting
@@ -54,6 +60,8 @@ public class Sighting implements Serializable {
      * Description of sighting
      */
     public static final String DESC = "description";
+
+    public static final String TAG = "sight";
 
     //Username of who reported
     String mUsername;
@@ -165,7 +173,10 @@ public class Sighting implements Serializable {
      * @return A list of monsters to display
      * @throws JSONException
      */
-    public static List<Sighting> parseCourseJSON(String sightJSON) throws JSONException {
+    public static List<Sighting> parseCourseJSON(String sightJSON, int flag, SharedPreferences sp) throws JSONException {
+
+        String user = sp.getString("user", null);
+        Log.i(TAG, user);
         List<Sighting> sightList = new ArrayList<Sighting>();
         if (sightJSON != null) {
             JSONArray arr = new JSONArray(sightJSON);
@@ -176,7 +187,13 @@ public class Sighting implements Serializable {
                 Sighting sight = new Sighting(obj.getString(Sighting.ID), obj.getString(Sighting.USERNAME), obj.getString(Sighting.MONSTER)
                         , date_time[0], date_time[1], obj.getString(Sighting.CITY), obj.getString(Sighting.STATE),
                         obj.getString(Sighting.DESC));
-                sightList.add(sight);
+                if (flag == 1) {
+                    if (obj.getString(Sighting.USERNAME).equals(user)) {
+                        sightList.add(sight);
+                    }
+                } else if (flag == 0) {
+                    sightList.add(sight);
+                }
             }
         }
         return sightList;

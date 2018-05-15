@@ -1,6 +1,7 @@
 package edu.tacoma.uw.css.haylee11.spookyboiz;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -58,12 +59,20 @@ public class SightingsFragment extends Fragment {
     //Recyclerview that allows scolling
     private RecyclerView mRecyclerView;
 
+    SharedPreferences mSharedPref;
+
+    private int mFlag;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment.
      */
     public SightingsFragment() {
 
+    }
+
+    public SightingsFragment(int flag) {
+        mFlag = flag;
     }
 
     /**
@@ -106,6 +115,8 @@ public class SightingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sightings_list, container, false);
+
+        mSharedPref = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -218,17 +229,17 @@ public class SightingsFragment extends Fragment {
          */
         @Override
         protected void onPostExecute(String result) {
-            Log.i(TAG, "onPostExecute");
+
+
 
             if (result.startsWith("Unable to")) {
                 Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_SHORT)
                         .show();
-                Log.i(TAG, "onPostExecute");
                 return;
             }
 
             try {
-                mSightingList = Sighting.parseCourseJSON(result);
+                mSightingList = Sighting.parseCourseJSON(result, mFlag, mSharedPref);
             } catch (JSONException e) {
                 Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
                         .show();

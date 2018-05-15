@@ -50,6 +50,9 @@
     <string name="LOGGEDIN">loggedIn</string>
     <string name="CURRENT_USER">user</string>
     <string name="action_logout">Logout</string>
+    <string name="PROFILE">profile</string>
+    <string name="NAME">name</string>
+    <string name="SIGHTINGS">sightings</string>
 
     <string name="title_activity_course">CourseActivity</string>
 
