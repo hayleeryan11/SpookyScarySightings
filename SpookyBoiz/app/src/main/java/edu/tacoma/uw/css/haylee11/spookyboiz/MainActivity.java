@@ -62,6 +62,10 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, new SignInFragment())
                     .commit();
+            mSharedPreferences
+                            .edit()
+                            .putString(getString(R.string.PROFILE), null)
+                            .apply();
         } else {
             Intent i = new Intent(this, SignedInActivity.class);
             startActivity(i);
@@ -93,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
 
         mLoadingView.setVisibility(View.VISIBLE);
 
-        //Retrieve and cache the system's defaul "short" animation time
+        //Retrieve and cache the system's default "short" animation time
         mLongAnimationDuration = getResources().getInteger(
                 android.R.integer.config_longAnimTime);
     }
@@ -223,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
                     mSharedPreferences
                             .edit()
                             .putString(getString(R.string.CURRENT_USER), null)
+                            .putString(getString(R.string.PROFILE), null)
                             .apply();
                 }
             } catch (JSONException e) {
@@ -233,6 +238,7 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
                 mSharedPreferences
                         .edit()
                         .putString(getString(R.string.CURRENT_USER), null)
+                        .putString(getString(R.string.PROFILE), null)
                         .apply();
 
             }

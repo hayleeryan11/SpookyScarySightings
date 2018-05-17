@@ -132,24 +132,19 @@ public class Profile  implements Serializable {
         this.mBio = mBio;
     }
 
-    public static List<Profile> parseCourseJSON(String profileJSON) throws JSONException {
-        List<Profile> profList = new ArrayList<Profile>();
+    public static Profile parseCourseJSON(String profileJSON) throws JSONException {
+
         if (profileJSON != null) {
-            JSONArray arr = new JSONArray(profileJSON);
-
-            for (int i = 0; i < arr.length(); i++) {
-
-                JSONObject obj = arr.getJSONObject(i);
+            JSONObject obj = new JSONObject(profileJSON);
                 //JSONObject obj = new JSONObject(profileJSON);
                 Profile prof = new Profile(obj.getString(Profile.USERNAME), obj.getString(Profile.F_NAME), obj.getString(Profile.L_NAME), obj.getInt(Profile.SIGHTINGS),
                         obj.getString(Profile.FAVORITE), obj.getString(Profile.BIO));
 
-                profList.add(prof);
-            }
+                return prof;
+
         }
 
-
-        return profList;
+        return null;
 
     }
 

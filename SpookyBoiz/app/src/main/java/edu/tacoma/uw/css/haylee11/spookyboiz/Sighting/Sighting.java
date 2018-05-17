@@ -173,9 +173,9 @@ public class Sighting implements Serializable {
      * @return A list of monsters to display
      * @throws JSONException
      */
-    public static List<Sighting> parseCourseJSON(String sightJSON, int flag, SharedPreferences sp) throws JSONException {
+    public static List<Sighting> parseCourseJSON(String sightJSON, int flag, String user) throws JSONException {
 
-        String user = sp.getString("user", null);
+
         Log.i(TAG, user);
         List<Sighting> sightList = new ArrayList<Sighting>();
         if (sightJSON != null) {

@@ -22,6 +22,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,7 +60,7 @@ public class SignedInActivity extends AppCompatActivity
     /* Tag for debugging */
     private static final String TAG = "SignedInActivity";
 
-    private List<Profile> mProfile;
+    private Profile mProfile;
 
     private TextView mNavUsername;
     private TextView mNavName;
@@ -75,13 +77,6 @@ public class SignedInActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signed_in);
-
-        //Starts sighting view fragment (as a homepage)
-        ProfileFragment home = new ProfileFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container_2, home, "PROFILE")
-                .addToBackStack(null)
-                .commit();
 
         //Sets up toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -103,6 +98,13 @@ public class SignedInActivity extends AppCompatActivity
 
         Toast.makeText(getApplicationContext(), mSharedPref.getString(getString(R.string.CURRENT_USER), "user"), Toast.LENGTH_SHORT)
                        .show();
+
+        //Starts sighting view fragment (as a homepage)
+        ProfileFragment home = new ProfileFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container_2, home, "PROFILE")
+                .addToBackStack(null)
+                .commit();
 
     }
 
@@ -317,14 +319,17 @@ public class SignedInActivity extends AppCompatActivity
             ProfileTask task = new ProfileTask();
             task.execute(new String[]{url.toString()});
 
-
         }
 
-
-        @Override
-        public List<Profile> getProfile() {
+        public Profile getProfileList() {
             return mProfile;
         }
+
+
+//        @Override
+//        public List<Profile> getProfile() {
+//            return mProfile;
+//        }
 
         /**
          * Inner class that allows the creation and use of the About dialog
@@ -343,7 +348,7 @@ public class SignedInActivity extends AppCompatActivity
                 public Dialog onCreateDialog(Bundle savedInstanceState) {
                     // Use the Builder class for convenient dialog construction
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
+//                    AlertDialog alert = builder.create();
                     //About message
                     builder.setMessage("Spooky Scary Sightings is an app that allows users to " +
                             "log sightings of creatures. From Bigfoot to UFOs to ghosts, " +
@@ -525,28 +530,39 @@ public class SignedInActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(String result) {
 
+            mSharedPrefs = getSharedPreferences(getString(R.string.LOGIN_PREFS),
+                    Context.MODE_PRIVATE);
+
             if (result.startsWith("Unable to")) {
                 Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT)
                         .show();
                 return;
             }
 
+            try {
+               Profile prof = Profile.parseCourseJSON(result);
 
-                mSharedPrefs = getSharedPreferences(getString(R.string.LOGIN_PREFS),
-                        Context.MODE_PRIVATE);
+               Log.d(TAG, Integer.toString(prof.getmSightings()));
 
-                mSharedPrefs
+               Toast.makeText(getApplicationContext(), prof.getmUsername(), Toast.LENGTH_LONG)
+                       .show();
+
+               mSharedPrefs
                         .edit()
-                        .putString(getString(R.string.PROFILE), result)
-                        .commit();
-//                mProfile = Profile.parseCourseJSON(result);
+                        .putString(getString(R.string.CURRENT_USER), prof.getmUsername())
+                        .putString(getString(R.string.NAME), prof.getmFName() + " " + prof.getmLName())
+                        .putInt(getString(R.string.SIGHTINGS), prof.getmSightings())
+                        .putString(getString(R.string.FAVORITE), prof.getmFavorite())
+                        .putString(getString(R.string.BIO), prof.getmBio())
+                        .apply();
 
-//                Toast.makeText(getApplicationContext(), result + "," + mProfile.get(0).getmLName(), Toast.LENGTH_SHORT)
-//                        .show();
-
+            } catch (JSONException e) {
+                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
+                        .show();
                 return;
+            }
 
-
+            return;
 
         }
     }

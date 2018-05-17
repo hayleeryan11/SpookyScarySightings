@@ -6,23 +6,54 @@
     tools:context="edu.tacoma.uw.css.haylee11.spookyboiz.ProfileFragment">
 
 
+    <Button
+        android:id="@+id/fav_change"
+        android:layout_width="72dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="305dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="serif-monospace"
+        android:text="Change"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sightings" />
+
+    <Button
+        android:id="@+id/user_change"
+        android:layout_width="72dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="200dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="serif-monospace"
+        android:text="Change"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/username" />
+
     <ImageView
         android:id="@+id/profile_pic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="50dp"
         android:src="@drawable/add"
-        tools:layout_editor_absoluteX="46dp"
-        tools:layout_editor_absoluteY="33dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="200dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="70dp"
+        android:background="@drawable/border"
         android:fontFamily="serif-monospace"
-        android:textColor="@color/crayola_blue"
-        android:textSize="20sp"
+        android:text="test"
+        android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -31,11 +62,12 @@
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="200dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="100dp"
         android:fontFamily="serif-monospace"
+        android:text="test"
         android:textColor="@color/carrot"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/username" />
@@ -44,35 +76,94 @@
         android:id="@+id/sightings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="200dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="serif-monospace"
+        android:text="test"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name" />
+        app:layout_constraintTop_toBottomOf="@+id/desc_fav2" />
 
     <TextView
         android:id="@+id/favorite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="200dp"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="serif-monospace"
-        android:textSize="14sp"
+        android:text="test"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/desc_fav" />
 
     <TextView
         android:id="@+id/bio"
         android:layout_width="wrap_content"
-        android:layout_height="15dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="serif-monospace"
-        android:textSize="14sp"
+        android:text="test"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/desc_bio" />
+
+    <TextView
+        android:id="@+id/desc_bio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="serif-monospace"
+        android:text="Bio:"
+        android:textColor="@color/crayola_blue"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/favorite" />
+
+    <TextView
+        android:id="@+id/desc_fav"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="serif-monospace"
+        android:text="Favorite Monster:"
+        android:textColor="@color/crayola_blue"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sightings" />
+
+    <TextView
+        android:id="@+id/desc_fav2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="260dp"
+        android:fontFamily="serif-monospace"
+        android:text="Sightings:"
+        android:textColor="@color/crayola_blue"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/bio_change"
+        android:layout_width="72dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="305dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="serif-monospace"
+        android:text="Change"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/favorite" />
+
 </android.support.constraint.ConstraintLayout>
