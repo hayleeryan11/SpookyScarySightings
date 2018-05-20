@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,6 +20,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import edu.tacoma.uw.css.haylee11.spookyboiz.Profile.Profile;
 
 /**
  * SignedInActivity is the activity that manages all fragments that the user can access before they
@@ -45,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
     //Shared Preferences object to keep track of login
     private SharedPreferences mSharedPreferences;
 
+    private String[] mMonsters;
+
     /**
      *Method for creating the activity, and what should be done on creation.
      * @param savedInstanceState The saved instance state as a bundle
@@ -53,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 //
 
         mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS),
@@ -127,6 +131,18 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
 
     }
 
+//    public static String[] parseMonstersJSON(String monsterJSON) throws JSONException {
+//        String[] monster_array = {};
+//        if (monsterJSON != null) {
+//            JSONArray arr = new JSONArray(monsterJSON);
+//            for (int i = 0; i < arr.length(); i++) {
+//                JSONObject obj = arr.getJSONObject(i);
+//                monster_array[0] = obj.getString("name");
+//            }
+//        }
+//        return monster_array;
+//    }
+
     /**
      * Inner class that extends AsynchTask. This class handles the creation of a user
      * and sends it off to the database to be inputted. This handles all the background
@@ -192,35 +208,49 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
          */
         @Override
         protected void onPostExecute(String result) {
-            Log.i(TAG, result);
+
             try {
 
+                if (result.contains("f_name")) {
+                    Toast.makeText(getApplicationContext(), "Signed In!",
+                            Toast.LENGTH_LONG)
+                            .show();
 
-                JSONObject jsonObject = new JSONObject(result);
-                String status = (String) jsonObject.get("result");
-                if(status.equals("success_create")) {
+                    Profile p = Profile.parseCourseJSON(result);
+
+
+
+                    mSharedPreferences
+                            .edit()
+                            .putBoolean(getString(R.string.LOGGEDIN), true)
+                            .putString(getString(R.string.CURRENT_USER), p.getmUsername())
+                            .putString(getString(R.string.FAVORITE), p.getmFavorite())
+                            .putString(getString(R.string.BIO), p.getmBio())
+                            .putString(getString(R.string.NAME), p.getmFName() + " " + p.getmLName())
+                            .putInt(getString(R.string.SIGHTINGS), p.getmSightings())
+                            .apply();
+                    Toast.makeText(getApplicationContext(),mSharedPreferences.getString(getString(R.string.CURRENT_USER), "wrong"),
+                            Toast.LENGTH_LONG)
+                            .show();
+//                    mMonsters = parseMonstersJSON(result);
+
+                    Intent i = new Intent(that, SignedInActivity.class);
+                    startActivity(i);
+//                    finish();
+
+                }
+
+//                JSONObject jsonObject = new JSONObject(result);
+//                String status = (String) jsonObject.get("result");
+                else if (result.contains("success_create")) {
                     Toast.makeText(getApplicationContext(), "Account Created!",
                             Toast.LENGTH_LONG)
                             .show();
                     Intent intent = new Intent(that, SignedInActivity.class);
                     startActivity(intent);
 
-                } else if (status.equals("success_signIn")) {
-                    Toast.makeText(getApplicationContext(), "Signed In!",
-                            Toast.LENGTH_LONG)
-                            .show();
-
-                    mSharedPreferences
-                            .edit()
-                            .putBoolean(getString(R.string.LOGGEDIN), true)
-                            .apply();
-
-                    Intent i = new Intent(that, SignedInActivity.class);
-                    startActivity(i);
-//                    finish();
-
-                } else {
-                    Toast.makeText(getApplicationContext(), "failed: " + jsonObject.get("error"),
+                }  else {
+                    Toast.makeText(getApplicationContext(), "failed",
                             Toast.LENGTH_LONG)
                             .show();
                     mLoadingView.setVisibility(View.INVISIBLE);

@@ -105,7 +105,6 @@ public class PreferencesFragment extends Fragment {
         update.setOnClickListener(new View.OnClickListener()  {
             @Override
             public void onClick(View view) {
-                mListener.onUpdateProfileInteraction();
             }
         });
 
@@ -143,7 +142,6 @@ public class PreferencesFragment extends Fragment {
      * activity.
      */
     public interface OnPreferFragmentInteractionListener {
-        void onNotifySettingsInteraction();
-        void onUpdateProfileInteraction();
+        void onNotifySettingsInteraction();;
     }
 }

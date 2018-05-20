@@ -44,17 +44,22 @@ public class Monster implements Serializable {
      */
     public static final String DESC = "description";
 
+    public static final String LINK = "link";
+
     //Name of the monster
     String mMonster;
 
     //Monster ID
-    int mId;
+    String mId;
 
     //Monster description
     String mDescription;
 
     //Date the mosnter was last seen based on sightings
     String mLastSeen;
+
+    String mLink;
+
 
     /**
      * Constructs a new monster item
@@ -63,11 +68,12 @@ public class Monster implements Serializable {
      * @param description Details of monster
      * @param lastSeen Date last spotted
      */
-    public Monster(int id, String monster, String description, String lastSeen) {
+    public Monster(String id, String monster, String description, String lastSeen, String link) {
         mId = id;
         mMonster = monster;
         mLastSeen = lastSeen;
         mDescription = description;
+        mLink = link;
     }
 
     public String getmMonster() {
@@ -78,11 +84,11 @@ public class Monster implements Serializable {
         this.mMonster = mMonster;
     }
 
-    public int getmId() {
+    public String getmId() {
         return mId;
     }
 
-    public void setmId(int mId) {
+    public void setmId(String mId) {
         this.mId = mId;
     }
 
@@ -102,6 +108,13 @@ public class Monster implements Serializable {
         this.mLastSeen = mLastSeen;
     }
 
+    public String getmLink() {
+        return mLink;
+    }
+
+    public void setmLink(String mLink) {
+        this.mLink = mLink;
+    }
 
     /**
      * Takes a JSON and parses it into strings, then putting those in a list
@@ -114,11 +127,10 @@ public class Monster implements Serializable {
         List<Monster> monsterList = new ArrayList<Monster>();
         if (monsterJSON != null) {
             JSONArray arr = new JSONArray(monsterJSON);
-            Log.i(TAG, "why");
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject obj = arr.getJSONObject(i);
-                Monster monster = new Monster(obj.getInt(Monster.ID), obj.getString(Monster.MONSTER), obj.getString(Monster.DESC),
-                        obj.getString(Monster.LAST_SEEN));
+                Monster monster = new Monster(obj.getString(Monster.ID), obj.getString(Monster.MONSTER), obj.getString(Monster.DESC),
+                        obj.getString(Monster.LAST_SEEN), obj.getString(Monster.LINK));
                 monsterList.add(monster);
             }
         }

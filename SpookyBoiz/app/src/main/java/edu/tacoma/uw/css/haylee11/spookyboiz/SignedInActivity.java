@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,6 +36,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.tacoma.uw.css.haylee11.spookyboiz.Monster.Monster;
@@ -96,14 +98,13 @@ public class SignedInActivity extends AppCompatActivity
         mSharedPref =
                 getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
 
-        Toast.makeText(getApplicationContext(), mSharedPref.getString(getString(R.string.CURRENT_USER), "user"), Toast.LENGTH_SHORT)
-                       .show();
+//        Toast.makeText(getApplicationContext(), mSharedPref.getString(getString(R.string.CURRENT_USER), "user"), Toast.LENGTH_SHORT)
+//                       .show();
 
         //Starts sighting view fragment (as a homepage)
-        ProfileFragment home = new ProfileFragment();
+        SightingsFragment home = new SightingsFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container_2, home, "PROFILE")
-                .addToBackStack(null)
                 .commit();
 
     }
@@ -139,7 +140,7 @@ public class SignedInActivity extends AppCompatActivity
 
         mNavName.setText(mSharedPref.getString(getString(R.string.NAME), null));
         mNavUsername.setText(mSharedPref.getString(getString(R.string.CURRENT_USER), null));
-        mNavSightings.setText(Integer.toString(mSharedPref.getInt(getString(R.string.SIGHTINGS), 0)));
+        mNavSightings.setText("Sightings: " + Integer.toString(mSharedPref.getInt(getString(R.string.SIGHTINGS), 0)));
         return true;
     }
 
@@ -225,8 +226,7 @@ public class SignedInActivity extends AppCompatActivity
                     .replace(R.id.fragment_container_2, profile)
                     .addToBackStack(null)
                     .commit();
-        } else if (id == R.id.nav_update) {
-        } else if (id == R.id.nav_notifications) {  //If we want to change notification settings, open notify settings fragment
+        }  else if (id == R.id.nav_notifications) {  //If we want to change notification settings, open notify settings fragment
             NotifySettingsFragment notify = new NotifySettingsFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container_2, notify)
@@ -267,17 +267,6 @@ public class SignedInActivity extends AppCompatActivity
                     .commit();
         }
 
-        /**
-         * Opens UpdateProfileFragment when button pressed
-         */
-        @Override
-        public void onUpdateProfileInteraction() {
-            UpdateProfileFragment update = new UpdateProfileFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container_2, update)
-                    .addToBackStack(null)
-                    .commit();
-        }
 
         /**
          * When we interact with the MonsterFragment (list of monsters), then we want
@@ -320,16 +309,6 @@ public class SignedInActivity extends AppCompatActivity
             task.execute(new String[]{url.toString()});
 
         }
-
-        public Profile getProfileList() {
-            return mProfile;
-        }
-
-
-//        @Override
-//        public List<Profile> getProfile() {
-//            return mProfile;
-//        }
 
         /**
          * Inner class that allows the creation and use of the About dialog
@@ -516,7 +495,6 @@ public class SignedInActivity extends AppCompatActivity
                     }
                 }
             }
-            //Log.i(TAG, response);
             return response;
         }
 
@@ -533,6 +511,7 @@ public class SignedInActivity extends AppCompatActivity
             mSharedPrefs = getSharedPreferences(getString(R.string.LOGIN_PREFS),
                     Context.MODE_PRIVATE);
 
+
             if (result.startsWith("Unable to")) {
                 Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT)
                         .show();
@@ -541,11 +520,6 @@ public class SignedInActivity extends AppCompatActivity
 
             try {
                Profile prof = Profile.parseCourseJSON(result);
-
-               Log.d(TAG, Integer.toString(prof.getmSightings()));
-
-               Toast.makeText(getApplicationContext(), prof.getmUsername(), Toast.LENGTH_LONG)
-                       .show();
 
                mSharedPrefs
                         .edit()

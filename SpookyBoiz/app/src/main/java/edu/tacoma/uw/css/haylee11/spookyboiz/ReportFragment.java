@@ -138,14 +138,16 @@ public class ReportFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_report, container, false);
 
         Spinner spinner = (Spinner) v.findViewById(R.id.spinner);
+        String[] arr = {"wow"};
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.monsters, android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> adapter =  new ArrayAdapter(getActivity(),
+                android.R.layout.simple_spinner_item, arr);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //spinner.setOnItemSelectedListener(this);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
+
 
         getActivity().setTitle("Report a Sighting");
 

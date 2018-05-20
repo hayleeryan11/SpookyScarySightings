@@ -21,18 +21,6 @@
         app:srcCompat="@drawable/add" />
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="120dp"
-        android:layout_marginTop="5dp"
-        android:fontFamily="serif-monospace"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="First Last"
-        android:id="@+id/name_nav"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="24sp" />
-
-    <TextView
         android:id="@+id/user_nav"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -51,5 +39,18 @@
         android:fontFamily="serif-monospace"
         android:text="Sightings:"
         android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/name_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="120dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="serif-monospace"
+        android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:text="First Last"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
 </FrameLayout>

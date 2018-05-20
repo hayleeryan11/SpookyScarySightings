@@ -130,6 +130,7 @@ public class CreateAccountFragment extends Fragment {
         mEmail = (EditText) v.findViewById(R.id.email);
         mConfirm = (EditText) v.findViewById(R.id.confirm);
 
+        getActivity().setTitle("Account Creation");
 
         //Creates button that creates a new user. Builds URL and starts AsyncTask
         Button create = (Button) v.findViewById(R.id.create);

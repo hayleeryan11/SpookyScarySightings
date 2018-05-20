@@ -1,12 +1,15 @@
 package edu.tacoma.uw.css.haylee11.spookyboiz;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import edu.tacoma.uw.css.haylee11.spookyboiz.Monster.Monster;
@@ -36,6 +39,8 @@ public class MonsterDetailFragment extends Fragment {
      */
     public static final String MONSTER_SELECTED = "monster_selected";
 
+    public static final String TAG = "monster detail";
+
     // First parameter
     private String mParam1;
 
@@ -50,6 +55,8 @@ public class MonsterDetailFragment extends Fragment {
 
     //When monster was last seen
     private TextView  mLastSeen;
+
+    private Button mLink;
 
     //Listener for fragment interaction
     private OnFragmentInteractionListener mListener;
@@ -105,10 +112,15 @@ public class MonsterDetailFragment extends Fragment {
         // Inflate the layout for this fragment
         View v =  inflater.inflate(R.layout.fragment_monster_detail, container, false);
 
+        getActivity().setTitle("Monster Details");
+
         //Set values of TextViews with retrieved data
         mMonster = (TextView) v.findViewById(R.id.monster);
         mLastSeen = (TextView) v.findViewById(R.id.last_seen);
-        mDescription = (TextView) v.findViewById(R.id.description);
+        mDescription = (TextView) v.findViewById(R.id.desc);
+        mLink = (Button) v.findViewById(R.id.link);
+
+
 
         return v;
     }
@@ -154,11 +166,26 @@ public class MonsterDetailFragment extends Fragment {
      * Sets the text of the TextViews in the layout to the details
      * @param monster The monster the user is viewing the details of
      */
-    public void onUpdate(Monster monster) {
+    public void onUpdate(final Monster monster) {
         if(monster != null) {
+            Log.d(TAG, monster.getmMonster() + monster.getmLastSeen() + monster.getmLink());
             mMonster.setText(monster.getmMonster());
-            mLastSeen.setText("Last seen: " + monster.getmLastSeen());
-            mDescription.setText(monster.getmDescription());
+            if (monster.getmLastSeen() != null) {
+                mLastSeen.setText("Last seen: \n" + monster.getmLastSeen());
+            }
+            if (monster.getmDescription() != null) {
+
+                mDescription.setText(monster.getmDescription());
+            }
+
+            mLink.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Uri uri = Uri.parse(monster.getmLink()); // missing 'http://' will cause crashed
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                }
+            });
         }
     }
 

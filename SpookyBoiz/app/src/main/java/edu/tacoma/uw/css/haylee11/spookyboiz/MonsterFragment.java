@@ -1,5 +1,7 @@
 package edu.tacoma.uw.css.haylee11.spookyboiz;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -58,6 +60,9 @@ public class MonsterFragment extends Fragment {
     //List of monsters
     private List<Monster> mMonsterList;
 
+    private View mLoadingView;
+    private int mLongAnimationDuration;
+
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -107,6 +112,14 @@ public class MonsterFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_monster_list, container, false);
 
+        mLoadingView = getActivity().findViewById(R.id.loading_spinner);
+
+        //Retrieve and cache the system's defaul "short" animation time
+        mLongAnimationDuration = getResources().getInteger(
+                android.R.integer.config_longAnimTime);
+
+        getActivity().setTitle("Monsters");
+
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -144,6 +157,32 @@ public class MonsterFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    private void crossfade() {
+        // Animate the loading view to 0% opacity. After the animation ends, 
+        // set its visibility to GONE as an optimization step (it won't 
+        // participate in layout passes, etc.)
+        mLoadingView.animate()
+                .alpha(0f)
+                .setDuration(mLongAnimationDuration)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+                        mLoadingView.setVisibility(View.GONE);
+                    }
+                });
+        //Set the content view to 0% opacity but visible, so that is it visible
+        //but fully transparent during the animation
+        mRecyclerView.setAlpha(0f);
+        mRecyclerView.setVisibility(View.VISIBLE);
+
+        //Animate the content view to 100% opacity, and clear any animation
+        //listener set on the view
+        mRecyclerView.animate()
+                .alpha(1f)
+                .setDuration(mLongAnimationDuration)
+                .setListener(null);
     }
 
     /**
@@ -218,25 +257,24 @@ public class MonsterFragment extends Fragment {
          */
         @Override
         protected void onPostExecute(String result) {
-            Log.i(TAG, "onPostExecute");
 
             if (result.startsWith("Unable to")) {
                 Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_SHORT)
                         .show();
-                Log.i(TAG, "onPostExecute");
                 return;
             }
 
             try {
                 mMonsterList = Monster.parseCourseJSON(result);
+
             } catch (JSONException e) {
                 Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
                         .show();
-                Log.i(TAG, "help");
                 return;
             }
 
             if (!mMonsterList.isEmpty()) {
+                crossfade();
                 mRecyclerView.setAdapter(new MyMonsterRecyclerViewAdapter(mMonsterList, mListener));
             }
         }

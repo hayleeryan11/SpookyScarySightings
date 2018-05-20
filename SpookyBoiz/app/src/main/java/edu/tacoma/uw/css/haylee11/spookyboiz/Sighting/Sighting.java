@@ -175,8 +175,6 @@ public class Sighting implements Serializable {
      */
     public static List<Sighting> parseCourseJSON(String sightJSON, int flag, String user) throws JSONException {
 
-
-        Log.i(TAG, user);
         List<Sighting> sightList = new ArrayList<Sighting>();
         if (sightJSON != null) {
             JSONArray arr = new JSONArray(sightJSON);

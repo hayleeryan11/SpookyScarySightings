@@ -118,6 +118,8 @@ public class SightingDetailFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_sighting_detail, container, false);
 
+        getActivity().setTitle("Sighting Details");
+
         //Assign values to TextView
         mUsername = (TextView) v.findViewById(R.id.username);
         mMonster = (TextView) v.findViewById(R.id.monster);

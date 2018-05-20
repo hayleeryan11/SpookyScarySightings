@@ -180,7 +180,7 @@ public class SignInFragment extends Fragment {
         try {
             //Append username
             String user = mUsername.getText().toString();
-            mListener.setPreferences(user);
+//            mListener.setPreferences(user);
             sb.append("username=");
             sb.append(URLEncoder.encode(user, "UTF-8"));
 

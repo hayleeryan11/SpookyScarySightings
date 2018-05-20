@@ -1,5 +1,7 @@
 package edu.tacoma.uw.css.haylee11.spookyboiz;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -63,6 +65,10 @@ public class SightingsFragment extends Fragment {
 
     SharedPreferences mSharedPref;
 
+
+    private View mLoadingView;
+    private int mLongAnimationDuration;
+
     private int mFlag;
 
     /**
@@ -125,7 +131,15 @@ public class SightingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sightings_list, container, false);
 
+        mLoadingView = getActivity().findViewById(R.id.loading_spinner);
+
+        //Retrieve and cache the system's defaul "short" animation time
+        mLongAnimationDuration = getResources().getInteger(
+                android.R.integer.config_longAnimTime);
+
         mSharedPref = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+
+        getActivity().setTitle("Sightings");
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -165,6 +179,32 @@ public class SightingsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    private void crossfade() {
+        // Animate the loading view to 0% opacity. After the animation ends, 
+        // set its visibility to GONE as an optimization step (it won't 
+        // participate in layout passes, etc.)
+        mLoadingView.animate()
+                .alpha(0f)
+                .setDuration(mLongAnimationDuration)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+                        mLoadingView.setVisibility(View.GONE);
+                    }
+                });
+        //Set the content view to 0% opacity but visible, so that is it visible
+        //but fully transparent during the animation
+        mRecyclerView.setAlpha(0f);
+        mRecyclerView.setVisibility(View.VISIBLE);
+
+        //Animate the content view to 100% opacity, and clear any animation
+        //listener set on the view
+        mRecyclerView.animate()
+                .alpha(1f)
+                .setDuration(mLongAnimationDuration)
+                .setListener(null);
     }
 
     /**
@@ -257,6 +297,7 @@ public class SightingsFragment extends Fragment {
             }
 
             if (!mSightingList.isEmpty()) {
+                crossfade();
                 mRecyclerView.setAdapter(new MySightingsRecyclerViewAdapter(mSightingList, mListener));
             }
         }
