@@ -3,22 +3,20 @@ package edu.tacoma.uw.css.haylee11.spookyboiz;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import org.json.JSONException;
+
+import edu.tacoma.uw.css.haylee11.spookyboiz.Profile.Profile;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -27,14 +25,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
-
 /**
- * A fragment representing a list of Sightings
- *
- * @author Haylee Ryan, Matt Frazier, Kai Stansfield
+ * A fragment representing a list of Items.
+ * <p/>
+ * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * interface.
  */
-public class SightingsFragment extends Fragment {
+public class OtherProfilesFragment extends Fragment {
 
     /**
      * Column count of list
@@ -44,92 +41,58 @@ public class SightingsFragment extends Fragment {
     /**
      * Tag for debugging
      */
-    private static final String TAG = "SightingsList";
+    private static final String TAG = "ProfileList";
 
     /**
-     * URL to send the command to retrieve sightings.
+     * URL to send the command to retrieve monsters.
      */
-    private static final String COURSE_URL = "http://spookyscarysightings.000webhostapp.com/list.php?cmd=sightings";
+    private static final String PROFILE_URL = "http://spookyscarysightings.000webhostapp.com/listProfiles.php?cmd=profiles";
 
     //Column count field
     private int mColumnCount = 1;
 
-    //List of Sightings to display
-    private List<Sighting> mSightingList;
-
     //Listener to handle fragment interaction
-    private OnListFragmentInteractionListener mListener;
+    private OtherProfilesFragment.OnListFragmentInteractionListener mListener;
 
     //Recyclerview that allows scolling
     private RecyclerView mRecyclerView;
 
-    SharedPreferences mSharedPref;
-
+    //List of monsters
+    private List<Profile> mProfileList;
 
     private View mLoadingView;
     private int mLongAnimationDuration;
 
-    private int mFlag;
-
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment.
+     * fragment (e.g. upon screen orientation changes).
      */
-    public SightingsFragment() {
-
+    public OtherProfilesFragment() {
     }
 
-    public SightingsFragment(int flag) {
-        mFlag = flag;
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param columnCount The number of columns in list
-     * @return A new instance of fragment NotifySettingsFragment.
-     */
-    public static SightingsFragment newInstance(int columnCount) {
-        SightingsFragment fragment = new SightingsFragment();
+    // TODO: Customize parameter initialization
+    @SuppressWarnings("unused")
+    public static OtherProfilesFragment newInstance(int columnCount) {
+        OtherProfilesFragment fragment = new OtherProfilesFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
         return fragment;
     }
 
-    /**
-     * When the fragment is created, this method instantiates it
-     * @param savedInstanceState The saved instance
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setHasOptionsMenu(true);
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.search_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    /**
-     * When the fragment is create, this instantiates the view. Also instantiates the
-     * RecyclerView and calls the AsyncTask
-     * @param inflater The layout inflater
-     * @param container The container the fragment is in
-     * @param savedInstanceState The saved instance state
-     * @return The view to be presented
-     */
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_sightings_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_profile_list, container, false);
 
         mLoadingView = getActivity().findViewById(R.id.loading_spinner);
 
@@ -137,9 +100,7 @@ public class SightingsFragment extends Fragment {
         mLongAnimationDuration = getResources().getInteger(
                 android.R.integer.config_longAnimTime);
 
-        mSharedPref = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
-
-        getActivity().setTitle("Sightings");
+        getActivity().setTitle("Hunters");
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -150,17 +111,13 @@ public class SightingsFragment extends Fragment {
             } else {
                 mRecyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            //Starts AsyncTask and passes URL
-            SightingsTask sightAsyncTask = new SightingsTask();
-            sightAsyncTask.execute(new String[]{COURSE_URL});
+            OtherProfilesFragment.ProfileTask profileAsyncTask = new OtherProfilesFragment.ProfileTask();
+            profileAsyncTask.execute(new String[]{PROFILE_URL});
         }
         return view;
     }
 
-    /**
-     * When the fragment is attached to the app, this instantiates the listener
-     * @param context The context the fragment is in
-     */
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -172,14 +129,12 @@ public class SightingsFragment extends Fragment {
         }
     }
 
-    /**
-     * Handles when the fragment is detached, nullifying the listener
-     */
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
+
 
     private void crossfade() {
         // Animate the loading view to 0% opacity. After the animation ends, 
@@ -212,19 +167,25 @@ public class SightingsFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(Sighting item);
+        // TODO: Update argument type and name
+        void onListFragmentInteraction(Profile item);
     }
 
+
     /**
-     * Inner class that extends AsynchTask. This class handles the retrieval of a sighting
+     * Inner class that extends AsynchTask. This class handles the retrieval of a monster
      * and gets data from the database. This handles all the background
      * work that has to do with data sending in regards to report posting
      *
      * @author Haylee Ryan, Matt Frazier, Kai Stansfield
      */
-    private class SightingsTask extends AsyncTask<String, Void, String> {
+    private class ProfileTask extends AsyncTask<String, Void, String> {
 
         /**
          * Overrides onPreExecute. Performs super task
@@ -237,7 +198,7 @@ public class SightingsFragment extends Fragment {
         /**
          * Creates a URL connection to which we can send our URL carrying the command
          * to get data from the database. This does all work in the background for the user when
-         * viewing sightings.
+         * viewing monsters.
          * @param urls The URLs to be sent through the connection that hold the information
          *             to be passed to the database
          * @return The successful or failed result of connecting with the URL
@@ -259,7 +220,7 @@ public class SightingsFragment extends Fragment {
                         response += s;
                     }
                 } catch (Exception e) {
-                    response = "Unable to download the list of courses, Reason: " + e.getMessage();
+                    response = "Unable to download the list of profiles, Reason: " + e.getMessage();
                 } finally {
                     if (urlConnection != null) {
                         urlConnection.disconnect();
@@ -279,8 +240,6 @@ public class SightingsFragment extends Fragment {
         @Override
         protected void onPostExecute(String result) {
 
-
-
             if (result.startsWith("Unable to")) {
                 Toast.makeText(getActivity().getApplicationContext(), result, Toast.LENGTH_SHORT)
                         .show();
@@ -288,18 +247,17 @@ public class SightingsFragment extends Fragment {
             }
 
             try {
-                String user1 = mSharedPref.getString(getString(R.string.CURRENT_USER), "null");
-                String user2 = mSharedPref.getString(getString(R.string.PROFILE_VIEW), "null");
-                mSightingList = Sighting.parseCourseJSON(result, mFlag, user1, user2);
+                mProfileList = Profile.parseProfileListJSON(result);
+
             } catch (JSONException e) {
                 Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
                         .show();
                 return;
             }
 
-            if (!mSightingList.isEmpty()) {
+            if (!mProfileList.isEmpty()) {
                 crossfade();
-                mRecyclerView.setAdapter(new MySightingsRecyclerViewAdapter(mSightingList, mListener));
+                mRecyclerView.setAdapter(new MyProfileRecyclerViewAdapter(mProfileList, mListener));
             }
         }
     }

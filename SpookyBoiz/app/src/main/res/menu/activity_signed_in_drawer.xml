@@ -16,6 +16,10 @@
             android:id="@+id/nav_explore"
             android:icon="@drawable/view"
             android:title="Explore Monsters" />
+        <item
+            android:id="@+id/nav_other_profiles"
+            android:icon="@drawable/user"
+            android:title="Find Hunters" />
     </group>
 
     <item android:title="My Stuff">

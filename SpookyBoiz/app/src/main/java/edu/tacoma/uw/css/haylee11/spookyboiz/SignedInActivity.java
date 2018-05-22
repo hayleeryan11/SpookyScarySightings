@@ -57,16 +57,13 @@ public class SignedInActivity extends AppCompatActivity
         NotifySettingsFragment.OnNotifyFragmentInteractionListener, SightingsFragment.OnListFragmentInteractionListener,
         MonsterFragment.OnListFragmentInteractionListener, SignInFragment.OnSignInFragmentInteractionListener,
         CreateAccountFragment.OnFragmentInteractionListener, SightingDetailFragment.OnFragmentInteractionListener,
-        ReportFragment.SightingAddListener, ProfileFragment.OnFragmentInteractionListener {
+        ReportFragment.SightingAddListener, ProfileFragment.OnFragmentInteractionListener,
+        OtherProfilesFragment.OnListFragmentInteractionListener, ProfileDetailFragment.OnFragmentInteractionListener {
 
     /* Tag for debugging */
     private static final String TAG = "SignedInActivity";
 
     private Profile mProfile;
-
-    private TextView mNavUsername;
-    private TextView mNavName;
-    private TextView mNavSightings;
 
     SharedPreferences mSharedPref;
 
@@ -134,9 +131,9 @@ public class SignedInActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.menu_home, menu);
 
 
-        mNavName = (TextView) findViewById(R.id.name_nav);
-        mNavUsername = (TextView) findViewById(R.id.user_nav);
-        mNavSightings = (TextView) findViewById(R.id.sightings_nav);
+        TextView mNavName = (TextView) findViewById(R.id.name_nav);
+        TextView mNavUsername = (TextView) findViewById(R.id.user_nav);
+        TextView mNavSightings = (TextView) findViewById(R.id.sightings_nav);
 
         mNavName.setText(mSharedPref.getString(getString(R.string.NAME), null));
         mNavUsername.setText(mSharedPref.getString(getString(R.string.CURRENT_USER), null));
@@ -220,6 +217,12 @@ public class SignedInActivity extends AppCompatActivity
                     .addToBackStack(null)
                     .commit();
         //Not yet implemented
+        } else if (id == R.id.nav_other_profiles) {
+            OtherProfilesFragment profiles = new OtherProfilesFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container_2, profiles)
+                    .addToBackStack(null)
+                    .commit();
         } else if (id == R.id.nav_profile) {
             ProfileFragment profile = new ProfileFragment();
             getSupportFragmentManager().beginTransaction()
@@ -310,7 +313,20 @@ public class SignedInActivity extends AppCompatActivity
 
         }
 
-        /**
+    @Override
+    public void onListFragmentInteraction(Profile item) {
+        ProfileDetailFragment profileDetailFragment = new ProfileDetailFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ProfileDetailFragment.PROFILE_SELECTED, item);
+        profileDetailFragment.setArguments(args);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container_2, profileDetailFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    /**
          * Inner class that allows the creation and use of the About dialog
          *
          * @author Haylee Ryan, Matt Frazier, Kai Stansfield

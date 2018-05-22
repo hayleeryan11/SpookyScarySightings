@@ -1,8 +1,5 @@
 package edu.tacoma.uw.css.haylee11.spookyboiz.Profile;
 
-import android.util.Log;
-import android.widget.Toast;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,7 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
+import edu.tacoma.uw.css.haylee11.spookyboiz.Monster.Monster;
 
 /**
  * Created by hayleeryan on 5/13/18.
@@ -51,8 +48,6 @@ public class Profile  implements Serializable {
      * Bio of user
      */
     public static final String BIO = "bio";
-
-
 
 
     //Username
@@ -136,11 +131,11 @@ public class Profile  implements Serializable {
 
         if (profileJSON != null) {
             JSONObject obj = new JSONObject(profileJSON);
-                //JSONObject obj = new JSONObject(profileJSON);
-                Profile prof = new Profile(obj.getString(Profile.USERNAME), obj.getString(Profile.F_NAME), obj.getString(Profile.L_NAME), obj.getInt(Profile.SIGHTINGS),
-                        obj.getString(Profile.FAVORITE), obj.getString(Profile.BIO));
+            //JSONObject obj = new JSONObject(profileJSON);
+            Profile prof = new Profile(obj.getString(Profile.USERNAME), obj.getString(Profile.F_NAME), obj.getString(Profile.L_NAME), obj.getInt(Profile.SIGHTINGS),
+                    obj.getString(Profile.FAVORITE), obj.getString(Profile.BIO));
 
-                return prof;
+            return prof;
 
         }
 
@@ -148,8 +143,25 @@ public class Profile  implements Serializable {
 
     }
 
-//    public interface profileFace {
-//        public Profile getProfile(String result);
-//    }
+    /**
+     * Takes a JSON and parses it into strings, then putting those in a list
+     * of monsters to display
+     * @param profileJSON The JSON with monster information
+     * @return A list of monsters to display
+     * @throws JSONException
+     */
+    public static List<Profile> parseProfileListJSON(String profileJSON) throws JSONException {
+        List<Profile> profileList = new ArrayList<Profile>();
+        if (profileJSON != null) {
+            JSONArray arr = new JSONArray(profileJSON);
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject obj = arr.getJSONObject(i);
+                Profile profile = new Profile(obj.getString(Profile.USERNAME), obj.getString(Profile.F_NAME), obj.getString(Profile.L_NAME), obj.getInt(Profile.SIGHTINGS),
+                        obj.getString(Profile.FAVORITE), obj.getString(Profile.BIO));
+                profileList.add(profile);
+            }
+        }
+        return profileList;
+    }
 }
 

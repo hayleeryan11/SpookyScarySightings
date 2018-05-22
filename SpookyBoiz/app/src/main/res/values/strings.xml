@@ -49,6 +49,7 @@
     <string name="LOGIN_PREFS">edu.tacoma.uw.css.haylee11.spookyboiz.PREFS</string>
     <string name="LOGGEDIN">loggedIn</string>
     <string name="CURRENT_USER">user</string>
+    <string name="PROFILE_VIEW">other_user</string>
     <string name="action_logout">Logout</string>
     <string name="PROFILE">profile</string>
 
@@ -56,6 +57,8 @@
     <string name="SIGHTINGS">sightings</string>
     <string name="FAVORITE">favorite</string>
     <string name="BIO">bio</string>
+
+    <string name="MONSTER_ARR">monsters</string>
 
     <string name="title_activity_course">CourseActivity</string>
 

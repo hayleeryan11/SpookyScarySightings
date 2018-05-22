@@ -173,7 +173,7 @@ public class Sighting implements Serializable {
      * @return A list of monsters to display
      * @throws JSONException
      */
-    public static List<Sighting> parseCourseJSON(String sightJSON, int flag, String user) throws JSONException {
+    public static List<Sighting> parseCourseJSON(String sightJSON, int flag, String user1, String user2) throws JSONException {
 
         List<Sighting> sightList = new ArrayList<Sighting>();
         if (sightJSON != null) {
@@ -186,11 +186,15 @@ public class Sighting implements Serializable {
                         , date_time[0], date_time[1], obj.getString(Sighting.CITY), obj.getString(Sighting.STATE),
                         obj.getString(Sighting.DESC));
                 if (flag == 1) {
-                    if (obj.getString(Sighting.USERNAME).equals(user)) {
+                    if (obj.getString(Sighting.USERNAME).equals(user1)) {
                         sightList.add(sight);
                     }
                 } else if (flag == 0) {
                     sightList.add(sight);
+                } else if (flag == 2) {
+                    if (obj.getString(Sighting.USERNAME).equals(user2)) {
+                        sightList.add(sight);
+                    }
                 }
             }
         }

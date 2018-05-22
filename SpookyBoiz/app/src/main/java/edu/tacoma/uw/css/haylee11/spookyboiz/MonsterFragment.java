@@ -192,7 +192,6 @@ public class MonsterFragment extends Fragment {
      * activity.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onListFragmentInteraction(Monster item);
     }
 

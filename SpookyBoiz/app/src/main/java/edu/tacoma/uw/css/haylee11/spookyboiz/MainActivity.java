@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -29,7 +31,7 @@ import edu.tacoma.uw.css.haylee11.spookyboiz.Profile.Profile;
  *
  * @author Haylee Ryan, Matt Frazier, Kai Stansfield
  */
-public class MainActivity extends AppCompatActivity implements SignInFragment.UserAddListener, CreateAccountFragment.UserAddListener{
+public class MainActivity extends AppCompatActivity implements SignInFragment.UserAddListener, CreateAccountFragment.UserAddListener {
 
     /**
      * Tag for debugging
@@ -58,11 +60,24 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//
 
         mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS),
                 Context.MODE_PRIVATE);
+
+        mLoadingView = this.findViewById(R.id.loading_spinner);
+
+
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+        getSupportActionBar().setIcon(R.drawable.demon);
+        getSupportActionBar().setTitle("    Welcome !");
+
+        String[] url = {"http://spookyscarysightings.000webhostapp.com/monsters.php"};
+        AddUserTask task = new AddUserTask();
+        task.execute(url);
+
         if (!mSharedPreferences.getBoolean(getString(R.string.LOGGEDIN), false)) {
+//            onReportOpening();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, new SignInFragment())
                     .commit();
@@ -71,10 +86,12 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
                             .putString(getString(R.string.PROFILE), null)
                             .apply();
         } else {
+//            onReportOpening();
             Intent i = new Intent(this, SignedInActivity.class);
             startActivity(i);
             finish();
         }
+
     }
 
     /**
@@ -97,13 +114,15 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
      */
     @Override
     public void loading() {
-        mLoadingView = this.findViewById(R.id.loading_spinner);
 
         mLoadingView.setVisibility(View.VISIBLE);
 
         //Retrieve and cache the system's default "short" animation time
         mLongAnimationDuration = getResources().getInteger(
                 android.R.integer.config_longAnimTime);
+
+
+//        onReportOpening();
     }
 
     /**
@@ -131,17 +150,23 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
 
     }
 
-//    public static String[] parseMonstersJSON(String monsterJSON) throws JSONException {
-//        String[] monster_array = {};
-//        if (monsterJSON != null) {
-//            JSONArray arr = new JSONArray(monsterJSON);
-//            for (int i = 0; i < arr.length(); i++) {
-//                JSONObject obj = arr.getJSONObject(i);
-//                monster_array[0] = obj.getString("name");
-//            }
-//        }
-//        return monster_array;
-//    }
+    public static String parseMonstersJSON(String monsterJSON) throws JSONException {
+        StringBuilder sb = new StringBuilder();
+        if (monsterJSON != null) {
+            JSONArray arr = new JSONArray(monsterJSON);
+            int i = 0;
+            for (; i < arr.length() - 1; i++) {
+                JSONObject obj = arr.getJSONObject(i);
+                sb.append(obj.getString("name") + ",");
+            }
+
+            JSONObject obj = arr.getJSONObject(i);
+            sb.append(obj.getString("name"));
+        }
+        Log.d(TAG, sb.toString());
+        return sb.toString();
+    }
+
 
     /**
      * Inner class that extends AsynchTask. This class handles the creation of a user
@@ -208,7 +233,6 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
          */
         @Override
         protected void onPostExecute(String result) {
-
             try {
 
                 if (result.contains("f_name")) {
@@ -238,10 +262,14 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
                     startActivity(i);
 //                    finish();
 
+                } else if (result.contains("Bigfoot")) {
+                    String monsters = parseMonstersJSON(result);
+                    mSharedPreferences
+                            .edit()
+                            .putString(getString(R.string.MONSTER_ARR), monsters)
+                            .apply();
                 }
 
-//                JSONObject jsonObject = new JSONObject(result);
-//                String status = (String) jsonObject.get("result");
                 else if (result.contains("success_create")) {
                     Toast.makeText(getApplicationContext(), "Account Created!",
                             Toast.LENGTH_LONG)

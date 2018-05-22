@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -137,8 +138,19 @@ public class ReportFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_report, container, false);
 
+        mSharedPref =
+                getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
+
+        ((SignedInActivity) getActivity()).getSupportActionBar().setIcon(R.drawable.binocular);
+
         Spinner spinner = (Spinner) v.findViewById(R.id.spinner);
-        String[] arr = {"wow"};
+
+        String[] arr = mSharedPref.getString(getString(R.string.MONSTER_ARR), "none").split(",");
+
+
+        Toast.makeText(getActivity().getApplicationContext(), arr[0],
+                Toast.LENGTH_LONG)
+                .show();
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<String> adapter =  new ArrayAdapter(getActivity(),
                 android.R.layout.simple_spinner_item, arr);
@@ -149,7 +161,8 @@ public class ReportFragment extends Fragment {
         spinner.setAdapter(adapter);
 
 
-        getActivity().setTitle("Report a Sighting");
+        getActivity().setTitle("    Report a Sighting");
+
 
         //Assigns values in Spinner/EditText fields to our class fields
         mMonster = (Spinner) v.findViewById(R.id.spinner);
@@ -253,6 +266,9 @@ public class ReportFragment extends Fragment {
         return sb.toString();
     }
 
+    public interface OnFragmentInteractionListener {
+    }
+
     /**
      * Class that creates the spinner object (drop down menu) for the
      * distances
@@ -296,7 +312,7 @@ public class ReportFragment extends Fragment {
      * to the activity and potentially other fragments contained in that
      * activity.
      */
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
-    }
+//    public interface OnFragmentInteractionListener {
+//        void onReportOpening(Uri uri);
+//    }
 }

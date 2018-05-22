@@ -15,9 +15,18 @@ Haylee Ryan, Matthew Frazier, and Kai Stansfield
 * The ability to see details about the monsters in the database (Explore Monsters)
 
 ## User Stories Implemented
-* User can sign in so they can report and view sightings
-* Potential user can create a profile so they can start tracking monsters
-* User can see basic information about a certain monster (partly implemented)
+* As a Monster Hunter, I want to be able to sign in so I can report and view monster sightings on the app.
+* As a potential Monster Hunter, I want to be able to create a profile so that I can start tracking monsters. 
+* As a Monster Hunter, I want to be able to see my previous monster reportings to show my friends.
+<!-- As a Monster Hunter, I want to filter the sightings on the map by monster type so I can easily track only the monsters I want to find. -->
+<!-- As a Monster Hunter, I want to filter the sightings on the map by location so I can find only the monsters close enough to me to travel to. -->
+<!-- As a Monster Hunter, I want to filter the sightings on the map by Monster Hunters so I can see where my friends have had sightings. -->
+<!-- As a Monster Hunter, I want to review other monster hunters’ encounter data, stories, and photos so I can learn more about the monsters that other people are seeing. -->
+<!-- As a Monster Hunter, I want to receive a notification if a monster is sighted in my area so I might also travel there in time to see the monster. -->
+<!-- As a Monster Hunter, I want to share my discoveries to others using social media, email, or text so I can brag to my friends. -->
+As a Monster Hunter, I want to see basic information, photos, and resources to learn more about a certain monster.
+As a Monster Hunter, I want to be able to update my app profile in case I have information that changes.
+
 
 ## Deficiencies
 * OnBackPressed not working on initial log in
