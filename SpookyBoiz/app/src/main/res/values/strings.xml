@@ -20,20 +20,9 @@
     <string name="city">City</string>
     <string name="state">State</string>
 
-    //info
-    <string name="info">This is Spooky Scary Sightings
-                        This app allows users to log any monsters, ghosts, or UFOs
-                        that they find</string>
-    <string name="done">Done</string>
-
-    //monster spinner
-    <string-array name="monsters">
-        <item>Bigfoot</item>
-        <item>Bat Boy</item>
-        <item>Moth Man</item>
-        <item>UFO</item>
-        <item>Ghost</item>
-    </string-array>
+    //search
+    <string name="search">Search sightings</string>
+    <string name="profile">Search profiles</string>
 
     //distance
     <string-array name="distance">
@@ -61,10 +50,6 @@
     <string name="MONSTER_ARR">monsters</string>
 
     <string name="title_activity_course">CourseActivity</string>
-
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_sighting_local">Map</string>
-    <string name="title_activity_signed_in">SignedInActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
