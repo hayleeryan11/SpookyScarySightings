@@ -3,6 +3,8 @@ package edu.tacoma.uw.css.haylee11.spookyboiz;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,6 +27,7 @@ import java.net.URL;
 import java.util.List;
 
 import edu.tacoma.uw.css.haylee11.spookyboiz.Monster.Monster;
+import edu.tacoma.uw.css.haylee11.spookyboiz.data.MonsterDB;
 
 /**
  * Fragment for the list of monsters
@@ -59,6 +62,9 @@ public class MonsterFragment extends Fragment {
 
     //List of monsters
     private List<Monster> mMonsterList;
+
+    //Local monster database
+    private MonsterDB mMonsterDB;
 
     private View mLoadingView;
     private int mLongAnimationDuration;
@@ -129,8 +135,27 @@ public class MonsterFragment extends Fragment {
             } else {
                 mRecyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            MonsterFragment.MonsterTask courseAsyncTask = new MonsterFragment.MonsterTask();
-            courseAsyncTask.execute(new String[]{COURSE_URL});
+
+            ConnectivityManager connMgr = (ConnectivityManager)
+                    getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.isConnected()) {
+                MonsterTask monsterTask = new MonsterTask();
+                monsterTask.execute(new String[]{COURSE_URL});
+            } else {
+                Toast.makeText(view.getContext(),
+                        "No network connection available. Displaying locally stored data.",
+                        Toast.LENGTH_SHORT).show();
+
+                if (mMonsterDB == null) {
+                    mMonsterDB = new MonsterDB(getActivity());
+                }
+                if (mMonsterList == null) {
+                    mMonsterList = mMonsterDB.rgetMonster();
+                }
+
+                mRecyclerView.setAdapter(new MyMonsterRecyclerViewAdapter(mMonsterList, mListener));
+            }
         }
         return view;
     }
@@ -273,6 +298,20 @@ public class MonsterFragment extends Fragment {
             }
 
             if (!mMonsterList.isEmpty()) {
+                if (mMonsterDB == null) {
+                    mMonsterDB = new MonsterDB(getActivity());
+                }
+
+                mMonsterDB.deleteMonsters();
+
+                for (int i = 0; i < mMonsterList.size(); i++) {
+                    Monster monster = mMonsterList.get(i);
+                    mMonsterDB.insertCourse(monster.getmId(),
+                            monster.getmMonster(),
+                            monster.getmDescription(),
+                            monster.getmLastSeen(),
+                            monster.getmLink());
+                }
                 crossfade();
                 mRecyclerView.setAdapter(new MyMonsterRecyclerViewAdapter(mMonsterList, mListener));
             }
