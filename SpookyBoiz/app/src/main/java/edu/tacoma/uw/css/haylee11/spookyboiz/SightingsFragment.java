@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -28,6 +30,7 @@ import java.net.URL;
 import java.util.List;
 
 import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
+import edu.tacoma.uw.css.haylee11.spookyboiz.data.SightingsDB;
 
 /**
  * A fragment representing a list of Sightings
@@ -70,6 +73,9 @@ public class SightingsFragment extends Fragment {
     private int mLongAnimationDuration;
 
     private int mFlag;
+
+    //Local sightings database
+    private SightingsDB mSightingsDB;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -150,9 +156,26 @@ public class SightingsFragment extends Fragment {
             } else {
                 mRecyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            //Starts AsyncTask and passes URL
-            SightingsTask sightAsyncTask = new SightingsTask();
-            sightAsyncTask.execute(new String[]{COURSE_URL});
+            ConnectivityManager connMgr = (ConnectivityManager)
+                    getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            if(networkInfo != null && networkInfo.isConnected()) {
+                SightingsTask sightingsTask = new SightingsTask();
+                sightingsTask.execute(new String[]{COURSE_URL});
+            } else {
+                Toast.makeText(view.getContext(),
+                        "No network connection available. Displaying locally stored data",
+                        Toast.LENGTH_SHORT).show();
+                if (mSightingsDB == null) {
+                    mSightingsDB = new SightingsDB(getActivity());
+                }
+                if (mSightingList == null) {
+                    mSightingList = mSightingsDB.getSightings();
+                }
+                mRecyclerView.setAdapter(
+                        new MySightingsRecyclerViewAdapter(mSightingList, mListener));
+            }
+
         }
         return view;
     }
@@ -298,7 +321,24 @@ public class SightingsFragment extends Fragment {
             }
 
             if (!mSightingList.isEmpty()) {
-                crossfade();
+
+                if (mSightingsDB == null) {
+                    mSightingsDB = new SightingsDB(getActivity());
+                }
+
+                mSightingsDB.deleteSightings();
+
+                for (int i = 0; i < mSightingList.size(); i++) {
+                    Sighting sighting = mSightingList.get(i);
+                    mSightingsDB.insertSighting(sighting.getmId(),
+                            sighting.getmUsername(),
+                            sighting.getmMonster(),
+                            sighting.getmDate(),
+                            sighting.getmTime(),
+                            sighting.getmCity(),
+                            sighting.getmState(),
+                            sighting.getmDesc());
+                }
                 mRecyclerView.setAdapter(new MySightingsRecyclerViewAdapter(mSightingList, mListener));
             }
         }

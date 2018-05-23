@@ -9,4 +9,14 @@
     <string name="DROP_MONSTER_SQL">
         DROP TABLE IF EXISTS Monster
     </string>
+
+    <string name="CREATE_SIGHTINGS_SQL">
+        CREATE TABLE IF NOT EXISTS Sightings
+        (id TEXT PRIMARY KEY, user TEXT, monster TEXT, date TEXT,
+        time TEXT, city TEXT, state TEXT, description TEXT)
+    </string>
+
+    <string name="DROP_SIGHTINGS_SQL">
+        DROP TABLE IF EXISTS Sightings
+    </string>
 </resources>
