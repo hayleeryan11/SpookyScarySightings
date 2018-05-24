@@ -109,6 +109,7 @@ public class Sighting implements Serializable {
         mDesc = desc;
     }
 
+    public String getmId() { return mId; }
 
     public String getmUsername() {
         return mUsername;

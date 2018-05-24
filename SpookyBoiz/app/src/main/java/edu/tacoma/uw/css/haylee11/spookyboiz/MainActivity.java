@@ -4,11 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -69,7 +67,8 @@ public class MainActivity extends AppCompatActivity implements SignInFragment.Us
 
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
-        getSupportActionBar().setIcon(R.drawable.demon);
+        getSupportActionBar().setIcon(R.drawable.icon);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
         getSupportActionBar().setTitle("    Welcome !");
 
         String[] url = {"http://spookyscarysightings.000webhostapp.com/monsters.php"};
