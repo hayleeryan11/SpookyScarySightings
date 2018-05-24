@@ -360,6 +360,8 @@ public class SignedInActivity extends AppCompatActivity
             }
 
 
+
+
         /**
          * Inner class that extends AsynchTask. This class handles the creation of a report
          * and sends it off to the database to be inputted. This handles all the background

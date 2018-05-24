@@ -23,6 +23,7 @@
     //search
     <string name="search">Search sightings</string>
     <string name="profile">Search profiles</string>
+    <string name="monster">Search monsters</string>
 
     //distance
     <string-array name="distance">
@@ -31,6 +32,26 @@
         <item>10 miles</item>
         <item>25 miles</item>
         <item>50 miles</item>
+    </string-array>
+
+    //searching sighting
+    <string-array name="sight_search">
+        <item>User</item>
+        <item>Monster</item>
+        <item>City</item>
+        <item>State</item>
+    </string-array>
+
+    //searching profile
+    <string-array name="profile_search">
+        <item>Username</item>
+        <item>First Name</item>
+        <item>Last Name</item>
+    </string-array>
+
+    //searching monster
+    <string-array name="monster_search">
+        <item>Name</item>
     </string-array>
 
     <string name="action_settings">Settings</string>

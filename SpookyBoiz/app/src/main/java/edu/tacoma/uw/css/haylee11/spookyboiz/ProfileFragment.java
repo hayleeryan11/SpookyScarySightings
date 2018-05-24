@@ -1,10 +1,12 @@
 package edu.tacoma.uw.css.haylee11.spookyboiz;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -13,14 +15,27 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONException;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLEncoder;
+import java.util.List;
 
 import edu.tacoma.uw.css.haylee11.spookyboiz.Profile.Profile;
+import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -110,6 +125,8 @@ public class ProfileFragment extends Fragment {
         mSightings = (TextView) v.findViewById(R.id.sightings);
         mFavorite = (TextView) v.findViewById(R.id.favorite);
         mBio = (TextView) v.findViewById(R.id.bio);
+
+        getActivity().setTitle("Profile");
 
         String url = buildProfileURL(v, "profile");
         mListener.profileView(url);
@@ -202,6 +219,8 @@ public class ProfileFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
+
 
     public static class ChangeDialogFragment extends DialogFragment {
 

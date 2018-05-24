@@ -6,6 +6,10 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,7 +106,9 @@ public class ProfileDetailFragment extends Fragment {
         mSharedPref =
                 getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
 
-        getActivity().setTitle("Hunter Details");
+
+        getActivity().setTitle("Profile Details");
+
 
         mSightButton = (Button) v.findViewById(R.id.button);
         mSightButton.setOnClickListener(new View.OnClickListener() {

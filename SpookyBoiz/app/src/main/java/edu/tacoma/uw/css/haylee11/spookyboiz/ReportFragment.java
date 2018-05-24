@@ -8,6 +8,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +22,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -141,7 +145,7 @@ public class ReportFragment extends Fragment {
         mSharedPref =
                 getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
 
-        ((SignedInActivity) getActivity()).getSupportActionBar().setIcon(R.drawable.binocular);
+
 
         Spinner spinner = (Spinner) v.findViewById(R.id.spinner);
 
@@ -156,13 +160,10 @@ public class ReportFragment extends Fragment {
                 android.R.layout.simple_spinner_item, arr);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //spinner.setOnItemSelectedListener(this);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
-
         getActivity().setTitle("    Report a Sighting");
-
 
         //Assigns values in Spinner/EditText fields to our class fields
         mMonster = (Spinner) v.findViewById(R.id.spinner);
