@@ -6,12 +6,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-<<<<<<< HEAD
 import android.content.DialogInterface;
-=======
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
->>>>>>> 2836ae5ffc68308af27c1fd75b439f9c9bd95eb2
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -44,11 +41,7 @@ import java.net.URLEncoder;
 import java.util.List;
 
 import edu.tacoma.uw.css.haylee11.spookyboiz.Monster.Monster;
-<<<<<<< HEAD
-import edu.tacoma.uw.css.haylee11.spookyboiz.Profile.Profile;
-=======
-import edu.tacoma.uw.css.haylee11.spookyboiz.data.MonsterDB;
->>>>>>> 2836ae5ffc68308af27c1fd75b439f9c9bd95eb2
+//import edu.tacoma.uw.css.haylee11.spookyboiz.data.MonsterDB;
 
 /**
  * Fragment for the list of monsters
@@ -91,7 +84,7 @@ public class MonsterFragment extends Fragment {
     private List<Monster> mMonsterList;
 
     //Local monster database
-    private MonsterDB mMonsterDB;
+//    private MonsterDB mMonsterDB;
 
     private View mLoadingView;
     private int mLongAnimationDuration;
@@ -163,32 +156,28 @@ public class MonsterFragment extends Fragment {
             } else {
                 mRecyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-<<<<<<< HEAD
-            MonsterFragment.MonsterTask courseAsyncTask = new MonsterFragment.MonsterTask();
-            courseAsyncTask.execute(new String[]{ALL_MONSTER_URL});
-=======
 
             ConnectivityManager connMgr = (ConnectivityManager)
                     getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
                 MonsterTask monsterTask = new MonsterTask();
-                monsterTask.execute(new String[]{COURSE_URL});
+                monsterTask.execute(new String[]{ALL_MONSTER_URL});
             } else {
-                Toast.makeText(view.getContext(),
-                        "No network connection available. Displaying locally stored data.",
-                        Toast.LENGTH_SHORT).show();
-
-                if (mMonsterDB == null) {
-                    mMonsterDB = new MonsterDB(getActivity());
-                }
-                if (mMonsterList == null) {
-                    mMonsterList = mMonsterDB.rgetMonster();
-                }
-
-                mRecyclerView.setAdapter(new MyMonsterRecyclerViewAdapter(mMonsterList, mListener));
+//                Toast.makeText(view.getContext(),
+//                        "No network connection available. Displaying locally stored data.",
+//                        Toast.LENGTH_SHORT).show();
+//
+//                if (mMonsterDB == null) {
+//                    mMonsterDB = new MonsterDB(getActivity());
+//                }
+//                if (mMonsterList == null) {
+//                    mMonsterList = mMonsterDB.rgetMonster();
+//                }
+//
+//                mRecyclerView.setAdapter(new MyMonsterRecyclerViewAdapter(mMonsterList, mListener));
             }
->>>>>>> 2836ae5ffc68308af27c1fd75b439f9c9bd95eb2
+
         }
         return view;
     }
@@ -537,20 +526,20 @@ public class MonsterFragment extends Fragment {
             }
 
             if (!mMonsterList.isEmpty()) {
-                if (mMonsterDB == null) {
-                    mMonsterDB = new MonsterDB(getActivity());
-                }
-
-                mMonsterDB.deleteMonsters();
-
-                for (int i = 0; i < mMonsterList.size(); i++) {
-                    Monster monster = mMonsterList.get(i);
-                    mMonsterDB.insertCourse(monster.getmId(),
-                            monster.getmMonster(),
-                            monster.getmDescription(),
-                            monster.getmLastSeen(),
-                            monster.getmLink());
-                }
+//                if (mMonsterDB == null) {
+//                    mMonsterDB = new MonsterDB(getActivity());
+//                }
+//
+//                mMonsterDB.deleteMonsters();
+//
+//                for (int i = 0; i < mMonsterList.size(); i++) {
+//                    Monster monster = mMonsterList.get(i);
+//                    mMonsterDB.insertCourse(monster.getmId(),
+//                            monster.getmMonster(),
+//                            monster.getmDescription(),
+//                            monster.getmLastSeen(),
+//                            monster.getmLink());
+//                }
                 crossfade();
                 mRecyclerView.setAdapter(new MyMonsterRecyclerViewAdapter(mMonsterList, mListener));
             }
