@@ -12,10 +12,6 @@ import java.util.List;
 import edu.tacoma.uw.css.haylee11.spookyboiz.Monster.Monster;
 import edu.tacoma.uw.css.haylee11.spookyboiz.R;
 
-/**
- * Created by hayleeryan on 5/19/18.
- */
-
 public class MonsterDB {
 
     public static final int DB_VERSION = 1;
