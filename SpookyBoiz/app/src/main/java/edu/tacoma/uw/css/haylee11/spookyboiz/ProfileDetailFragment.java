@@ -1,36 +1,26 @@
 package edu.tacoma.uw.css.haylee11.spookyboiz;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import edu.tacoma.uw.css.haylee11.spookyboiz.Monster.Monster;
 import edu.tacoma.uw.css.haylee11.spookyboiz.Profile.Profile;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ProfileDetailFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ProfileDetailFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Class that hold the details of another user's profile, which the current
+ * user can view through the Find Hunters tab
+ *
+ * @author Haylee Ryan, Matthew Frazier, Kai Stansfield
  */
 public class ProfileDetailFragment extends Fragment {
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -39,8 +29,6 @@ public class ProfileDetailFragment extends Fragment {
      * The monster that has been selected to see the details of
      */
     public static final String PROFILE_SELECTED = "profile_selected";
-
-    public static final String TAG = "profile detail";
 
     //Username
     TextView mUsername;
@@ -66,6 +54,9 @@ public class ProfileDetailFragment extends Fragment {
 
     SharedPreferences mSharedPref;
 
+    /**
+     * Required empty constructor
+     */
     public ProfileDetailFragment() {
         // Required empty public constructor
     }
@@ -78,7 +69,6 @@ public class ProfileDetailFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment ProfileDetailFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static ProfileDetailFragment newInstance(String param1, String param2) {
         ProfileDetailFragment fragment = new ProfileDetailFragment();
         Bundle args = new Bundle();
@@ -88,6 +78,10 @@ public class ProfileDetailFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Called when the fragment is created
+     * @param savedInstanceState The saved instance state
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +91,15 @@ public class ProfileDetailFragment extends Fragment {
         }
     }
 
+    /**
+     * Called when the view of the fragment is created. Sets up all UI elements
+     *
+     * @param inflater Inflates the view
+     * @param container Container the view is inside of
+     * @param savedInstanceState The saved instance state
+     *
+     * @return The final composed view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -110,6 +113,7 @@ public class ProfileDetailFragment extends Fragment {
         getActivity().setTitle("Profile Details");
 
 
+        //Button to view other user's sightings
         mSightButton = (Button) v.findViewById(R.id.button);
         mSightButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,7 +126,8 @@ public class ProfileDetailFragment extends Fragment {
             }
         });
 
-        mUsername = (TextView) v.findViewById(R.id.username);
+        //Initialize TextViews to be filled
+        mUsername = (TextView) v.findViewById(R.id.username_input);
         mName = (TextView) v.findViewById(R.id.name);
         mSightings = (TextView) v.findViewById(R.id.sightings);
         mFavorite = (TextView) v.findViewById(R.id.favorite);
@@ -131,13 +136,11 @@ public class ProfileDetailFragment extends Fragment {
         return v;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
+    /**
+     * When the fragment is attached, set listener ect.
+     *
+     * @param context Context of the fragment
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -149,6 +152,9 @@ public class ProfileDetailFragment extends Fragment {
         }
     }
 
+    /**
+     * When the fragment is detached, set listener to null
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -168,7 +174,10 @@ public class ProfileDetailFragment extends Fragment {
         }
     }
 
-
+    /**
+     * Updates the details when a user is chosen to see the details of
+     * @param profile The profile object the user wants to view
+     */
     public void onUpdate(final Profile profile) {
         if(profile != null) {
             mSharedPref
@@ -188,13 +197,8 @@ public class ProfileDetailFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+
     }
 }

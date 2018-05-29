@@ -19,15 +19,6 @@ import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
  */
 public class Monster implements Serializable {
 
-    /**
-     * Tag for debugging
-     */
-    private static final String TAG = "Monster";
-
-    /**
-     * Monster ID
-     */
-    public static final String ID = "monster_id";
 
     /**
      * Monster name
@@ -44,18 +35,18 @@ public class Monster implements Serializable {
      */
     public static final String DESC = "description";
 
+    /**
+     * Link to wiki page
+     */
     public static final String LINK = "link";
 
     //Name of the monster
     String mMonster;
 
-    //Monster ID
-    String mId;
-
     //Monster description
     String mDescription;
 
-    //Date the mosnter was last seen based on sightings
+    //Date the monster was last seen based on sightings
     String mLastSeen;
 
     String mLink;
@@ -63,13 +54,11 @@ public class Monster implements Serializable {
 
     /**
      * Constructs a new monster item
-     * @param id Monster ID
      * @param monster Name
      * @param description Details of monster
      * @param lastSeen Date last spotted
      */
-    public Monster(String id, String monster, String description, String lastSeen, String link) {
-        mId = id;
+    public Monster(String monster, String description, String lastSeen, String link) {
         mMonster = monster;
         mLastSeen = lastSeen;
         mDescription = description;
@@ -82,14 +71,6 @@ public class Monster implements Serializable {
 
     public void setmMonster(String mMonster) {
         this.mMonster = mMonster;
-    }
-
-    public String getmId() {
-        return mId;
-    }
-
-    public void setmId(String mId) {
-        this.mId = mId;
     }
 
     public String getmDescription() {
@@ -123,14 +104,20 @@ public class Monster implements Serializable {
      * @return A list of monsters to display
      * @throws JSONException
      */
-    public static List<Monster> parseCourseJSON(String monsterJSON) throws JSONException {
+    public static List<Monster> parseMonsterJSON(String monsterJSON) throws JSONException {
         List<Monster> monsterList = new ArrayList<Monster>();
         if (monsterJSON != null) {
             JSONArray arr = new JSONArray(monsterJSON);
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject obj = arr.getJSONObject(i);
-                Monster monster = new Monster(obj.getString(Monster.ID), obj.getString(Monster.MONSTER), obj.getString(Monster.DESC),
-                        obj.getString(Monster.LAST_SEEN), obj.getString(Monster.LINK));
+                String last_seen;
+                if (obj.getString(Monster.LAST_SEEN).equals("0000-00-00 00:00:00")) {
+                    last_seen = "Not seen yet!";
+                } else {
+                    last_seen = obj.getString(Monster.LAST_SEEN);
+                }
+                Monster monster = new Monster(obj.getString(Monster.MONSTER), obj.getString(Monster.DESC),
+                        last_seen, obj.getString(Monster.LINK));
                 monsterList.add(monster);
             }
         }

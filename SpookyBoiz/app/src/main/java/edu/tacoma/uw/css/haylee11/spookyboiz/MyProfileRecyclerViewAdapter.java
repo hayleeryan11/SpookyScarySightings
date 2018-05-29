@@ -16,11 +16,22 @@ public class MyProfileRecyclerViewAdapter extends RecyclerView.Adapter<MyProfile
     private final List<Profile> mValues;
     private final OnListFragmentInteractionListener mListener;
 
+    /**
+     * Constructor instantiates listener and list of Profiles
+     * @param items List of profiles in view
+     * @param listener Listener of the fragment
+     */
     public MyProfileRecyclerViewAdapter(List<Profile> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
 
+    /**
+     * Called in the holder view is created. Inflates the layout
+     * @param parent The parent ViewGroup
+     * @param viewType The type of view
+     * @return The new ViewHolder for the list
+     */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -28,6 +39,11 @@ public class MyProfileRecyclerViewAdapter extends RecyclerView.Adapter<MyProfile
         return new ViewHolder(view);
     }
 
+    /**
+     * Sets up the values displayed in the list and handles click of the view
+     * @param holder The view holder
+     * @param position The position of the list
+     */
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);

@@ -11,14 +11,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,7 +25,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -45,12 +40,12 @@ import java.net.URLEncoder;
 import java.util.List;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+ * A fragment representing a list of all profiles in the system, used to view
+ * the details of each one
+ *
+ * @author  Haylee Ryan, Matthew Frazier, Kai Stansfield
  */
-public class OtherProfilesFragment extends Fragment {
+public class OtherProfilesFragment extends Fragment  {
 
     /**
      * Column count of list
@@ -58,14 +53,13 @@ public class OtherProfilesFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
 
     /**
-     * Tag for debugging
-     */
-    private static final String TAG = "ProfileList";
-
-    /**
      * URL to send the command to retrieve monsters.
      */
     private static final String PROFILE_URL = "http://spookyscarysightings.000webhostapp.com/listProfiles.php?cmd=profiles";
+
+    /**
+     * URL to search the list of profiles based on user's query
+     */
     private static final String SEARCH_PROFILE_URL = "http://spookyscarysightings.000webhostapp.com/listProfiles.php?cmd=search";
 
     //Column count field
@@ -90,8 +84,11 @@ public class OtherProfilesFragment extends Fragment {
     public OtherProfilesFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
+    /**
+     * Creates new instance of fragment
+     * @param columnCount Number of columns
+     * @return the new OtherProfilesFragment
+     */
     public static OtherProfilesFragment newInstance(int columnCount) {
         OtherProfilesFragment fragment = new OtherProfilesFragment();
         Bundle args = new Bundle();
@@ -100,6 +97,10 @@ public class OtherProfilesFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * When the fragment is created, this method instantiates it
+     * @param savedInstanceState The saved instance
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,6 +111,14 @@ public class OtherProfilesFragment extends Fragment {
         }
     }
 
+    /**
+     * When the fragment is create, this instantiates the view. Also instantiates the
+     * RecyclerView and calls the AsyncTask
+     * @param inflater The layout inflater
+     * @param container The container the fragment is in
+     * @param savedInstanceState The saved instance state
+     * @return The view to be presented
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -138,13 +147,22 @@ public class OtherProfilesFragment extends Fragment {
         return view;
     }
 
-
+    /**
+     * When view created, we need to set up the menu, in this case the search menu
+     * @param menu The search menu
+     * @param inflater The inflater for the menu
+     */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.search_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    /**
+     * When a menu item is selected, carry out these actions
+     * @param item The menu item selected
+     * @return If an item is selected or not
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -163,7 +181,10 @@ public class OtherProfilesFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-
+    /**
+     * When the fragment is attached to the app, this instantiates the listener
+     * @param context The context the fragment is in
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -175,13 +196,21 @@ public class OtherProfilesFragment extends Fragment {
         }
     }
 
+    /**
+     * Handles when the fragment is detached, nullifying the listener
+     */
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
-
+    /**
+     * Class that creates a pop up dialog for searching the list of profiles. This includes taking
+     * the user's query and matching it against the database.
+     *
+     * @author Haylee Ryan, Matthew Frazier, Kai Stansfield
+     */
     public static class SearchDialogFragment extends DialogFragment {
 
         OtherProfilesFragment mProf;
@@ -189,10 +218,17 @@ public class OtherProfilesFragment extends Fragment {
         EditText mQuery;
         Spinner mKey;
 
+        /**
+         * Constructs a new Profile Fragment to use for method calls
+         */
         public SearchDialogFragment() {
             mProf = new OtherProfilesFragment();
         }
 
+        /**
+         * Constructs new local profile Fragment with the given fragment
+         * @param prof The profile fragment instance to reference
+         */
         @SuppressLint("ValidFragment")
         public SearchDialogFragment(OtherProfilesFragment prof) {
             mProf = prof;
@@ -247,6 +283,12 @@ public class OtherProfilesFragment extends Fragment {
             return builder.create();
         }
 
+        /**
+         * Builds URl to search users table with
+         * @param key The serach field the user is using
+         * @param query The result they are looking for
+         * @return The URL
+         */
         public String urlBuilder(String key, String query) {
 
             StringBuilder sb = new StringBuilder(SEARCH_PROFILE_URL);
@@ -292,6 +334,11 @@ public class OtherProfilesFragment extends Fragment {
             }
         }
 
+        /**
+         * AsyncTask that retrieves data based on the user's query in the Users table
+         *
+         * @author Haylee Ryan, Matthew Frazier, Kai Stansfield
+         */
         private class SearchTask extends AsyncTask<String, Void, String> {
 
             /**
@@ -372,6 +419,9 @@ public class OtherProfilesFragment extends Fragment {
         }
     }
 
+    /**
+     * Creates a crossfade animation
+     */
     private void crossfade() {
         // Animate the loading view to 0% opacity. After the animation ends, 
         // set its visibility to GONE as an optimization step (it won't 
@@ -409,7 +459,6 @@ public class OtherProfilesFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onListFragmentInteraction(Profile item);
     }
 
@@ -421,7 +470,7 @@ public class OtherProfilesFragment extends Fragment {
      *
      * @author Haylee Ryan, Matt Frazier, Kai Stansfield
      */
-    private class ProfileTask extends AsyncTask<String, Void, String> {
+    public class ProfileTask extends AsyncTask<String, Void, String> {
 
         /**
          * Overrides onPreExecute. Performs super task
@@ -497,4 +546,5 @@ public class OtherProfilesFragment extends Fragment {
             }
         }
     }
+
 }

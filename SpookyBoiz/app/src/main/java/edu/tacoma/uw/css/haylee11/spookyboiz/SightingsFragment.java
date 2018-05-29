@@ -75,6 +75,9 @@ public class SightingsFragment extends Fragment {
      */
     private static final String ALL_SIGHTING_URL = "http://spookyscarysightings.000webhostapp.com/listSightings.php?cmd=sightings";
 
+    /**
+     * URL to search all sightings based on user's query
+     */
     private static final String SEARCH_SIGHTING_URL = "http://spookyscarysightings.000webhostapp.com/listSightings.php?cmd=search";
 
     //Column count field
@@ -88,8 +91,6 @@ public class SightingsFragment extends Fragment {
 
     //Recyclerview that allows scolling
     private RecyclerView mRecyclerView;
-
-    private EditText mSearch;
 
     SharedPreferences mSharedPref;
 
@@ -110,6 +111,10 @@ public class SightingsFragment extends Fragment {
 
     }
 
+    /**
+     * Constructs a fragments with a flag indicating its purpose
+     * @param flag
+     */
     @SuppressLint("ValidFragment")
     public SightingsFragment(int flag) {
         mFlag = flag;
@@ -179,7 +184,7 @@ public class SightingsFragment extends Fragment {
             } else {
                 mRecyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-
+            //For on device storage
             ConnectivityManager connMgr = (ConnectivityManager)
                     getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -204,13 +209,22 @@ public class SightingsFragment extends Fragment {
         return view;
     }
 
-
+    /**
+     * When view created, we need to set up the menu, in this case the search menu
+     * @param menu The search menu
+     * @param inflater The inflater for the menu
+     */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.search_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    /**
+     * When a menu item is selected, carry out these actions
+     * @param item The menu item selected
+     * @return If an item is selected or not
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -253,6 +267,9 @@ public class SightingsFragment extends Fragment {
         mListener = null;
     }
 
+    /**
+     * Creates a crossfade animation
+     */
     private void crossfade() {
         // Animate the loading view to 0% opacity. After the animation ends, 
         // set its visibility to GONE as an optimization step (it won't 
@@ -279,6 +296,12 @@ public class SightingsFragment extends Fragment {
                 .setListener(null);
     }
 
+    /**
+     * Class that creates a pop up dialog for searching the list of sightings. This includes taking
+     * the user's query and matching it against the database.
+     *
+     * @author Haylee Ryan, Matthew Frazier, Kai Stansfield
+     */
     public static class SearchDialogFragment extends DialogFragment {
 
         SightingsFragment mSight;
@@ -286,10 +309,17 @@ public class SightingsFragment extends Fragment {
         EditText mQuery;
         Spinner mKey;
 
+        /**
+         * Constructs a new Sightings Fragment to use for method calls
+         */
         public SearchDialogFragment() {
             mSight = new SightingsFragment();
         }
 
+        /**
+         * Constructs new local Sighting Fragment with the given fragment
+         * @param sight The sighting fragment instance to reference
+         */
         @SuppressLint("ValidFragment")
         public SearchDialogFragment(SightingsFragment sight) {
             mSight = sight;
@@ -336,6 +366,12 @@ public class SightingsFragment extends Fragment {
             return builder.create();
         }
 
+        /**
+         * Builds URl to search sightings table with
+         * @param key The search field the user is using
+         * @param query The result they are looking for
+         * @return The URL
+         */
         public String urlBuilder(String key, String query) {
 
             StringBuilder sb = new StringBuilder(SEARCH_SIGHTING_URL);
@@ -381,6 +417,11 @@ public class SightingsFragment extends Fragment {
             }
         }
 
+        /**
+         * AsyncTask that retrieves data based on the user's query in the Users table
+         *
+         * @author Haylee Ryan, Matthew Frazier, Kai Stansfield
+         */
         private class SearchTask extends AsyncTask<String, Void, String> {
 
             /**
@@ -540,6 +581,7 @@ public class SightingsFragment extends Fragment {
             }
 
             try {
+                //Retrieve and use either current user's name, or user that we are viewing details ofs
                 String user1 = mSharedPref.getString(getString(R.string.CURRENT_USER), "null");
                 String user2 = mSharedPref.getString(getString(R.string.PROFILE_VIEW), "null");
                 mSightingList = Sighting.parseCourseJSON(result, mFlag, user1, user2);
@@ -549,7 +591,7 @@ public class SightingsFragment extends Fragment {
                 return;
             }
 
-            if (!mSightingList.isEmpty()) {
+            if (!mSightingList.isEmpty()) { //On device storage
 
                 if (mSightingsDB == null) {
                     mSightingsDB = new SightingsDB(getActivity());

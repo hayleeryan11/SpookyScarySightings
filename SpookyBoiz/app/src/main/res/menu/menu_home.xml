@@ -10,10 +10,6 @@
 
         <menu>
             <item
-                android:id="@+id/action_pref"
-                android:title="Settings"
-                app:showAsAction="always" />
-            <item
                 android:id="@+id/action_info"
                 android:title="About"
                 app:showAsAction="always" />

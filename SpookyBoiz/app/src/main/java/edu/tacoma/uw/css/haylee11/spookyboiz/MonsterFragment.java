@@ -65,6 +65,9 @@ public class MonsterFragment extends Fragment {
      */
     private static final String ALL_MONSTER_URL = "http://spookyscarysightings.000webhostapp.com/listMonster.php?cmd=monsters";
 
+    /**
+     * URL used to search the list of monsters based on user query
+     */
     private static final String SEARCH_MONSTER_URL = "http://spookyscarysightings.000webhostapp.com/listMonster.php?cmd=search";
 
     //Column count field
@@ -182,12 +185,22 @@ public class MonsterFragment extends Fragment {
         return view;
     }
 
+    /**
+     * When view created, we need to set up the menu, in this case the search menu
+     * @param menu The search menu
+     * @param inflater The inflater for the menu
+     */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.search_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    /**
+     * When a menu item is selected, carry out these actions
+     * @param item The menu item selected
+     * @return If an item is selected or not
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -230,6 +243,12 @@ public class MonsterFragment extends Fragment {
         mListener = null;
     }
 
+    /**
+     * Class that creates a pop up dialog for searching the list of monsters. This includes taking
+     * the user's query and matching it against the database.
+     *
+     * @author Haylee Ryan, Matthew Frazier, Kai Stansfield
+     */
     public static class SearchDialogFragment extends DialogFragment {
 
         MonsterFragment mMonster;
@@ -237,10 +256,17 @@ public class MonsterFragment extends Fragment {
         EditText mQuery;
         Spinner mKey;
 
+        /**
+         * Constructs a new Monster Fragment to use for method calls
+         */
         public SearchDialogFragment() {
             mMonster = new MonsterFragment();
         }
 
+        /**
+         * Constructs new local Monster Fragment with the given fragment
+         * @param mons The monster fragment instance to reference
+         */
         @SuppressLint("ValidFragment")
         public SearchDialogFragment(MonsterFragment mons) {
             mMonster = mons;
@@ -259,6 +285,7 @@ public class MonsterFragment extends Fragment {
             LayoutInflater inflater = getActivity().getLayoutInflater();
             final View v = inflater.inflate(R.layout.search_dialog_layout, null);
 
+            //Set spinner and edittext
             mKey = (Spinner) v.findViewById(R.id.spinner);
             mQuery = (EditText) v.findViewById(R.id.search);
             mQuery.setHint(R.string.monster);
@@ -287,6 +314,12 @@ public class MonsterFragment extends Fragment {
             return builder.create();
         }
 
+        /**
+         * Builds URl to search monster table with
+         * @param key The serach field the user is using
+         * @param query The result they are looking for
+         * @return The URL
+         */
         public String urlBuilder(String key, String query) {
 
             StringBuilder sb = new StringBuilder(SEARCH_MONSTER_URL);
@@ -332,6 +365,11 @@ public class MonsterFragment extends Fragment {
             }
         }
 
+        /**
+         * AsyncTask that retrieves data based on the user's query in the Monster table
+         *
+         * @author Haylee Ryan, Matthew Frazier, Kai Stansfield
+         */
         private class SearchTask extends AsyncTask<String, Void, String> {
 
             /**
@@ -394,7 +432,7 @@ public class MonsterFragment extends Fragment {
                 }
 
                 try {
-                    mMonsterList = Monster.parseCourseJSON(result);
+                    mMonsterList = Monster.parseMonsterJSON(result);
                     Toast.makeText(mMonster.getActivity().getApplicationContext(), "Showing your search results", Toast.LENGTH_SHORT)
                             .show();
                 } catch (JSONException e) {
@@ -412,6 +450,9 @@ public class MonsterFragment extends Fragment {
         }
     }
 
+    /**
+     * Creates a crossfade animation
+     */
     private void crossfade() {
         // Animate the loading view to 0% opacity. After the animation ends, 
         // set its visibility to GONE as an optimization step (it won't 
@@ -517,7 +558,7 @@ public class MonsterFragment extends Fragment {
             }
 
             try {
-                mMonsterList = Monster.parseCourseJSON(result);
+                mMonsterList = Monster.parseMonsterJSON(result);
 
             } catch (JSONException e) {
                 Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
@@ -525,6 +566,7 @@ public class MonsterFragment extends Fragment {
                 return;
             }
 
+            //For data stroed locally using SQLite
             if (!mMonsterList.isEmpty()) {
 //                if (mMonsterDB == null) {
 //                    mMonsterDB = new MonsterDB(getActivity());
