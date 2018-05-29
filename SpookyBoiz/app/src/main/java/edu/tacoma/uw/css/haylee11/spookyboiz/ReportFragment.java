@@ -1,6 +1,8 @@
 package edu.tacoma.uw.css.haylee11.spookyboiz;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +10,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,11 +24,15 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 
 /**
@@ -49,11 +58,6 @@ public class ReportFragment extends Fragment {
      */
     private final static String REPORT_URL = "http://spookyscarysightings.000webhostapp.com/addSighting.php?";
 
-    /**
-     * Tag for debugging
-     */
-    private static final String TAG = "ReportFragment";
-
     // First parameter
     private String mParam1;
 
@@ -69,8 +73,14 @@ public class ReportFragment extends Fragment {
     //EditText for date
     private EditText mDate;
 
+    private DatePickerDialog.OnDateSetListener mDatePicker;
+
+    private Calendar mCalendar;
+
     //EditText for time
     private EditText mTime;
+
+    private TimePickerDialog.OnTimeSetListener mTimePicker;
 
     //EditText for city
     private EditText mCity;
@@ -101,7 +111,6 @@ public class ReportFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment ReportFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static ReportFragment newInstance(String param1, String param2) {
         ReportFragment fragment = new ReportFragment();
         Bundle args = new Bundle();
@@ -141,33 +150,112 @@ public class ReportFragment extends Fragment {
         mSharedPref =
                 getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
 
-        ((SignedInActivity) getActivity()).getSupportActionBar().setIcon(R.drawable.binocular);
-
         Spinner spinner = (Spinner) v.findViewById(R.id.spinner);
 
         String[] arr = mSharedPref.getString(getString(R.string.MONSTER_ARR), "none").split(",");
 
-
-        Toast.makeText(getActivity().getApplicationContext(), arr[0],
-                Toast.LENGTH_LONG)
-                .show();
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<String> adapter =  new ArrayAdapter(getActivity(),
                 android.R.layout.simple_spinner_item, arr);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //spinner.setOnItemSelectedListener(this);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
-
         getActivity().setTitle("    Report a Sighting");
-
 
         //Assigns values in Spinner/EditText fields to our class fields
         mMonster = (Spinner) v.findViewById(R.id.spinner);
         mDate = (EditText) v.findViewById(R.id.date);
         mTime = (EditText) v.findViewById(R.id.time);
+
+        //Instantiates new Calendar object
+        mCalendar= new Calendar() {
+            @Override
+            protected void computeTime() {
+
+            }
+
+            @Override
+            protected void computeFields() {
+
+            }
+
+            @Override
+            public void add(int i, int i1) {
+
+            }
+
+            @Override
+            public void roll(int i, boolean b) {
+
+            }
+
+            @Override
+            public int getMinimum(int i) {
+                return 0;
+            }
+
+            @Override
+            public int getMaximum(int i) {
+                return 0;
+            }
+
+            @Override
+            public int getGreatestMinimum(int i) {
+                return 0;
+            }
+
+            @Override
+            public int getLeastMaximum(int i) {
+                return 0;
+            }
+        };
+
+        //Sets up date picker listener
+        mDatePicker = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                mCalendar.set(Calendar.YEAR, year);
+                mCalendar.set(Calendar.MONTH, monthOfYear);
+                mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateDateLabel();
+            }
+
+        };
+
+        //Sets onclick of edit text to open data picker
+        mDate.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Date d = new Date();
+                new DatePickerDialog(ReportFragment.this.getContext(), mDatePicker, 2018, 04, 01)
+                        .show();
+            }
+        });
+
+        //Sets up time picker listener
+        mTimePicker = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+                mCalendar.set(Calendar.HOUR_OF_DAY, hour);
+                mCalendar.set(Calendar.MINUTE, minute);
+                updateTimeLabel();
+            }
+        };
+
+        //Sets on click of edit text to open time picker
+        mTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new TimePickerDialog(ReportFragment.this.getContext(), mTimePicker, mCalendar.get(Calendar.HOUR_OF_DAY),
+                        mCalendar.get(Calendar.MINUTE), true)
+                        .show();
+            }
+        });
+
         mCity = (EditText) v.findViewById(R.id.city);
         mState = (EditText) v.findViewById(R.id.state);
         mDetails = (EditText) v.findViewById(R.id.notes);
@@ -190,6 +278,21 @@ public class ReportFragment extends Fragment {
         });
 
         return v;
+    }
+
+    /**
+     * Updates the text of the edit text to date chosen
+     */
+    private void updateDateLabel() {
+        mDate.setText(Integer.toString(mCalendar.get(Calendar.YEAR)) + "-" + Integer.toString(mCalendar.get(Calendar.MONTH)) +
+                "-" + Integer.toString(mCalendar.get(Calendar.DAY_OF_MONTH)));
+    }
+
+    /**
+     * Updates text of edit text to time chosen
+     */
+    private void updateTimeLabel() {
+        mTime.setText(Integer.toString(mCalendar.get(Calendar.HOUR_OF_DAY)) + ":" + Integer.toString(mCalendar.get(Calendar.MINUTE)));
     }
 
     /**
@@ -241,8 +344,7 @@ public class ReportFragment extends Fragment {
             sb.append(URLEncoder.encode(monster, "UTF-8"));
 
 
-            String datetime = mDate.getText().toString() + " " + mTime.getText().toString() + ":00";
-            Log.i(TAG, datetime);
+            String datetime = mDate.getText().toString() + " " + mTime.getText().toString();
             sb.append("&date=");
             sb.append(URLEncoder.encode(datetime, "UTF-8"));
 
@@ -259,7 +361,6 @@ public class ReportFragment extends Fragment {
             sb.append("&description=");
             sb.append(URLEncoder.encode(details, "UTF-8"));
 
-            Log.i(TAG, sb.toString());
         } catch(Exception e) {
             Toast.makeText(v.getContext(), "Something wrong with the url" + e.getMessage(), Toast.LENGTH_LONG)
                     .show();
@@ -269,6 +370,9 @@ public class ReportFragment extends Fragment {
         return sb.toString();
     }
 
+    /**
+     * Interface of fragment interaction (empty)
+     */
     public interface OnFragmentInteractionListener {
     }
 
@@ -310,13 +414,4 @@ public class ReportFragment extends Fragment {
     }
 
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     */
-//    public interface OnFragmentInteractionListener {
-//        void onReportOpening(Uri uri);
-//    }
 }

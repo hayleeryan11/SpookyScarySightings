@@ -37,7 +37,7 @@
         android:id="@+id/desc"
         android:layout_width="340dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="35dp"
+        android:paddingHorizontal="35dp"
         android:layout_marginTop="60dp"
         android:fontFamily="serif-monospace"
         android:text="test"

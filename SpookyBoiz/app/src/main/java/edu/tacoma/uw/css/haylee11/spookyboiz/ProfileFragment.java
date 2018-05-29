@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,25 +17,37 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.net.URLEncoder;
 
 import edu.tacoma.uw.css.haylee11.spookyboiz.Profile.Profile;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ProfileFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Builds the current user's profile for viewing
+ *
+ * @author Haylee Ryan, Matthew Frazier, Kai Stansfield
  */
 public class ProfileFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBERfa
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
+    /**
+     * URL for gathering information on current user for profile
+     */
+    private static final String PROFILE_URL = "http://spookyscarysightings.000webhostapp.com/userProfile.php?cmd=profile";
+
+    /**
+     * URL used to change the current user's favorite monster
+     */
+    private static final String FAV_URL = "http://spookyscarysightings.000webhostapp.com/userProfile.php?cmd=fav&current=";
+
+    /**
+     * URL used to change the current user's bio
+     */
+    private static final String BIO_URL = "http://spookyscarysightings.000webhostapp.com/userProfile.php?cmd=bio&current=";
+
     private String mParam1;
     private String mParam2;
 
@@ -50,11 +61,6 @@ public class ProfileFragment extends Fragment {
 
     SharedPreferences mSharedPref;
 
-    public static final String TAG = "Profile";
-
-    private static final String PROFILE_URL = "http://spookyscarysightings.000webhostapp.com/userProfile.php?cmd=profile";
-    private static final String FAV_URL = "http://spookyscarysightings.000webhostapp.com/userProfile.php?cmd=fav&current=";
-    private static final String BIO_URL = "http://spookyscarysightings.000webhostapp.com/userProfile.php?cmd=bio&current=";
 
     private OnFragmentInteractionListener mListener;
 
@@ -63,6 +69,9 @@ public class ProfileFragment extends Fragment {
     private static String mChangeFav;
     private static String mChangeBio;
 
+    /**
+     * Required empty constructor
+     */
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -75,7 +84,6 @@ public class ProfileFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment ProfileFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static ProfileFragment newInstance(String param1, String param2) {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
@@ -85,6 +93,10 @@ public class ProfileFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * When the fragment is created, this method instantiates it
+     * @param savedInstanceState The saved instance
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +106,14 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    /**
+     * When the fragment is create, this instantiates the view. Also instantiates the
+     * RecyclerView and calls the AsyncTask
+     * @param inflater The layout inflater
+     * @param container The container the fragment is in
+     * @param savedInstanceState The saved instance state
+     * @return The view to be presented
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -105,11 +125,13 @@ public class ProfileFragment extends Fragment {
         mSharedPref = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
                 Context.MODE_PRIVATE);
 
-        mUsername = (TextView) v.findViewById(R.id.username);
+        mUsername = (TextView) v.findViewById(R.id.username_input);
         mName = (TextView) v.findViewById(R.id.name);
         mSightings = (TextView) v.findViewById(R.id.sightings);
         mFavorite = (TextView) v.findViewById(R.id.favorite);
         mBio = (TextView) v.findViewById(R.id.bio);
+
+        getActivity().setTitle("Profile");
 
         String url = buildProfileURL(v, "profile");
         mListener.profileView(url);
@@ -120,6 +142,7 @@ public class ProfileFragment extends Fragment {
         mFavorite.setText(mSharedPref.getString(getString(R.string.FAVORITE), "None"));
         mBio.setText(mSharedPref.getString(getString(R.string.BIO), "None"));
 
+        //Set up buttons for changing attributes (opens dialog fragment)
 
         Button fav = (Button) v.findViewById(R.id.fav_change);
         fav.setOnClickListener(new View.OnClickListener() {
@@ -146,10 +169,16 @@ public class ProfileFragment extends Fragment {
     }
 
 
+    /**
+     * Builds URl to either get profile, change favorite monster, or change bio
+     * @param v The current view
+     * @param action Action to take place
+     * @return The URL
+     */
     private String buildProfileURL(View v, String action) {
         StringBuilder sb;
         String user = mSharedPref.getString(getString(R.string.CURRENT_USER), null);
-        if (action.equals("profile")) {
+        if (action.equals("profile")) { //If we are getting profile info
             sb = new StringBuilder(PROFILE_URL);
             try {
                 sb.append("&username=");
@@ -159,7 +188,7 @@ public class ProfileFragment extends Fragment {
                 Toast.makeText(v.getContext(), "Something wrong with the url" + e.getMessage(), Toast.LENGTH_LONG)
                         .show();
             }
-        } else if (action.equals("fav")) {
+        } else if (action.equals("fav")) { //If we are changing favorite
             sb = new StringBuilder(FAV_URL);
             try {
                 sb.append(URLEncoder.encode(user, "UTF-8"));
@@ -170,7 +199,7 @@ public class ProfileFragment extends Fragment {
                 Toast.makeText(v.getContext(), "Something wrong with the url" + e.getMessage(), Toast.LENGTH_LONG)
                         .show();
             }
-        } else {
+        } else {                        //If we are changing bio
             sb = new StringBuilder(BIO_URL);
             try {
                 sb.append(URLEncoder.encode(user, "UTF-8"));
@@ -182,10 +211,13 @@ public class ProfileFragment extends Fragment {
                         .show();
             }
         }
-        Log.d(TAG, sb.toString());
         return sb.toString();
     }
 
+    /**
+     * When the fragment is attached to the app, this instantiates the listener
+     * @param context The context the fragment is in
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -197,22 +229,39 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    /**
+     * Handles when the fragment is detached, nullifying the listener
+     */
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
+    /**
+     * Dialog pop up that allows user to enter new attribute which is then changed in profile
+     * and in database
+     *
+     * @author Haylee Ryan, Matthew Frazier, Kai Stansfield
+     */
     public static class ChangeDialogFragment extends DialogFragment {
 
         int mChange;
 
         ProfileFragment mProf;
 
+        /**
+         * Constructs a new Profile Fragment to use for method calls
+         */
         public ChangeDialogFragment() {
             mProf = new ProfileFragment();
         }
 
+        /**
+         * Constructs new local Profile Fragment with the given fragment
+         * @param change Flag determining what we are changing
+         * @param prof Instance of Profile Fragment to set up
+         */
         @SuppressLint("ValidFragment")
         public ChangeDialogFragment(int change, ProfileFragment prof) {
             mChange = change;
@@ -247,7 +296,7 @@ public class ProfileFragment extends Fragment {
             }
             builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            if (mChange == 1) {
+                            if (mChange == 1) { //If we are changing the favorite monster
                                 mChangeFav = input.getText().toString();
                                 String url = mProf.buildProfileURL(mProf.mView, "fav");
                                 mProf.mSharedPref
@@ -257,7 +306,7 @@ public class ProfileFragment extends Fragment {
                                 mProf.mListener.profileView(url);
 
                                 mProf.mFavorite.setText(mProf.mSharedPref.getString(getString(R.string.FAVORITE), "error"));
-                            } else {
+                            } else {    //if we are changing the bio
                                 mChangeBio = input.getText().toString();
                                 String url = mProf.buildProfileURL(mProf.mView, "bio");
                                 mProf.mSharedPref
@@ -290,10 +339,6 @@ public class ProfileFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
         void profileView(String url);

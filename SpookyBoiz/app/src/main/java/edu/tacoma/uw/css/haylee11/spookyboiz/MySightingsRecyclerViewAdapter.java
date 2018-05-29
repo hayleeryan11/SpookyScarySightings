@@ -26,8 +26,8 @@ public class MySightingsRecyclerViewAdapter extends RecyclerView.Adapter<MySight
     private final OnListFragmentInteractionListener mListener;
 
     /**
-     * Constructor instantiates listener and list of monsters
-     * @param items List of monsters in view
+     * Constructor instantiates listener and list of sightings
+     * @param items List of sightings in view
      * @param listener Listener of the fragment
      */
     public MySightingsRecyclerViewAdapter(List<Sighting> items, OnListFragmentInteractionListener listener) {

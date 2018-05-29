@@ -61,8 +61,6 @@ public class Sighting implements Serializable {
      */
     public static final String DESC = "description";
 
-    public static final String TAG = "sight";
-
     //Username of who reported
     String mUsername;
 

@@ -2,16 +2,29 @@ package edu.tacoma.uw.css.haylee11.spookyboiz;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -23,15 +36,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+ * A fragment representing a list of all profiles in the system, used to view
+ * the details of each one
+ *
+ * @author  Haylee Ryan, Matthew Frazier, Kai Stansfield
  */
-public class OtherProfilesFragment extends Fragment {
+public class OtherProfilesFragment extends Fragment  {
 
     /**
      * Column count of list
@@ -39,14 +53,14 @@ public class OtherProfilesFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
 
     /**
-     * Tag for debugging
-     */
-    private static final String TAG = "ProfileList";
-
-    /**
      * URL to send the command to retrieve monsters.
      */
     private static final String PROFILE_URL = "http://spookyscarysightings.000webhostapp.com/listProfiles.php?cmd=profiles";
+
+    /**
+     * URL to search the list of profiles based on user's query
+     */
+    private static final String SEARCH_PROFILE_URL = "http://spookyscarysightings.000webhostapp.com/listProfiles.php?cmd=search";
 
     //Column count field
     private int mColumnCount = 1;
@@ -70,8 +84,11 @@ public class OtherProfilesFragment extends Fragment {
     public OtherProfilesFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
+    /**
+     * Creates new instance of fragment
+     * @param columnCount Number of columns
+     * @return the new OtherProfilesFragment
+     */
     public static OtherProfilesFragment newInstance(int columnCount) {
         OtherProfilesFragment fragment = new OtherProfilesFragment();
         Bundle args = new Bundle();
@@ -80,15 +97,28 @@ public class OtherProfilesFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * When the fragment is created, this method instantiates it
+     * @param savedInstanceState The saved instance
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
     }
 
+    /**
+     * When the fragment is create, this instantiates the view. Also instantiates the
+     * RecyclerView and calls the AsyncTask
+     * @param inflater The layout inflater
+     * @param container The container the fragment is in
+     * @param savedInstanceState The saved instance state
+     * @return The view to be presented
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -117,7 +147,44 @@ public class OtherProfilesFragment extends Fragment {
         return view;
     }
 
+    /**
+     * When view created, we need to set up the menu, in this case the search menu
+     * @param menu The search menu
+     * @param inflater The inflater for the menu
+     */
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.search_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
+    /**
+     * When a menu item is selected, carry out these actions
+     * @param item The menu item selected
+     * @return If an item is selected or not
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.search) {           //if the preferences button has been pressed, open new fragment
+
+            SearchDialogFragment newFragment = new SearchDialogFragment(this);
+            newFragment.show(getActivity().getSupportFragmentManager(), "search");
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * When the fragment is attached to the app, this instantiates the listener
+     * @param context The context the fragment is in
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -129,13 +196,232 @@ public class OtherProfilesFragment extends Fragment {
         }
     }
 
+    /**
+     * Handles when the fragment is detached, nullifying the listener
+     */
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
+    /**
+     * Class that creates a pop up dialog for searching the list of profiles. This includes taking
+     * the user's query and matching it against the database.
+     *
+     * @author Haylee Ryan, Matthew Frazier, Kai Stansfield
+     */
+    public static class SearchDialogFragment extends DialogFragment {
 
+        OtherProfilesFragment mProf;
+        List<Profile> mProfileList;
+        EditText mQuery;
+        Spinner mKey;
+
+        /**
+         * Constructs a new Profile Fragment to use for method calls
+         */
+        public SearchDialogFragment() {
+            mProf = new OtherProfilesFragment();
+        }
+
+        /**
+         * Constructs new local profile Fragment with the given fragment
+         * @param prof The profile fragment instance to reference
+         */
+        @SuppressLint("ValidFragment")
+        public SearchDialogFragment(OtherProfilesFragment prof) {
+            mProf = prof;
+        }
+
+        /**
+         * When the button is pressed to create the dialog, this method is
+         * called to instantiate the dialog and it's contents.
+         * @param savedInstanceState The saved instance
+         * @return The Dialog box to pop up
+         */
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            final View v = inflater.inflate(R.layout.search_dialog_layout, null);
+
+            mKey = (Spinner) v.findViewById(R.id.spinner);
+            mQuery = (EditText) v.findViewById(R.id.search);
+            mQuery.setHint(R.string.profile);
+
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                    R.array.profile_search, android.R.layout.simple_spinner_item);
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            // Apply the adapter to the spinner
+            mKey.setAdapter(adapter);
+
+            builder.setView(v);
+
+            //About message
+            builder.setPositiveButton("Go!", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    String key;
+
+                    if (mKey.getSelectedItem().toString().equals("First Name")) {
+                        key = "f_name";
+                    } else if (mKey.getSelectedItem().toString().equals("Last Name")) {
+                        key = "l_name";
+                    } else {
+                        key = mKey.getSelectedItem().toString();
+                    }
+                    String query = mQuery.getText().toString();
+
+
+                    OtherProfilesFragment.SearchDialogFragment.SearchTask profAsyncTask = new OtherProfilesFragment.SearchDialogFragment.SearchTask();
+                    profAsyncTask.execute(new String[]{urlBuilder(key, query)});
+                }
+            });
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
+
+        /**
+         * Builds URl to search users table with
+         * @param key The serach field the user is using
+         * @param query The result they are looking for
+         * @return The URL
+         */
+        public String urlBuilder(String key, String query) {
+
+            StringBuilder sb = new StringBuilder(SEARCH_PROFILE_URL);
+            try {
+                sb.append("&key=");
+                sb.append(URLEncoder.encode(key, "UTF-8"));
+                sb.append("&value=");
+                sb.append(URLEncoder.encode(query, "UTF-8"));
+            } catch(Exception e) {
+                Toast.makeText(getContext(), "Something wrong with the url" + e.getMessage(), Toast.LENGTH_LONG)
+                        .show();
+            }
+
+
+            return sb.toString();
+        }
+
+        /**
+         * Class that creates the spinner object (drop down menu) for the
+         * distances
+         */
+        public class SpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
+
+            /**
+             * When an item is selected, do the following
+             * @param parent Parent AdapterView
+             * @param view View user is in
+             * @param pos Position of item selected
+             * @param id Id of the item selected
+             */
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int pos, long id) {
+                // An item was selected. You can retrieve the selected item using
+                // parent.getItemAtPosition(pos)
+            }
+
+            /**
+             * When nothing is selected, do the following
+             * @param parent Parent AdapterView
+             */
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Another interface callback
+            }
+        }
+
+        /**
+         * AsyncTask that retrieves data based on the user's query in the Users table
+         *
+         * @author Haylee Ryan, Matthew Frazier, Kai Stansfield
+         */
+        private class SearchTask extends AsyncTask<String, Void, String> {
+
+            /**
+             * Overrides onPreExecute. Performs super task
+             */
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            /**
+             * Creates a URL connection to which we can send our URL carrying the command
+             * to get data from the database. This does all work in the background for the user when
+             * viewing sightings.
+             * @param urls The URLs to be sent through the connection that hold the information
+             *             to be passed to the database
+             * @return The successful or failed result of connecting with the URL
+             */
+            @Override
+            protected String doInBackground(String... urls) {
+                String response = "";
+                HttpURLConnection urlConnection = null;
+                for (String url : urls) {
+                    try {
+                        URL urlObject = new URL(url);
+                        urlConnection = (HttpURLConnection) urlObject.openConnection();
+
+                        InputStream content = urlConnection.getInputStream();
+
+                        BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                        String s = "";
+                        while ((s = buffer.readLine()) != null) {
+                            response += s;
+                        }
+                    } catch (Exception e) {
+                        response = "Unable to download the list of courses, Reason: " + e.getMessage();
+                    } finally {
+                        if (urlConnection != null) {
+                            urlConnection.disconnect();
+                        }
+                    }
+                }
+                return response;
+            }
+
+            /**
+             * After the background work has been executed, the result comes into this method
+             * to be read. From there, we determine what to do (has it succeeded? Failed? Is
+             * the data wrong?)
+             * @param result The result from doInBackground (If the insertion/retrieving was
+             *               successful or not.
+             */
+            @Override
+            protected void onPostExecute(String result) {
+
+                if (result.startsWith("Unable to")) {
+                    Toast.makeText(mProf.getActivity().getApplicationContext(), result, Toast.LENGTH_SHORT)
+                            .show();
+                    return;
+                }
+
+                try {
+                    mProfileList = Profile.parseProfileListJSON(result);
+                    Toast.makeText(mProf.getActivity().getApplicationContext(), "Showing your search results", Toast.LENGTH_SHORT)
+                            .show();
+                } catch (JSONException e) {
+                    Toast.makeText(mProf.getActivity().getApplicationContext(),"No results", Toast.LENGTH_SHORT)
+                            .show();
+                    return;
+                }
+
+                if (!mProfileList.isEmpty()) {
+                    mProf.crossfade();
+                    mProf.mRecyclerView.setAdapter(new MyProfileRecyclerViewAdapter(mProfileList, mProf.mListener));
+
+                }
+            }
+        }
+    }
+
+    /**
+     * Creates a crossfade animation
+     */
     private void crossfade() {
         // Animate the loading view to 0% opacity. After the animation ends, 
         // set its visibility to GONE as an optimization step (it won't 
@@ -173,7 +459,6 @@ public class OtherProfilesFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onListFragmentInteraction(Profile item);
     }
 
@@ -185,7 +470,7 @@ public class OtherProfilesFragment extends Fragment {
      *
      * @author Haylee Ryan, Matt Frazier, Kai Stansfield
      */
-    private class ProfileTask extends AsyncTask<String, Void, String> {
+    public class ProfileTask extends AsyncTask<String, Void, String> {
 
         /**
          * Overrides onPreExecute. Performs super task
@@ -261,4 +546,5 @@ public class OtherProfilesFragment extends Fragment {
             }
         }
     }
+
 }

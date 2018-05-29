@@ -91,7 +91,7 @@ public class MonsterDB {
             String desc = c.getString(2);
             String last_seen = c.getString(3);
             String link = c.getString(4);
-            Monster monster = new Monster(id, name, desc, last_seen, link);
+            Monster monster = new Monster(name, desc, last_seen, link);
             list.add(monster);
             c.moveToNext();
         }

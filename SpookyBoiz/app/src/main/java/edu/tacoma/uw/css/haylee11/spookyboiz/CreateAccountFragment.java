@@ -1,7 +1,10 @@
 package edu.tacoma.uw.css.haylee11.spookyboiz;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -12,7 +15,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLEncoder;
+
+import edu.tacoma.uw.css.haylee11.spookyboiz.Profile.Profile;
 
 
 /**
@@ -50,7 +63,7 @@ public class CreateAccountFragment extends Fragment {
     private String mParam2;
 
     //Listener for adding a new user
-    private UserAddListener mListener;
+    private OnFragmentInteractionListener mListener;
 
     //First name of new user
     private EditText mFirstName;
@@ -69,6 +82,12 @@ public class CreateAccountFragment extends Fragment {
 
     //Confirmation for password
     private EditText mConfirm;
+
+
+    //Loading view for progress bar
+    private View mLoadingView;
+
+    SharedPreferences mSharedPreferences;
 
     /**
      * Required empty constructor
@@ -122,6 +141,13 @@ public class CreateAccountFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_create_account, container, false);
 
+
+
+        mSharedPreferences = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
+                Context.MODE_PRIVATE);
+
+        mLoadingView = getActivity().findViewById(R.id.loading_spinner);
+
         //Assigns fields to user entries
         mFirstName = (EditText) v.findViewById(R.id.f_name);
         mLastName = (EditText) v.findViewById(R.id.l_name);
@@ -139,8 +165,11 @@ public class CreateAccountFragment extends Fragment {
             public void onClick(View view) {
                 String url = buildUserURL(view);
                 Log.i(TAG, url);
-                mListener.loading();
-                mListener.addUser(url);
+                loading();
+
+               AddUserTask task = new AddUserTask();
+               task.execute(new String[]{url.toString()});
+
             }
         });
 
@@ -155,8 +184,8 @@ public class CreateAccountFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof UserAddListener) {
-            mListener = (UserAddListener) context;
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -225,15 +254,126 @@ public class CreateAccountFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    /**
-     * Interface that provides way to begin AsyncTask and the progress bar
-     */
-    public interface UserAddListener {
-        //Starts AsyncTask
-        void addUser(String url);
 
-        //Progress bar
-        void loading();
+    /**
+     * Method for setting the progress bar to visible and to display
+     * the loading screen
+     */
+
+    public void loading() {
+
+        mLoadingView.setVisibility(View.VISIBLE);
+
+
+    }
+
+    /**
+     * Inner class that extends AsynchTask. This class handles the creation of a user
+     * and sends it off to the database to be inputted. This handles all the background
+     * work that has to do with data sending in regards to creating an account
+     *
+     * @author Haylee Ryan, Matt Frazier, Kai Stansfield
+     */
+    private class AddUserTask extends AsyncTask<String, Void, String> {
+
+        /**
+         * Overrides onPreExecute. Performs super task
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        /**
+         * Creates a URL connection to which we can send our URL carrying the data we want
+         * to put into the database. This does all work in the background for the user when
+         * creating a new account.
+         * @param urls The URLs to be sent through the connection that hold the information
+         *             to be passed to the database
+         * @return The successful or failed result of connecting with the URL
+         */
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+
+
+
+                    InputStream content = urlConnection.getInputStream();
+                    Log.i(TAG, content.toString());
+
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+                } catch (Exception e) {
+                    response = "Unable to add user/sign in, Reason: " + e.getMessage();
+                } finally {
+                    if(urlConnection != null) {
+                        urlConnection.disconnect();
+                    }
+                }
+            }
+            return response;
+        }
+
+        /**
+         * After the background work has been executed, the result comes into this method
+         * to be read. From there, we determine what to do (has it succeeded? Failed? Is
+         * the data wrong?)
+         * @param result The result from doInBackground (If the insertion/retrieving was
+         *               successful or not.
+         */
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                if (result.contains("f_name")) {
+                    Toast.makeText(getActivity().getApplicationContext(), "Account Created!",
+                            Toast.LENGTH_LONG)
+                            .show();
+                    Profile p = Profile.parseCourseJSON(result);
+                    mSharedPreferences
+                            .edit()
+                            .putBoolean(getString(R.string.LOGGEDIN), true)
+                            .putString(getString(R.string.CURRENT_USER), p.getmUsername())
+                            .putString(getString(R.string.FAVORITE), p.getmFavorite())
+                            .putString(getString(R.string.BIO), p.getmBio())
+                            .putString(getString(R.string.NAME), p.getmFName() + " " + p.getmLName())
+                            .putInt(getString(R.string.SIGHTINGS), p.getmSightings())
+                            .apply();
+                    Intent intent = new Intent(getActivity(), SignedInActivity.class);
+                    startActivity(intent);
+                    //failed in making account
+                }  else {
+                    JSONObject jsonObject = new JSONObject(result);
+                    Toast.makeText(getActivity().getApplicationContext(), "Failed: " + jsonObject.get("error").toString(), Toast.LENGTH_LONG)
+                            .show();
+                    mLoadingView.setVisibility(View.INVISIBLE);
+                    mSharedPreferences
+                            .edit()
+                            .putString(getString(R.string.CURRENT_USER), null)
+                            .putString(getString(R.string.PROFILE), null)
+                            .apply();
+                }
+            } catch (JSONException e) {
+                Toast.makeText(getActivity().getApplicationContext(), "Something wrong with the data" +
+                        e.getMessage(), Toast.LENGTH_LONG)
+                        .show();
+                mLoadingView.setVisibility(View.INVISIBLE);
+                mSharedPreferences
+                        .edit()
+                        .putString(getString(R.string.CURRENT_USER), null)
+                        .putString(getString(R.string.PROFILE), null)
+                        .apply();
+
+            }
+        }
     }
 
 }

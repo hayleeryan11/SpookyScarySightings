@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.tacoma.uw.css.haylee11.spookyboiz.Monster.Monster;
+import edu.tacoma.uw.css.haylee11.spookyboiz.OtherProfilesFragment;
+import edu.tacoma.uw.css.haylee11.spookyboiz.ProfileFragment;
 
 /**
  * Created by hayleeryan on 5/13/18.
@@ -70,6 +72,16 @@ public class Profile  implements Serializable {
     String mBio;
 
 
+    /**
+     * Constructor for Profile object
+     *
+     * @param un Username
+     * @param f_name First Name
+     * @param l_name Last name
+     * @param sightings Number of Sightings
+     * @param favorite Favorite monster
+     * @param bio Short bio of user
+     */
     public Profile(String un, String f_name, String l_name, int sightings, String favorite, String bio) {
         mUsername = un;
         mFName = f_name;
@@ -127,11 +139,18 @@ public class Profile  implements Serializable {
         this.mBio = mBio;
     }
 
+
+    /**
+     * Parses the JSON of a single profile of the current user
+     *
+     * @param profileJSON The incoming JSON of the user information
+     * @return The profile create for the user
+     * @throws JSONException
+     */
     public static Profile parseCourseJSON(String profileJSON) throws JSONException {
 
         if (profileJSON != null) {
             JSONObject obj = new JSONObject(profileJSON);
-            //JSONObject obj = new JSONObject(profileJSON);
             Profile prof = new Profile(obj.getString(Profile.USERNAME), obj.getString(Profile.F_NAME), obj.getString(Profile.L_NAME), obj.getInt(Profile.SIGHTINGS),
                     obj.getString(Profile.FAVORITE), obj.getString(Profile.BIO));
 
@@ -163,5 +182,6 @@ public class Profile  implements Serializable {
         }
         return profileList;
     }
+
 }
 

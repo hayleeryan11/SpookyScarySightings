@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import edu.tacoma.uw.css.haylee11.spookyboiz.Monster.Monster;
-import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
 
 
 /**

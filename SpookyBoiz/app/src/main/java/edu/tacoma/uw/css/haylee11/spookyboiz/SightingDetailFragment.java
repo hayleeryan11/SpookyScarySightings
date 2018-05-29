@@ -9,8 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.security.PrivilegedAction;
-
 import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
 
 
@@ -120,11 +118,11 @@ public class SightingDetailFragment extends Fragment {
 
         getActivity().setTitle("Sighting Details");
 
+
         //Assign values to TextView
-        mUsername = (TextView) v.findViewById(R.id.username);
+        mUsername = (TextView) v.findViewById(R.id.username_input);
         mMonster = (TextView) v.findViewById(R.id.monster);
         mCity = (TextView) v.findViewById(R.id.city);
-        //mState = (TextView) v.findViewById(R.id.state);
         mDate = (TextView) v.findViewById(R.id.date);
         mTime = (TextView) v.findViewById(R.id.time);
         mDesc = (TextView) v.findViewById(R.id.description);
@@ -140,7 +138,6 @@ public class SightingDetailFragment extends Fragment {
         if (sight != null) {
             mUsername.setText("User: " + sight.getmUsername());
             mCity.setText(sight.getmCity() + ", " + sight.getmState());
-            //mState.setText(sight.getmState());
             mDate.setText("Date: " + sight.getmDate());
             mTime.setText("Time: " + sight.getmTime());
             mMonster.setText(sight.getmMonster());
