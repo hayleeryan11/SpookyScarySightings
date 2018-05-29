@@ -16,6 +16,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -254,10 +255,17 @@ public class SignedInActivity extends AppCompatActivity
          * @param url The URL created from the user's inputs
          */
         @Override
-        public void addSighting(String url) {
+        public void addSighting(String url, String mMonster, String mDate, String mTime,
+                                String mCity, String mState, String mDetails) {
 
             ReportTask task = new ReportTask();
             task.execute(new String[]{url.toString()});
+
+            // Provide option for sending an email
+            DialogFragment fragment = ShareSightingDialogFragment.newInstance(mMonster, mDate,
+                    mTime, mCity, mState, mDetails,
+                    mSharedPref.getString(getString(R.string.NAME), null));
+            fragment.show(getSupportFragmentManager(), "share");
 
             //Once done, pop back to previous view
             getSupportFragmentManager().popBackStackImmediate();
@@ -445,6 +453,99 @@ public class SignedInActivity extends AppCompatActivity
             }
         }
 
+    /**
+     * Inner class that creates a dialog providing the option to share sightings via email.
+     *
+     * @author Haylee Ryan, Matt Frazier, Kai Stansfield
+     */
+    public static class ShareSightingDialogFragment extends DialogFragment {
+
+        /**
+         * Creates a new instance of ShareSightingDialogFragment providing arguments to autofill
+         * the email if the email option is selected.
+         *
+         * @param sMonster is the monster from the sighting.
+         * @param sDate is the date of the sighting.
+         * @param sTime is the time of the sighting.
+         * @param sCity is the city where the sighting occurred.
+         * @param sState is the state where the sighting occurred.
+         * @param sDetails is the detailed description of the sighting.
+         * @param sName is the full name of the user submitting the sighting.
+         * @return a new ShareSightingDialogFragment containing the parameters.
+         */
+        public static ShareSightingDialogFragment newInstance(String sMonster, String sDate, String sTime,
+                                                       String sCity, String sState,
+                                                       String sDetails, String sName) {
+            ShareSightingDialogFragment f = new ShareSightingDialogFragment();
+            Bundle args = new Bundle();
+            args.putString("mMonster", sMonster);
+            args.putString("mDate", sDate);
+            args.putString("mTime", sTime);
+            args.putString("mCity", sCity);
+            args.putString("mState", sState);
+            args.putString("mDetails", sDetails);
+            args.putString("mName", sName);
+            f.setArguments(args);
+            return f;
+        }
+
+        /**
+         * Creates the dialog providing the option to send sighting information as an email.
+         *
+         * @param savedInstanceState is the state of the constructed dialog.
+         * @return the email sighting dialog.
+         */
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final String mMonster = getArguments().getString("mMonster");
+            final String mDate = getArguments().getString("mDate");
+            final String mTime = getArguments().getString("mTime");
+            final String mCity = getArguments().getString("mCity");
+            final String mState = getArguments().getString("mState");
+            final String mDetails = getArguments().getString("mDetails");
+            final String mName = getArguments().getString("mName");
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.dialog_share_shighting)
+                    .setPositiveButton(R.string.share_email, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+
+                            emailIntent.setData(Uri.parse("mailto:"));
+                            emailIntent.setType("text/plain");
+                            emailIntent.putExtra(Intent.EXTRA_SUBJECT,
+                                    "Spooky Scary Sightings Notification: " + mMonster +
+                                            " Sighting!");
+                            emailIntent.putExtra(Intent.EXTRA_TEXT,
+                                    mName + " would like to report a monster sighting..." +
+                                            "\n\n\nWhat: " + mMonster +
+                                            "\n\nWhen: " + mDate + " at " + mTime +
+                                            "\n\nWhere: " + mCity + ", " + mState +
+                                            "\n\nDescription: " + mDetails +
+                                            "\n\n\nSincerely, Spooky Scary Sightings");
+                            try {
+                                startActivity(Intent.createChooser(emailIntent,
+                                        "Send mail..."));
+                                getActivity().finish();
+                                Log.i("DONE!", "Finished sending email...");
+                            } catch (android.content.ActivityNotFoundException ex) {
+                                Toast.makeText(getActivity(),
+                                        "There is no email application installed.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    })
+                    .setNegativeButton(R.string.share_cancel,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dismiss();
+                                }
+                            });
+
+            return builder.create();
+        }
+    }
+
 
         /**
          * Inner class that extends AsynchTask. This class handles the creation of a profile
@@ -547,6 +648,5 @@ public class SignedInActivity extends AppCompatActivity
 
             }
         }
+}
 
-
-    }

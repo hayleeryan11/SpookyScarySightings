@@ -270,7 +270,10 @@ public class ReportFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String url = buildSightingURL(v);
-                mSightListener.addSighting(url);
+                mSightListener.addSighting(url, mMonster.getSelectedItem().toString(),
+                        mDate.getText().toString(), mTime.getText().toString(),
+                        mCity.getText().toString(), mState.getText().toString(),
+                        mDetails.getText().toString());
             }
         });
 
@@ -406,7 +409,8 @@ public class ReportFragment extends Fragment {
      */
     public interface SightingAddListener {
         //Begins AsyncTask
-        public void addSighting(String url);
+        public void addSighting(String url, String mMonster, String mDate, String mTime,
+                                String mCity, String mState, String mDetails);
     }
 
 
