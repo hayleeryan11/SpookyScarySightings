@@ -99,6 +99,9 @@ public class SightingsDB {
         return list;
     }
 
+    /**
+     * Inner class used to manage the local Sightings database.
+     */
     class SightingsDBHelper extends SQLiteOpenHelper {
 
         private final String CREATE_SIGHTINGS_SQL;
