@@ -105,7 +105,7 @@ public class MonsterFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param columnCount The number of columns in list
-     * @return A new instance of fragment NotifySettingsFragment.
+     * @return A new instance of fragment MonsterFragment.
      */
     public static MonsterFragment newInstance(int columnCount) {
         MonsterFragment fragment = new MonsterFragment();

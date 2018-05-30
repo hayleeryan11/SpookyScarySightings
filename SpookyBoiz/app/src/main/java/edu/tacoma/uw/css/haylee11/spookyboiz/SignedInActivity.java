@@ -44,8 +44,7 @@ import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
  */
 public class SignedInActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        ReportFragment.OnFragmentInteractionListener, MonsterDetailFragment.OnFragmentInteractionListener,
-        NotifySettingsFragment.OnNotifyFragmentInteractionListener, SightingsFragment.OnListFragmentInteractionListener,
+        ReportFragment.OnFragmentInteractionListener, MonsterDetailFragment.OnFragmentInteractionListener, SightingsFragment.OnListFragmentInteractionListener,
         MonsterFragment.OnListFragmentInteractionListener, SignInFragment.OnSignInFragmentInteractionListener,
         CreateAccountFragment.OnFragmentInteractionListener, SightingDetailFragment.OnFragmentInteractionListener,
         ReportFragment.SightingAddListener, ProfileFragment.OnFragmentInteractionListener,
@@ -203,12 +202,6 @@ public class SignedInActivity extends AppCompatActivity
                     .replace(R.id.fragment_container_2, profile)
                     .addToBackStack(null)
                     .commit();
-        }  else if (id == R.id.nav_notifications) {  //If we want to change notification settings, open notify settings fragment
-            NotifySettingsFragment notify = new NotifySettingsFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container_2, notify)
-                    .addToBackStack(null)
-                    .commit();
         }
 
         //Close the drawer
@@ -216,19 +209,6 @@ public class SignedInActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-
-        /**
-         * Opens monster list (MonsterFragment) when button pressed
-         */
-        @Override
-        public void onNotifyMonsterSettingsInteraction() {
-            MonsterFragment monster = new MonsterFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container_2, monster)
-                    .addToBackStack(null)
-                    .commit();
-        }
 
 
         /**

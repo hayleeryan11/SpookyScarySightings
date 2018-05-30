@@ -75,7 +75,7 @@ public class ReportFragment extends Fragment {
     private EditText mCity;
 
     //EditText for state
-    private EditText mState;
+    private Spinner mState;
 
     //EditText for details
     private EditText mDetails;
@@ -246,7 +246,17 @@ public class ReportFragment extends Fragment {
         });
 
         mCity = (EditText) v.findViewById(R.id.city);
-        mState = (EditText) v.findViewById(R.id.state);
+
+        mState = (Spinner) v.findViewById(R.id.spinner2);
+
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(),
+                R.array.states, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        mState.setAdapter(adapter2);
+
         mDetails = (EditText) v.findViewById(R.id.notes);
 
 
@@ -261,7 +271,7 @@ public class ReportFragment extends Fragment {
                 String url = buildSightingURL(v);
                 mSightListener.addSighting(url, mMonster.getSelectedItem().toString(),
                         mDate.getText().toString(), mTime.getText().toString(),
-                        mCity.getText().toString(), mState.getText().toString(),
+                        mCity.getText().toString(), mState.getSelectedItem().toString(),
                         mDetails.getText().toString());
             }
         });
@@ -342,7 +352,7 @@ public class ReportFragment extends Fragment {
             sb.append("&city=");
             sb.append(URLEncoder.encode(city, "UTF-8"));
 
-            String state = mState.getText().toString();
+            String state = mState.getSelectedItem().toString();
             sb.append("&state=");
             sb.append(URLEncoder.encode(state, "UTF-8"));
 

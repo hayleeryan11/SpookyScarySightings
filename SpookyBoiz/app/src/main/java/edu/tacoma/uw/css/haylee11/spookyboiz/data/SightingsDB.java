@@ -42,7 +42,7 @@ public class SightingsDB {
      * @param description is the description of the sighting.
      * @return true iff adding the sighting to the table was successful.
      */
-    public boolean insertSighting(String id, String user, String monster, String date, String time,
+    public boolean insertSighting(int id, String user, String monster, String date, String time,
                                   String city, String state, String description) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("id", id);
@@ -83,7 +83,7 @@ public class SightingsDB {
         c.moveToFirst();
         List<Sighting> list = new ArrayList<Sighting>();
         for (int i = 0; i < c.getCount(); i++) {
-            String id = c.getString(0);
+            int id = c.getInt(0);
             String user = c.getString(1);
             String monster = c.getString(2);
             String date = c.getString(3);
@@ -92,7 +92,7 @@ public class SightingsDB {
             String state = c.getString(6);
             String description = c.getString(7);
             Sighting sighting = new Sighting(
-                    id, user, monster, date, time, city, state, description);
+                    id, user, monster, date, time, city, state, description, 0);
             list.add(sighting);
             c.moveToNext();
         }
