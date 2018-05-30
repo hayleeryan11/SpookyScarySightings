@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,10 +28,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 
 import edu.tacoma.uw.css.haylee11.spookyboiz.Monster.Monster;
 import edu.tacoma.uw.css.haylee11.spookyboiz.Profile.Profile;
@@ -53,7 +60,6 @@ public class SignedInActivity extends AppCompatActivity
 
 
     SharedPreferences mSharedPref;
-
 
     /**
      *Method for creating the activity, and what should be done on creation.
@@ -256,9 +262,10 @@ public class SignedInActivity extends AppCompatActivity
          */
         @Override
         public void addSighting(String url, String mMonster, String mDate, String mTime,
-                                String mCity, String mState, String mDetails) {
+                                String mCity, String mState, String mDetails, Bitmap image) {
 
-            ReportTask task = new ReportTask();
+
+            ReportTask task = new ReportTask(image);
             task.execute(new String[]{url.toString()});
 
             // Provide option for sending an email
@@ -373,12 +380,29 @@ public class SignedInActivity extends AppCompatActivity
          */
         private class ReportTask extends AsyncTask<String, Void, String> {
 
+            Bitmap mImage;
+            String convertedImage;
+            HashMap<String, String> mHash;
+            String mPOSTURL;
+
+            ReportTask(Bitmap image) {
+                mImage = image;
+            }
             /**
              * Overrides onPreExecute. Performs super task
              */
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
+
+                ByteArrayOutputStream byteArrayOutputStreamObject ;
+                byteArrayOutputStreamObject = new ByteArrayOutputStream();
+                mImage.compress(Bitmap.CompressFormat.JPEG, 1, byteArrayOutputStreamObject);
+                byte[] byteArrayVar = byteArrayOutputStreamObject.toByteArray();
+                convertedImage = Base64.encodeToString(byteArrayVar, Base64.DEFAULT);
+                mPOSTURL = "image_path=" + convertedImage;
+                Log.d("Tag", mPOSTURL);
+                Log.d("TAG", String.valueOf(byteArrayVar.length));
             }
 
             /**
@@ -397,8 +421,17 @@ public class SignedInActivity extends AppCompatActivity
                     try {
                         URL urlObject = new URL(url);
                         urlConnection = (HttpURLConnection) urlObject.openConnection();
+                        urlConnection.setRequestMethod("POST");
+                        urlConnection.setDoInput(true);
+                        urlConnection.setDoOutput(true);
 
-
+                        OutputStream OPS = urlConnection.getOutputStream();
+                        BufferedWriter bufferedWriterObject = new BufferedWriter(
+                                new OutputStreamWriter(OPS, "UTF-8"));
+                        bufferedWriterObject.write(mPOSTURL);
+                        bufferedWriterObject.flush();
+                        bufferedWriterObject.close();
+                        OPS.close();
 
                         InputStream content = urlConnection.getInputStream();
 
@@ -433,7 +466,7 @@ public class SignedInActivity extends AppCompatActivity
 
                     JSONObject jsonObject = new JSONObject(result);
                     String status = (String) jsonObject.get("result");
-                    if (status.equals("Sighting Added")) {   //Successfully signed in
+                    if (status.equals("Sighting added")) {   //Successfully signed in
                         Toast.makeText(getApplicationContext(), "Sighting Added!",
                                 Toast.LENGTH_LONG)
                                 .show();
@@ -554,6 +587,7 @@ public class SignedInActivity extends AppCompatActivity
          * @author Haylee Ryan, Matt Frazier, Kai Stansfield
          */
         private class ProfileTask extends AsyncTask<String, Void, String> {
+
 
             SharedPreferences mSharedPrefs;
 
