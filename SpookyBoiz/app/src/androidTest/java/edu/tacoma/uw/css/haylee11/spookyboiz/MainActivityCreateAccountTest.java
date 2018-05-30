@@ -305,6 +305,98 @@ public class MainActivityCreateAccountTest {
 
     }
 
+    @Test
+    public void testCreateAccountFirstNameEmpty() {
+
+
+        try {
+            onView(withId(R.id.action_menu))
+                    .perform((click()));
+            onView(withText("Logout"))
+                    .perform(click());
+
+            onView(withId(R.id.create))
+                    .perform(click());
+
+            inputData("", "smith", getUsername(), getEmail(), "testing", "testing");
+
+            onView(withId(R.id.create))
+                    .perform(click());
+
+            onView(withText("Failed: Please enter your first name."))
+                    .inRoot(withDecorView(not(is(
+                            mActivityRule.getActivity()
+                                    .getWindow()
+                                    .getDecorView()))))
+                    .check(matches(isDisplayed()));
+
+        } catch (NoMatchingViewException e) {
+            // View is not in hierarchy
+            onView(withId(R.id.create))
+                    .perform(click());
+
+
+            inputData("", "smith", getUsername(), getEmail(), "testing", "testing");
+
+            onView(withId(R.id.create))
+                    .perform(click());
+
+            onView(withText("Failed: Please enter your first name."))
+                    .inRoot(withDecorView(not(is(
+                            mActivityRule.getActivity()
+                                    .getWindow()
+                                    .getDecorView()))))
+                    .check(matches(isDisplayed()));
+        }
+
+    }
+
+    @Test
+    public void testCreateAccountLastNameEmpty() {
+
+
+        try {
+            onView(withId(R.id.action_menu))
+                    .perform((click()));
+            onView(withText("Logout"))
+                    .perform(click());
+
+            onView(withId(R.id.create))
+                    .perform(click());
+
+            inputData("mike", "", getUsername(), getEmail(), "testing", "testing");
+
+            onView(withId(R.id.create))
+                    .perform(click());
+
+            onView(withText("Failed: Please enter a username."))
+                    .inRoot(withDecorView(not(is(
+                            mActivityRule.getActivity()
+                                    .getWindow()
+                                    .getDecorView()))))
+                    .check(matches(isDisplayed()));
+
+        } catch (NoMatchingViewException e) {
+            // View is not in hierarchy
+            onView(withId(R.id.create))
+                    .perform(click());
+
+
+            inputData("mike", "", getUsername(), getEmail(), "testing", "testing");
+
+            onView(withId(R.id.create))
+                    .perform(click());
+
+            onView(withText("Failed: Please enter your last name."))
+                    .inRoot(withDecorView(not(is(
+                            mActivityRule.getActivity()
+                                    .getWindow()
+                                    .getDecorView()))))
+                    .check(matches(isDisplayed()));
+        }
+
+    }
+
 
     @Test
     public void testCreateAccountPasswordShort() {

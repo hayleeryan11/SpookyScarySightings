@@ -45,7 +45,7 @@ public class MainActivitySignInTest {
             onView(withText("Logout"))
                     .perform(click());
 
-            onView(withId(R.id.username_input))
+            onView(withId(R.id.username_text))
                     .perform(typeText("haylee11"));
             Espresso.closeSoftKeyboard();
             onView(withId(R.id.password_input))
@@ -63,7 +63,7 @@ public class MainActivitySignInTest {
 
         } catch (NoMatchingViewException e) {
             // View is not in hierarchy
-            onView(withId(R.id.username_input))
+            onView(withId(R.id.username_text))
                     .perform(typeText("haylee11"));
             Espresso.closeSoftKeyboard();
             onView(withId(R.id.password_input))
@@ -91,7 +91,7 @@ public class MainActivitySignInTest {
            onView(withText("Logout"))
                    .perform(click());
 
-           onView(withId(R.id.username_input))
+           onView(withId(R.id.username_text))
                    .perform(typeText("notindatabase"));
            Espresso.closeSoftKeyboard();
            onView(withId(R.id.password_input))
@@ -108,7 +108,7 @@ public class MainActivitySignInTest {
                    .check(matches(isDisplayed()));
        } catch (NoMatchingViewException e) {
 
-           onView(withId(R.id.username_input))
+           onView(withId(R.id.username_text))
                    .perform(typeText("notindatabase"));
            Espresso.closeSoftKeyboard();
            onView(withId(R.id.password_input))
@@ -139,7 +139,7 @@ public class MainActivitySignInTest {
                     .perform((click()));
             onView(withText("Logout"))
                     .perform(click());
-            onView(withId(R.id.username_input))
+            onView(withId(R.id.username_text))
                     .perform(typeText("haylee11"));
             Espresso.closeSoftKeyboard();
             onView(withId(R.id.password_input))
@@ -155,7 +155,7 @@ public class MainActivitySignInTest {
                                     .getDecorView()))))
                     .check(matches(isDisplayed()));
         } catch (NoMatchingViewException e) {
-            onView(withId(R.id.username_input))
+            onView(withId(R.id.username_text))
                     .perform(typeText("haylee11"));
             Espresso.closeSoftKeyboard();
             onView(withId(R.id.password_input))

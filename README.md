@@ -4,6 +4,8 @@ App made for TCSS 450 at University of Washington Tacoma
 Made by Group 4  
 Haylee Ryan, Matthew Frazier, and Kai Stansfield
 
+* Test with Pixel XL (1440 x 2560)
+
 ## Features
 * Account creation with proper backend checks
 * Ability to sign in using a username and password in the database

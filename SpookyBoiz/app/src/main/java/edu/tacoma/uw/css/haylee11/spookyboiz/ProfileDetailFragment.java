@@ -127,7 +127,7 @@ public class ProfileDetailFragment extends Fragment {
         });
 
         //Initialize TextViews to be filled
-        mUsername = (TextView) v.findViewById(R.id.username_input);
+        mUsername = (TextView) v.findViewById(R.id.username_text);
         mName = (TextView) v.findViewById(R.id.name);
         mSightings = (TextView) v.findViewById(R.id.sightings);
         mFavorite = (TextView) v.findViewById(R.id.favorite);

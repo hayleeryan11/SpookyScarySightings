@@ -23,6 +23,8 @@
 
     <EditText
         android:id="@+id/f_name"
+        android:background="@drawable/border"
+        android:padding="10dp"
         android:layout_width="292dp"
         android:layout_height="47dp"
         android:layout_marginTop="25dp"
@@ -35,6 +37,8 @@
 
     <EditText
         android:id="@+id/l_name"
+        android:background="@drawable/border"
+        android:padding="10dp"
         android:layout_width="292dp"
         android:layout_height="47dp"
         android:layout_marginTop="25dp"
@@ -49,6 +53,8 @@
 
     <EditText
         android:id="@+id/email"
+        android:background="@drawable/border"
+        android:padding="10dp"
         android:layout_width="292dp"
         android:layout_height="47dp"
         android:layout_marginTop="25dp"
@@ -63,6 +69,8 @@
 
     <EditText
         android:id="@+id/password"
+        android:background="@drawable/border"
+        android:padding="10dp"
         android:layout_width="292dp"
         android:layout_height="47dp"
         android:layout_marginTop="25dp"
@@ -77,6 +85,8 @@
 
     <EditText
         android:id="@+id/confirm"
+        android:background="@drawable/border"
+        android:padding="10dp"
         android:layout_width="292dp"
         android:layout_height="47dp"
         android:layout_marginTop="25dp"
@@ -91,6 +101,8 @@
 
     <EditText
         android:id="@+id/username"
+        android:background="@drawable/border"
+        android:padding="10dp"
         android:layout_width="292dp"
         android:layout_height="47dp"
         android:layout_marginTop="25dp"
@@ -107,7 +119,7 @@
 
     <Button
         android:id="@+id/create"
-        style="@style/Widget.AppCompat.Button.Colored"
+        style="@style/ButtonStyle"
         android:layout_width="226dp"
         android:layout_height="49dp"
         android:layout_marginTop="20dp"

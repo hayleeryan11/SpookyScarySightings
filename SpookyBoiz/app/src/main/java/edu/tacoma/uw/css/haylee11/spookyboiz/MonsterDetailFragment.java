@@ -170,7 +170,7 @@ public class MonsterDetailFragment extends Fragment {
             Log.d(TAG, monster.getmMonster() + monster.getmLastSeen() + monster.getmLink());
             mMonster.setText(monster.getmMonster());
             if (monster.getmLastSeen() != null) {
-                mLastSeen.setText("Last seen: \n" + monster.getmLastSeen());
+                mLastSeen.setText(monster.getmLastSeen());
             }
             if (monster.getmDescription() != null) {
 

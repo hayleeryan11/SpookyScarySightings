@@ -57,8 +57,7 @@ public class MySightingsRecyclerViewAdapter extends RecyclerView.Adapter<MySight
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).getmMonster());
-        holder.mContentView.setText(mValues.get(position).getmCity() + ", " +
-                mValues.get(position).getmState());
+        holder.mContentView.setText(mValues.get(position).getmDate());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

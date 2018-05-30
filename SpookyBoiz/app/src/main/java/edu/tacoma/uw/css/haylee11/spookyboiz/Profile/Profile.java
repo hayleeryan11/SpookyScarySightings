@@ -53,23 +53,23 @@ public class Profile  implements Serializable {
 
 
     //Username
-    String mUsername;
+    private String mUsername;
 
 
     //First name
-    String mFName;
+    private String mFName;
 
     //Last name
-    String mLName;
+    private String mLName;
 
     //Number of sightings
-    int mSightings;
+    private int mSightings;
 
     //Favorite/most sighted monster
-    String mFavorite;
+    private String mFavorite;
 
     //Bio of user
-    String mBio;
+    private String mBio;
 
 
     /**
@@ -83,12 +83,20 @@ public class Profile  implements Serializable {
      * @param bio Short bio of user
      */
     public Profile(String un, String f_name, String l_name, int sightings, String favorite, String bio) {
-        mUsername = un;
-        mFName = f_name;
-        mLName = l_name;
-        mSightings = sightings;
-        mFavorite = favorite;
-        mBio = bio;
+        if (un.equals(null)) {
+            throw new IllegalArgumentException("Cannot create profile: There is no username");
+        } else if (f_name.equals(null)) {
+            throw new IllegalArgumentException("Cannot create profile: There is no first name");
+        } else if (l_name.equals(null)) {
+            throw new IllegalArgumentException("Cannot create profile: There is no last name");
+        } else {
+            mUsername = un;
+            mFName = f_name;
+            mLName = l_name;
+            mSightings = sightings;
+            mFavorite = favorite;
+            mBio = bio;
+        }
     }
 
     public String getmUsername() {

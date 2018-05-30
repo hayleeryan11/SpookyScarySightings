@@ -122,7 +122,7 @@ public class SightingDetailFragment extends Fragment {
         //Assign values to TextView
         mUsername = (TextView) v.findViewById(R.id.username_input);
         mMonster = (TextView) v.findViewById(R.id.monster);
-        mCity = (TextView) v.findViewById(R.id.city);
+        mCity = (TextView) v.findViewById(R.id.city_state);
         mDate = (TextView) v.findViewById(R.id.date);
         mTime = (TextView) v.findViewById(R.id.time);
         mDesc = (TextView) v.findViewById(R.id.description);
@@ -136,12 +136,12 @@ public class SightingDetailFragment extends Fragment {
      */
     public void updateView(Sighting sight) {
         if (sight != null) {
-            mUsername.setText("User: " + sight.getmUsername());
+            mUsername.setText(sight.getmUsername());
             mCity.setText(sight.getmCity() + ", " + sight.getmState());
-            mDate.setText("Date: " + sight.getmDate());
-            mTime.setText("Time: " + sight.getmTime());
+            mDate.setText(sight.getmDate());
+            mTime.setText(sight.getmTime());
             mMonster.setText(sight.getmMonster());
-            mDesc.setText("Description: \n" + sight.getmDesc());
+            mDesc.setText(sight.getmDesc());
         }
 
     }

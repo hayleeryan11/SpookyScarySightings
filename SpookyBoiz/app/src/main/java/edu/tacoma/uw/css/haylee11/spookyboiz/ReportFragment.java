@@ -4,17 +4,9 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,15 +16,12 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 
 /**
@@ -166,8 +155,8 @@ public class ReportFragment extends Fragment {
 
         //Assigns values in Spinner/EditText fields to our class fields
         mMonster = (Spinner) v.findViewById(R.id.spinner);
-        mDate = (EditText) v.findViewById(R.id.date);
-        mTime = (EditText) v.findViewById(R.id.time);
+        mDate = (EditText) v.findViewById(R.id.date_text);
+        mTime = (EditText) v.findViewById(R.id.time_text);
 
         //Instantiates new Calendar object
         mCalendar= new Calendar() {

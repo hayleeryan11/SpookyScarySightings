@@ -123,7 +123,7 @@ public class SignInFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_sign_in, container, false);
 
         //Sets fields to what the user has entered
-        mUsername = (EditText) v.findViewById(R.id.username_input);
+        mUsername = (EditText) v.findViewById(R.id.username_text);
         mPassword = (EditText) v.findViewById(R.id.password_input);
 
 

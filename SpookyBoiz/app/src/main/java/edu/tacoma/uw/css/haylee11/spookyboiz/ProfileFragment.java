@@ -125,7 +125,7 @@ public class ProfileFragment extends Fragment {
         mSharedPref = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
                 Context.MODE_PRIVATE);
 
-        mUsername = (TextView) v.findViewById(R.id.username_input);
+        mUsername = (TextView) v.findViewById(R.id.username_text);
         mName = (TextView) v.findViewById(R.id.name);
         mSightings = (TextView) v.findViewById(R.id.sightings);
         mFavorite = (TextView) v.findViewById(R.id.favorite);
