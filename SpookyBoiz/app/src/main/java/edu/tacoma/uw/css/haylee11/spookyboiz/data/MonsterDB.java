@@ -28,6 +28,15 @@ public class MonsterDB {
         mSQLiteDatabase = mMonsterDBHelper.getWritableDatabase();
     }
 
+    /**
+     * Inserts a Monster into the database.
+     * @param id is the id of the id of the monster.
+     * @param name is the name of the monster.
+     * @param desc is the monster description.
+     * @param last_seen is the date the monster was last seen.
+     * @param link is the url link to online resources about the monster.
+     * @return the row the data was entered at in the database.
+     */
     public boolean insertCourse(String id, String name, String desc, String last_seen, String link) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("id", id);
@@ -40,10 +49,16 @@ public class MonsterDB {
         return rowId != -1;
     }
 
+    /**
+     * Deletes the monster table from the local database.
+     */
     public void deleteMonsters() {
         mSQLiteDatabase.delete(MONSTER_TABLE, null, null);
     }
 
+    /**
+     * Inner class used to manage the local SQL database.
+     */
     class MonsterDBHelper extends SQLiteOpenHelper {
 
         private final String CREATE_MONSTER_SQL;
@@ -70,6 +85,10 @@ public class MonsterDB {
         }
     }
 
+    /**
+     * Retrieves the data from the monster database as a list.
+     * @return a list of monsters and all their corresponding data.
+     */
     public List<Monster> rgetMonster() {
         String[] columns = {"id", "name", "desc", "last_seen", "link"};
 

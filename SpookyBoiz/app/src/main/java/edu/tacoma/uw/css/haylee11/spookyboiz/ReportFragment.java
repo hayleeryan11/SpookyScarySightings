@@ -4,9 +4,14 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +20,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.Date;
+
+import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -83,7 +92,17 @@ public class ReportFragment extends Fragment {
     //Listener for adding a sighting to the list/database
     private SightingAddListener mSightListener;
 
-    SharedPreferences mSharedPref;
+    //Button to choose a picture from the gallery.
+    private ImageButton mChoosePicture;
+
+    //Button to take a picture.
+    private ImageButton mTakePicture;
+
+    //Image pulled from gallery or taken at the moment.
+    private Bitmap mImage;
+
+    //Shared preferences of the user.
+    private SharedPreferences mSharedPref;
 
     /**
      * Required empty constructor
@@ -201,6 +220,32 @@ public class ReportFragment extends Fragment {
             }
         };
 
+        //Buttons for taking a photo or choosing one from the gallery.
+        mChoosePicture = (ImageButton) v.findViewById(R.id.select_image);
+        mChoosePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("choose/select", "CLICK");
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(
+                        intent, "Select Image From Gallery"), 1);
+            }
+        });
+
+        mTakePicture = (ImageButton) v.findViewById(R.id.take_image);
+        mTakePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("take/take", "CLICK");
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, 2);
+                }
+            }
+        });
+
         //Sets up date picker listener
         mDatePicker = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -271,12 +316,45 @@ public class ReportFragment extends Fragment {
                 String url = buildSightingURL(v);
                 mSightListener.addSighting(url, mMonster.getSelectedItem().toString(),
                         mDate.getText().toString(), mTime.getText().toString(),
+<<<<<<< HEAD
                         mCity.getText().toString(), mState.getSelectedItem().toString(),
                         mDetails.getText().toString());
+=======
+                        mCity.getText().toString(), mState.getText().toString(),
+                        mDetails.getText().toString(), mImage);
+>>>>>>> 0c4a4462b8263fac622c2525d9f417b69a1d4f5f
             }
         });
 
         return v;
+    }
+
+    /**
+     * This method processes the intent data from choosing or taking a picture, and saves the picture
+     *
+     * @param RQC The request code sent by launched intents.
+     * @param RC The result code.
+     * @param data The intent sent through, where we get the photo from.
+     */
+    @Override
+    public void onActivityResult(int RQC, int RC, Intent data) {
+        super.onActivityResult(RQC, RC, data);
+
+        if (RQC == 1 && RC == RESULT_OK && data != null && data.getData() != null) {
+            Uri uri = data.getData();
+            try {
+                mImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                mChoosePicture.setImageBitmap(mImage);
+                mTakePicture.setImageBitmap(mImage);
+            } catch (IOException e) {
+                Log.d("Tag", Log.getStackTraceString(e));
+            }
+        } else if (RQC == 2 && RC == RESULT_OK && data != null) {
+            Bundle extras = data.getExtras();
+            mImage = (Bitmap) extras.get("data");
+            mChoosePicture.setImageBitmap(mImage);
+            mTakePicture.setImageBitmap(mImage);
+        }
     }
 
     /**
@@ -409,7 +487,7 @@ public class ReportFragment extends Fragment {
     public interface SightingAddListener {
         //Begins AsyncTask
         public void addSighting(String url, String mMonster, String mDate, String mTime,
-                                String mCity, String mState, String mDetails);
+                                String mCity, String mState, String mDetails, Bitmap image);
     }
 
 
