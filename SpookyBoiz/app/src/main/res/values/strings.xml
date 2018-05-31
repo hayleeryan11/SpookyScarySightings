@@ -14,24 +14,16 @@
     <string name="email">Email</string>
 
     //reporting
-    <string name="date">mm/dd/yyyy</string>
-    <string name="time">00:00 AM/PM</string>
+    <string name="date">YYYY-MM-DD</string>
+    <string name="time">00:00</string>
     <string name="notes">Enter Some Details</string>
+    <string name="city">City</string>
+    <string name="state">State</string>
 
-    //info
-    <string name="info">This is Spooky Scary Sightings
-                        This app allows users to log any monsters, ghosts, or UFOs
-                        that they find</string>
-    <string name="done">Done</string>
-
-    //monster spinner
-    <string-array name="monsters">
-        <item>Bigfoot</item>
-        <item>Bat Boy</item>
-        <item>Moth Man</item>
-        <item>UFO</item>
-        <item>Ghost</item>
-    </string-array>
+    //search
+    <string name="search">Search sightings</string>
+    <string name="profile">Search profiles</string>
+    <string name="monster">Search monsters</string>
 
     //distance
     <string-array name="distance">
@@ -42,15 +34,50 @@
         <item>50 miles</item>
     </string-array>
 
+    //searching sighting
+    <string-array name="sight_search">
+        <item>User</item>
+        <item>Monster</item>
+        <item>City</item>
+        <item>State</item>
+    </string-array>
+
+    //searching profile
+    <string-array name="profile_search">
+        <item>Username</item>
+        <item>First Name</item>
+        <item>Last Name</item>
+    </string-array>
+
+    //searching monster
+    <string-array name="monster_search">
+        <item>Name</item>
+    </string-array>
+
     <string name="action_settings">Settings</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_sighting_local">Map</string>
-    <string name="title_activity_signed_in">SignedInActivity</string>
+    <string name="LOGIN_PREFS">edu.tacoma.uw.css.haylee11.spookyboiz.PREFS</string>
+    <string name="LOGGEDIN">loggedIn</string>
+    <string name="CURRENT_USER">user</string>
+    <string name="PROFILE_VIEW">other_user</string>
+    <string name="action_logout">Logout</string>
+    <string name="PROFILE">profile</string>
+
+    <string name="NAME">name</string>
+    <string name="SIGHTINGS">sightings</string>
+    <string name="FAVORITE">favorite</string>
+    <string name="BIO">bio</string>
+
+    <string name="MONSTER_ARR">monsters</string>
+
+    <string name="title_activity_course">CourseActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="title_activity_sighting_holder">SightingHolderActivity</string>
+    <string name="dialog_share_shighting">Share sighting via email?</string>
+    <string name="share_email">Share</string>
+    <string name="share_cancel">Cancel</string>
 
 
 </resources>

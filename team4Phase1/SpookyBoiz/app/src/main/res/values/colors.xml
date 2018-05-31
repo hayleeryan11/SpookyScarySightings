@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="onyx">#31393c</color>
+    <color name="crayola_blue">#2176FF</color>
+    <color name="azure">#33A1FD</color>
+    <color name="sunglow">#FDCA40</color>
+    <color name="carrot">#F79824</color>
+</resources>
