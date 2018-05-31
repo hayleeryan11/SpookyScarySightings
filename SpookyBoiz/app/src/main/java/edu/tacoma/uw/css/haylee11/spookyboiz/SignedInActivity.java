@@ -53,8 +53,7 @@ import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
  */
 public class SignedInActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        ReportFragment.OnFragmentInteractionListener, MonsterDetailFragment.OnFragmentInteractionListener,
-        NotifySettingsFragment.OnNotifyFragmentInteractionListener, SightingsFragment.OnListFragmentInteractionListener,
+        ReportFragment.OnFragmentInteractionListener, MonsterDetailFragment.OnFragmentInteractionListener, SightingsFragment.OnListFragmentInteractionListener,
         MonsterFragment.OnListFragmentInteractionListener, SignInFragment.OnSignInFragmentInteractionListener,
         CreateAccountFragment.OnFragmentInteractionListener, SightingDetailFragment.OnFragmentInteractionListener,
         ReportFragment.SightingAddListener, ProfileFragment.OnFragmentInteractionListener,
@@ -211,12 +210,6 @@ public class SignedInActivity extends AppCompatActivity
                     .replace(R.id.fragment_container_2, profile)
                     .addToBackStack(null)
                     .commit();
-        }  else if (id == R.id.nav_notifications) {  //If we want to change notification settings, open notify settings fragment
-            NotifySettingsFragment notify = new NotifySettingsFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container_2, notify)
-                    .addToBackStack(null)
-                    .commit();
         }
 
         //Close the drawer
@@ -227,19 +220,7 @@ public class SignedInActivity extends AppCompatActivity
 
 
         /**
-         * Opens monster list (MonsterFragment) when button pressed
-         */
-        @Override
-        public void onNotifyMonsterSettingsInteraction() {
-            MonsterFragment monster = new MonsterFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container_2, monster)
-                    .addToBackStack(null)
-                    .commit();
-        }
-
-
-        /**
+<<<<<<< HEAD
          * When we interact with the MonsterFragment (list of monsters), then we want
          * to open the details about the monster. This opens the detail fragment
          * @param item The monster the user chose from the list
@@ -372,7 +353,6 @@ public class SignedInActivity extends AppCompatActivity
 
 
 
-
         /**
          * Inner class that extends AsyncTask. This class handles the creation of a report
          * and sends it off to the database to be inputted. This handles all the background
@@ -420,7 +400,6 @@ public class SignedInActivity extends AppCompatActivity
             protected String doInBackground(String... urls) {
                 String response = "";
                 HttpURLConnection urlConnection = null;
-
                 HashMap<String,String> hash = new HashMap<String,String>();
                 hash.put("image_path", convertedImage);
                 for (String url : urls) {
@@ -460,6 +439,35 @@ public class SignedInActivity extends AppCompatActivity
             }
 
             /**
+             * After the background work has been executed, the result comes into this method
+             * to be read. From there, we determine what to do (has it succeeded? Failed? Is
+             * the data wrong?)
+             * @param result The result from doInBackground (If the insertion/retrieving was
+             *               successful or not.
+             */
+            @Override
+            protected void onPostExecute(String result) {
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    String status = (String) jsonObject.get("result");
+                    if (status.equals("Sighting added")) {   //Successfully signed in
+                        Toast.makeText(getApplicationContext(), "Sighting Added!",
+                                Toast.LENGTH_LONG)
+                                .show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "failed: " + jsonObject.get("error"), //Sighting failed
+                                Toast.LENGTH_LONG)
+                                .show();
+                    }
+                } catch (JSONException e) {
+                    Toast.makeText(getApplicationContext(), "Something wrong with the data" +   //Something wrong with data
+                            e.getMessage(), Toast.LENGTH_LONG)
+                            .show();
+
+                }
+            }
+
+            /**
              * Puts together the POST message and encodes it for URL safety
              *
              * @param Hash A has containing both the prefix for the POST and the data
@@ -479,36 +487,6 @@ public class SignedInActivity extends AppCompatActivity
                 }
 
                 return builder.toString();
-            }
-
-            /**
-             * After the background work has been executed, the result comes into this method
-             * to be read. From there, we determine what to do (has it succeeded? Failed? Is
-             * the data wrong?)
-             * @param result The result from doInBackground (If the insertion/retrieving was
-             *               successful or not.
-             */
-            @Override
-            protected void onPostExecute(String result) {
-                try {
-
-                    JSONObject jsonObject = new JSONObject(result);
-                    String status = (String) jsonObject.get("result");
-                    if (status.equals("Sighting added")) {   //Successfully signed in
-                        Toast.makeText(getApplicationContext(), "Sighting Added!",
-                                Toast.LENGTH_LONG)
-                                .show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "failed: " + jsonObject.get("error"), //Sighting failed
-                                Toast.LENGTH_LONG)
-                                .show();
-                    }
-                } catch (JSONException e) {
-                    Toast.makeText(getApplicationContext(), "Something wrong with the data" +   //Something wrong with data
-                            e.getMessage(), Toast.LENGTH_LONG)
-                            .show();
-
-                }
             }
         }
 

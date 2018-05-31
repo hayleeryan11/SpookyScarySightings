@@ -61,37 +61,42 @@ public class Sighting implements Serializable {
      */
     public static final String DESC = "description";
 
+
+    //Username of who reported
+    private String mUsername;
+
+    //Sighting ID
+    private int mId;
+
+    //Date of sighting
+    private String mDate;
+
+    //Time of sighting
+    private String mTime;
+
+    //City where mosnter sighted
+    private String mCity;
+
+    //State where monster sighting
+    private String mState;
+
+    //Monster sighted
+    private String mMonster;
+
+    //Decription of sighting
+    private String mDesc;
+
+    private int mUserFlag;
+
+
     /**
      * URL for the image.
      */
     public static final String URL = "image_path";
 
-    //Username of who reported
-    String mUsername;
-
-    //Sighting ID
-    String mId;
-
-    //Date of sighting
-    String mDate;
-
-    //Time of sighting
-    String mTime;
-
-    //City where mosnter sighted
-    String mCity;
-
-    //State where monster sighting
-    String mState;
-
-    //Monster sighted
-    String mMonster;
-
-    //Decription of sighting
-    String mDesc;
 
     //URL for the image
-    String mURL;
+    private String mURL;
 
     /**
      * Constructs a new Sighting item
@@ -104,7 +109,8 @@ public class Sighting implements Serializable {
      * @param state State where sighting was
      * @param desc Description of sighting
      */
-    public Sighting(String id, String un, String monster, String date, String time, String city, String state, String desc, String URL) {
+
+    public Sighting(int id, String un, String monster, String date, String time, String city, String state, String desc, int flag, String URL) {
         mUsername = un;
         mId = id;
         mDate = date;
@@ -113,10 +119,12 @@ public class Sighting implements Serializable {
         mState = state;
         mMonster = monster;
         mDesc = desc;
+        mUserFlag = flag;
         mURL = URL;
     }
 
-    public String getmId() { return mId; }
+
+    public int getmId() { return mId; }
 
     public String getmUsername() {
         return mUsername;
@@ -174,6 +182,15 @@ public class Sighting implements Serializable {
         this.mDesc = mDesc;
     }
 
+
+    public int getmUserFlag() {
+        return mUserFlag;
+    }
+
+    public void setmUserFlag(int mUserFlag) {
+        this.mUserFlag = mUserFlag;
+    }
+
     public String getmURL() { return mURL; }
 
     public void setmURL(String URL) { this.mURL = URL; }
@@ -194,9 +211,10 @@ public class Sighting implements Serializable {
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject obj = arr.getJSONObject(i);
                 String[] date_time = obj.getString(Sighting.DATE).split("\\s+");
-                Sighting sight = new Sighting(obj.getString(Sighting.ID), obj.getString(Sighting.USERNAME), obj.getString(Sighting.MONSTER)
+                Sighting sight = new Sighting(obj.getInt(Sighting.ID), obj.getString(Sighting.USERNAME), obj.getString(Sighting.MONSTER)
                         , date_time[0], date_time[1], obj.getString(Sighting.CITY), obj.getString(Sighting.STATE),
-                        obj.getString(Sighting.DESC), obj.getString(Sighting.URL));
+                        obj.getString(Sighting.DESC), flag, obj.getString(Sighting.URL));
+
                 if (flag == 1) {
                     if (obj.getString(Sighting.USERNAME).equals(user1)) {
                         sightList.add(sight);

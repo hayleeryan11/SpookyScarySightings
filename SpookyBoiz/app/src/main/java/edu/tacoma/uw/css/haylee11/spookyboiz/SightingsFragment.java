@@ -125,7 +125,11 @@ public class SightingsFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param columnCount The number of columns in list
+<<<<<<< HEAD
+     * @return A new instance of fragment MonsterFragment.
+=======
      * @return A new instance of fragment NotifySettingsFragment.
+>>>>>>> fc037e21956dd954c3a22ecbede52dc2bba55988
      */
     public static SightingsFragment newInstance(int columnCount) {
         SightingsFragment fragment = new SightingsFragment();

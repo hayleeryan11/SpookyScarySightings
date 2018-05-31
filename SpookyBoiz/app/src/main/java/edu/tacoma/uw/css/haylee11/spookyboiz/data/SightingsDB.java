@@ -43,7 +43,7 @@ public class SightingsDB {
      * @param serverURL Url of the picture
      * @return true iff adding the sighting to the table was successful.
      */
-    public boolean insertSighting(String id, String user, String monster, String date, String time,
+    public boolean insertSighting(int id, String user, String monster, String date, String time,
                                   String city, String state, String description, String serverURL) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("id", id);
@@ -70,6 +70,7 @@ public class SightingsDB {
     public List<Sighting> getSightings() {
 
         String[] columns = {
+
                 "id", "user", "monster", "date", "time", "city", "state", "description", "image_path"
         };
 
@@ -85,7 +86,7 @@ public class SightingsDB {
         c.moveToFirst();
         List<Sighting> list = new ArrayList<Sighting>();
         for (int i = 0; i < c.getCount(); i++) {
-            String id = c.getString(0);
+            int id = c.getInt(0);
             String user = c.getString(1);
             String monster = c.getString(2);
             String date = c.getString(3);
@@ -95,13 +96,16 @@ public class SightingsDB {
             String description = c.getString(7);
             String serverURL = c.getString(8);
             Sighting sighting = new Sighting(
-                    id, user, monster, date, time, city, state, description, serverURL);
+                    id, user, monster, date, time, city, state, description, 0, serverURL);
             list.add(sighting);
             c.moveToNext();
         }
         return list;
     }
 
+    /**
+     * Inner class used to manage the local Sightings database.
+     */
     class SightingsDBHelper extends SQLiteOpenHelper {
 
         private final String CREATE_SIGHTINGS_SQL;

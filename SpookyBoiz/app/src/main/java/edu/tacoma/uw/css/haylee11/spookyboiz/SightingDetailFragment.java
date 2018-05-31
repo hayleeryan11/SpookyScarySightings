@@ -11,6 +11,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+
+import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
+import edu.tacoma.uw.css.haylee11.spookyboiz.data.SightingsDB;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -43,12 +59,16 @@ public class SightingDetailFragment extends Fragment {
      */
     public static final String SIGHTING_SELECTED = "sighting_selected";
 
+    /**
+     * The URL used to delete a sighting
+     */
+    public static final String DELETE_URL = "http://spookyscarysightings.000webhostapp.com/deleteSighting.php?id=";
+
     // First parameter
     private String mParam1;
 
     //Second parameter
     private String mParam2;
-
     //URL for the image
     private String mURL;
 
@@ -72,7 +92,15 @@ public class SightingDetailFragment extends Fragment {
 
     //Description of sighting
     private TextView mDesc;
+    private Button mDelete;
 
+    private TextView mUserText;
+
+    private int mDeleteId;
+
+    private int mToastFlag;
+
+    SightingDetailFragment mThat;
     //Picture (if taken) of the sighting
     private ImageView mPicture;
 
@@ -132,7 +160,6 @@ public class SightingDetailFragment extends Fragment {
 
         getActivity().setTitle("Sighting Details");
 
-
         //Assign values to TextView
         mUsername = (TextView) v.findViewById(R.id.username_input);
         mMonster = (TextView) v.findViewById(R.id.monster);
@@ -140,6 +167,21 @@ public class SightingDetailFragment extends Fragment {
         mDate = (TextView) v.findViewById(R.id.date);
         mTime = (TextView) v.findViewById(R.id.time);
         mDesc = (TextView) v.findViewById(R.id.description);
+
+        mDelete = (Button) v.findViewById(R.id.delete);
+        mDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String url = urlBuilder();
+                DeleteSightingTask sightAsyncTask = new DeleteSightingTask();
+                sightAsyncTask.execute(new String[]{url});
+
+
+            }
+        });
+        
+        mUserText = (TextView) v.findViewById(R.id.username_text);
+
         mPicture = (ImageView) v.findViewById(R.id.monster_image);
 
         return v;
@@ -151,6 +193,9 @@ public class SightingDetailFragment extends Fragment {
      */
     public void updateView(Sighting sight) {
         if (sight != null) {
+
+            mDeleteId = sight.getmId();
+
             mUsername.setText(sight.getmUsername());
             mCity.setText(sight.getmCity() + ", " + sight.getmState());
             mDate.setText(sight.getmDate());
@@ -159,11 +204,43 @@ public class SightingDetailFragment extends Fragment {
             mDesc.setText(sight.getmDesc());
             mURL = sight.getmURL();
 
+            if (sight.getmUserFlag() == 1) {
+                mDelete.setVisibility(View.VISIBLE);
+                mUserText.setVisibility(View.INVISIBLE);
+                mUsername.setVisibility(View.INVISIBLE);
+            } else {
+                mDelete.setVisibility(View.INVISIBLE);
+                mUserText.setVisibility(View.VISIBLE);
+                mUsername.setVisibility(View.VISIBLE);
+            }
+
+
             DownloadAsync asyync = new DownloadAsync();
             asyync.execute();
+
         }
 
     }
+
+    /**
+     * Builds URl to delete a sighting
+     * @return The URL
+     */
+    public String urlBuilder() {
+
+        StringBuilder sb = new StringBuilder(DELETE_URL);
+        try {
+            sb.append(URLEncoder.encode(Integer.toString(mDeleteId), "UTF-8"));
+        } catch(Exception e) {
+            Toast.makeText(getContext(), "Something wrong with the url" + e.getMessage(), Toast.LENGTH_LONG)
+                    .show();
+        }
+
+
+        return sb.toString();
+    }
+
+
 
     /**
      * When the fragment is attached to the app, this instantiates the listener
@@ -210,6 +287,90 @@ public class SightingDetailFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
+    }
+
+    /**
+     * Inner class that extends AsynchTask. This class handles the retrieval of a sighting
+     * and gets data from the database. This handles all the background
+     * work that has to do with data sending in regards to report posting
+     *
+     * @author Haylee Ryan, Matt Frazier, Kai Stansfield
+     */
+    private class DeleteSightingTask extends AsyncTask<String, Void, String> {
+
+        /**
+         * Overrides onPreExecute. Performs super task
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        /**
+         * Creates a URL connection to which we can send our URL carrying the command
+         * to get data from the database. This does all work in the background for the user when
+         * viewing sightings.
+         *
+         * @param urls The URLs to be sent through the connection that hold the information
+         *             to be passed to the database
+         * @return The successful or failed result of connecting with the URL
+         */
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+
+                    InputStream content = urlConnection.getInputStream();
+
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+                } catch (Exception e) {
+                    response = "Unable to download the list of sightings, Reason: " + e.getMessage();
+                } finally {
+                    if (urlConnection != null) {
+                        urlConnection.disconnect();
+                    }
+                }
+            }
+            return response;
+        }
+
+        /**
+         * After the background work has been executed, the result comes into this method
+         * to be read. From there, we determine what to do (has it succeeded? Failed? Is
+         * the data wrong?)
+         *
+         * @param result The result from doInBackground (If the insertion/retrieving was
+         *               successful or not.
+         */
+        @Override
+        protected void onPostExecute(String result) {
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = new JSONObject(result);
+                String status = (String) jsonObject.get("result");
+                if (status.equals("success")) {
+                    Toast.makeText(getActivity(), "Sighting Deleted!", Toast.LENGTH_SHORT)
+                            .show();
+
+                    getFragmentManager().popBackStack();
+                } else {
+                    Toast.makeText(getActivity(), "Error! Sighting not deleted", Toast.LENGTH_SHORT)
+                            .show();
+
+                    getFragmentManager().popBackStack();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**

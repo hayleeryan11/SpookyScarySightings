@@ -36,15 +36,5 @@
         </menu>
     </item>
 
-    <item android:title="Preferences">
-        <menu>
-
-            <item
-                android:id="@+id/nav_notifications"
-                android:icon="@drawable/bell"
-                android:title="Notifications" />
-
-        </menu>
-    </item>
 
 </menu>

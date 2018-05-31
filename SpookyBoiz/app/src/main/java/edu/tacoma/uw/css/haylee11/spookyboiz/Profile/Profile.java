@@ -83,11 +83,11 @@ public class Profile  implements Serializable {
      * @param bio Short bio of user
      */
     public Profile(String un, String f_name, String l_name, int sightings, String favorite, String bio) {
-        if (un.equals(null)) {
+        if (un.isEmpty()) {
             throw new IllegalArgumentException("Cannot create profile: There is no username");
-        } else if (f_name.equals(null)) {
+        } else if (f_name.isEmpty()) {
             throw new IllegalArgumentException("Cannot create profile: There is no first name");
-        } else if (l_name.equals(null)) {
+        } else if (l_name.isEmpty()) {
             throw new IllegalArgumentException("Cannot create profile: There is no last name");
         } else {
             mUsername = un;
