@@ -112,6 +112,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/last_seen" />
 
+
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="34dp"
@@ -122,6 +123,5 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/link" />
-
 
 </android.support.constraint.ConstraintLayout>

@@ -28,6 +28,7 @@ public class MonsterDB {
         mSQLiteDatabase = mMonsterDBHelper.getWritableDatabase();
     }
 
+
     /**
      * Inserts a Monster into the database.
      * @param id is the id of the id of the monster.
@@ -49,12 +50,14 @@ public class MonsterDB {
         return rowId != -1;
     }
 
+
     /**
      * Deletes the monster table from the local database.
      */
     public void deleteMonsters() {
         mSQLiteDatabase.delete(MONSTER_TABLE, null, null);
     }
+
 
     /**
      * Inner class used to manage the local SQL database.

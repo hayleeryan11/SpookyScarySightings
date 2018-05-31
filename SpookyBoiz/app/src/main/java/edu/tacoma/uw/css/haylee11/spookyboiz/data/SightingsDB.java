@@ -40,10 +40,11 @@ public class SightingsDB {
      * @param city is the city where the sighting was made.
      * @param state is the state where the sighting was made.
      * @param description is the description of the sighting.
+     * @param serverURL Url of the picture
      * @return true iff adding the sighting to the table was successful.
      */
     public boolean insertSighting(int id, String user, String monster, String date, String time,
-                                  String city, String state, String description) {
+                                  String city, String state, String description, String serverURL) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("id", id);
         contentValues.put("user", user);
@@ -53,6 +54,7 @@ public class SightingsDB {
         contentValues.put("city", city);
         contentValues.put("state", state);
         contentValues.put("description", description);
+        contentValues.put("image_path", serverURL);
 
         long rowId = mSQLiteDatabase.insert("Sightings", null, contentValues);
         return rowId != -1;
@@ -68,7 +70,8 @@ public class SightingsDB {
     public List<Sighting> getSightings() {
 
         String[] columns = {
-                "id", "user", "monster", "date", "time", "city", "state", "description"
+
+                "id", "user", "monster", "date", "time", "city", "state", "description", "image_path"
         };
 
         Cursor c = mSQLiteDatabase.query(
@@ -91,8 +94,9 @@ public class SightingsDB {
             String city = c.getString(5);
             String state = c.getString(6);
             String description = c.getString(7);
+            String serverURL = c.getString(8);
             Sighting sighting = new Sighting(
-                    id, user, monster, date, time, city, state, description, 0);
+                    id, user, monster, date, time, city, state, description, 0, serverURL);
             list.add(sighting);
             c.moveToNext();
         }

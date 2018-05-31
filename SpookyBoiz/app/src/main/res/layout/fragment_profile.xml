@@ -24,11 +24,11 @@
 
     <ImageView
         android:id="@+id/profile_pic"
-        android:layout_width="129dp"
-        android:layout_height="120dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="35dp"
         android:layout_marginTop="36dp"
-        android:src="@drawable/prof"
+        android:src="@drawable/add"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

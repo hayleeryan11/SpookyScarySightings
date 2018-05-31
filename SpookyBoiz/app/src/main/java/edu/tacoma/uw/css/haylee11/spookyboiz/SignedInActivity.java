@@ -36,7 +36,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.Map;
 
 import edu.tacoma.uw.css.haylee11.spookyboiz.Monster.Monster;
 import edu.tacoma.uw.css.haylee11.spookyboiz.Profile.Profile;
@@ -218,6 +220,7 @@ public class SignedInActivity extends AppCompatActivity
 
 
         /**
+<<<<<<< HEAD
          * When we interact with the MonsterFragment (list of monsters), then we want
          * to open the details about the monster. This opens the detail fragment
          * @param item The monster the user chose from the list
@@ -350,7 +353,6 @@ public class SignedInActivity extends AppCompatActivity
 
 
 
-
         /**
          * Inner class that extends AsyncTask. This class handles the creation of a report
          * and sends it off to the database to be inputted. This handles all the background
@@ -377,9 +379,10 @@ public class SignedInActivity extends AppCompatActivity
 
                 ByteArrayOutputStream byteArrayOutputStreamObject ;
                 byteArrayOutputStreamObject = new ByteArrayOutputStream();
-                mImage.compress(Bitmap.CompressFormat.JPEG, 1, byteArrayOutputStreamObject);
+                mImage.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStreamObject);
                 byte[] byteArrayVar = byteArrayOutputStreamObject.toByteArray();
                 convertedImage = Base64.encodeToString(byteArrayVar, Base64.DEFAULT);
+                Log.e("Size of converted", String.valueOf(convertedImage.length()));
                 mPOSTURL = "image_path=" + convertedImage;
                 Log.d("Tag", mPOSTURL);
                 Log.d("TAG", String.valueOf(byteArrayVar.length));
@@ -397,6 +400,8 @@ public class SignedInActivity extends AppCompatActivity
             protected String doInBackground(String... urls) {
                 String response = "";
                 HttpURLConnection urlConnection = null;
+                HashMap<String,String> hash = new HashMap<String,String>();
+                hash.put("image_path", convertedImage);
                 for (String url : urls) {
                     try {
                         URL urlObject = new URL(url);
@@ -408,7 +413,7 @@ public class SignedInActivity extends AppCompatActivity
                         OutputStream OPS = urlConnection.getOutputStream();
                         BufferedWriter bufferedWriterObject = new BufferedWriter(
                                 new OutputStreamWriter(OPS, "UTF-8"));
-                        bufferedWriterObject.write(mPOSTURL);
+                        bufferedWriterObject.write(setupPOST(hash));
                         bufferedWriterObject.flush();
                         bufferedWriterObject.close();
                         OPS.close();
@@ -443,7 +448,6 @@ public class SignedInActivity extends AppCompatActivity
             @Override
             protected void onPostExecute(String result) {
                 try {
-
                     JSONObject jsonObject = new JSONObject(result);
                     String status = (String) jsonObject.get("result");
                     if (status.equals("Sighting added")) {   //Successfully signed in
@@ -463,6 +467,28 @@ public class SignedInActivity extends AppCompatActivity
                             .show();
 
                 }
+            }
+
+            /**
+             * Puts together the POST message and encodes it for URL safety
+             *
+             * @param Hash A has containing both the prefix for the POST and the data
+             * @return A concatenated POST string
+             */
+            public String setupPOST(HashMap<String, String> Hash) {
+                StringBuilder builder = new StringBuilder();
+
+                for (Map.Entry<String, String> KEY : Hash.entrySet()) {
+                    try {
+                        builder.append(URLEncoder.encode(KEY.getKey(), "UTF-8"));
+                        builder.append("=");
+                        builder.append(URLEncoder.encode(KEY.getValue(), "UTF-8"));
+                    } catch (Exception e) {
+                        Log.e("ERROR!", Log.getStackTraceString(e));
+                    }
+                }
+
+                return builder.toString();
             }
         }
 

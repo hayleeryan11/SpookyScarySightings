@@ -1,10 +1,13 @@
 package edu.tacoma.uw.css.haylee11.spookyboiz;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +27,13 @@ import java.net.URLEncoder;
 
 import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
 import edu.tacoma.uw.css.haylee11.spookyboiz.data.SightingsDB;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import java.io.InputStream;
+import java.net.URL;
+
+import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
 
 
 /**
@@ -59,6 +69,8 @@ public class SightingDetailFragment extends Fragment {
 
     //Second parameter
     private String mParam2;
+    //URL for the image
+    private String mURL;
 
     //Username of sighting
     private TextView mUsername;
@@ -80,7 +92,6 @@ public class SightingDetailFragment extends Fragment {
 
     //Description of sighting
     private TextView mDesc;
-
     private Button mDelete;
 
     private TextView mUserText;
@@ -90,6 +101,8 @@ public class SightingDetailFragment extends Fragment {
     private int mToastFlag;
 
     SightingDetailFragment mThat;
+    //Picture (if taken) of the sighting
+    private ImageView mPicture;
 
     //Listener for fragment interaction
     private OnFragmentInteractionListener mListener;
@@ -147,7 +160,6 @@ public class SightingDetailFragment extends Fragment {
 
         getActivity().setTitle("Sighting Details");
 
-        mThat = this;
         //Assign values to TextView
         mUsername = (TextView) v.findViewById(R.id.username_input);
         mMonster = (TextView) v.findViewById(R.id.monster);
@@ -170,6 +182,8 @@ public class SightingDetailFragment extends Fragment {
         
         mUserText = (TextView) v.findViewById(R.id.username_text);
 
+        mPicture = (ImageView) v.findViewById(R.id.monster_image);
+
         return v;
     }
 
@@ -188,6 +202,7 @@ public class SightingDetailFragment extends Fragment {
             mTime.setText(sight.getmTime());
             mMonster.setText(sight.getmMonster());
             mDesc.setText(sight.getmDesc());
+            mURL = sight.getmURL();
 
             if (sight.getmUserFlag() == 1) {
                 mDelete.setVisibility(View.VISIBLE);
@@ -199,6 +214,9 @@ public class SightingDetailFragment extends Fragment {
                 mUsername.setVisibility(View.VISIBLE);
             }
 
+
+            DownloadAsync asyync = new DownloadAsync();
+            asyync.execute();
 
         }
 
@@ -221,6 +239,8 @@ public class SightingDetailFragment extends Fragment {
 
         return sb.toString();
     }
+
+
 
     /**
      * When the fragment is attached to the app, this instantiates the listener
@@ -290,6 +310,7 @@ public class SightingDetailFragment extends Fragment {
          * Creates a URL connection to which we can send our URL carrying the command
          * to get data from the database. This does all work in the background for the user when
          * viewing sightings.
+         *
          * @param urls The URLs to be sent through the connection that hold the information
          *             to be passed to the database
          * @return The successful or failed result of connecting with the URL
@@ -325,6 +346,7 @@ public class SightingDetailFragment extends Fragment {
          * After the background work has been executed, the result comes into this method
          * to be read. From there, we determine what to do (has it succeeded? Failed? Is
          * the data wrong?)
+         *
          * @param result The result from doInBackground (If the insertion/retrieving was
          *               successful or not.
          */
@@ -348,7 +370,33 @@ public class SightingDetailFragment extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+    }
 
+    /**
+     * Takes the url and downloads the image from the file system in order to display the image.
+     *
+     * @author Haylee Ryan, Matt Frazier, Kai Stansfield
+     */
+    class DownloadAsync extends AsyncTask<Void,Void,String> {
+
+        private Bitmap bmp;
+
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                InputStream in = new URL(mURL).openStream();
+                bmp = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.d("Tag", Log.getStackTraceString(e));
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String string1) {
+            if (bmp != null)
+                mPicture.setImageBitmap(bmp);
         }
     }
 }

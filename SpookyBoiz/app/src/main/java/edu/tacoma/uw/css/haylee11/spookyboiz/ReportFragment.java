@@ -84,8 +84,8 @@ public class ReportFragment extends Fragment {
     private EditText mCity;
 
     //EditText for state
-    private Spinner mState;
 
+    private Spinner mState;
     //EditText for details
     private EditText mDetails;
 
@@ -292,6 +292,7 @@ public class ReportFragment extends Fragment {
 
         mCity = (EditText) v.findViewById(R.id.city);
 
+
         mState = (Spinner) v.findViewById(R.id.spinner2);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -315,7 +316,9 @@ public class ReportFragment extends Fragment {
             public void onClick(View v) {
                 String url = buildSightingURL(v);
                 mSightListener.addSighting(url, mMonster.getSelectedItem().toString(),
+
                         mDate.getText().toString(), mTime.getText().toString(), mCity.getText().toString(), mState.getSelectedItem().toString(),
+
                         mDetails.getText().toString(), mImage);
             }
         });
@@ -405,7 +408,6 @@ public class ReportFragment extends Fragment {
             String id = Integer.toString(0);
             sb.append("&id=");
             sb.append(URLEncoder.encode(id, "UTF-8"));
-
             String user = mSharedPref.getString(getString(R.string.CURRENT_USER), null);
             sb.append("&user=");
             sb.append(URLEncoder.encode(user, "UTF-8"));
@@ -446,6 +448,7 @@ public class ReportFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
     }
+
 
     /**
      * Class that creates the spinner object (drop down menu) for the

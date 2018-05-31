@@ -20,20 +20,32 @@ Haylee Ryan, Matthew Frazier, and Kai Stansfield
 * Ability to search through users by multiple fields
 * User can view other people's profiles and their list of sightings
 * User can alter the bio and favorite monster in their profile view
+<<<<<<< HEAD
 * Ability to share your sighting with other's via email, text message, ect.  
 ** This is implemented in our SignedInActivity for our ReportFragment. One a user wants to post a sighting, a dialog will ask if they want to share it**
 * Data will remain on device even when no internet connection  
 ** This is implemented for the list of Sightings and Monsters. There is a database created for each (SightingsDB, MonsterDB). **
+=======
+>>>>>>> fc037e21956dd954c3a22ecbede52dc2bba55988
 
 ## User Stories Implemented
 * As a Monster Hunter, I want to be able to sign in so I can report and view monster sightings on the app.
 * As a potential Monster Hunter, I want to be able to create a profile so that I can start tracking monsters. 
 * As a Monster Hunter, I want to be able to see my previous monster reportings to show my friends.
+<<<<<<< HEAD
 * As a Monster Hunter, I want to filter the sightings by monster type so I can easily track only the monsters I want to find.
 * As a Monster Hunter, I want to filter the sightings by location so I can find only the monsters close enough to me to travel to.
 * As a Monster Hunter, I want to filter the sightings by Monster Hunters so I can see where specific users have had sightings.
 * As a Monster Hunter, I want to review other monster hunters’ encounter data, stories, and photos so I can learn more about the monsters that other people are seeing.
 * As a Monster Hunter, I want to share my discoveries to others using social media, email, or text so I can brag to my friends.
+=======
+<!-- As a Monster Hunter, I want to filter the sightings on the map by monster type so I can easily track only the monsters I want to find. -->
+* As a Monster Hunter, I want to filter the sightings by location so I can find only the monsters close enough to me to travel to.
+* As a Monster Hunter, I want to filter the sightings by Monster Hunters so I can see where specific users have had sightings.
+* As a Monster Hunter, I want to review other monster hunters’ encounter data, stories, and photos so I can learn more about the monsters that other people are seeing.
+<!-- As a Monster Hunter, I want to receive a notification if a monster is sighted in my area so I might also travel there in time to see the monster. -->
+<!-- As a Monster Hunter, I want to share my discoveries to others using social media, email, or text so I can brag to my friends. -->
+>>>>>>> fc037e21956dd954c3a22ecbede52dc2bba55988
 * As a Monster Hunter, I want to see basic information, photos, and resources to learn more about a certain monster.
 * As a Monster Hunter, I want to be able to update my app profile in case I have information that changes.
 

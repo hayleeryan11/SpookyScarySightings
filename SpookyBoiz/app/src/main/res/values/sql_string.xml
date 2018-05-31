@@ -13,7 +13,7 @@
     <string name="CREATE_SIGHTINGS_SQL">
         CREATE TABLE IF NOT EXISTS Sightings
         (id TEXT PRIMARY KEY, user TEXT, monster TEXT, date TEXT,
-        time TEXT, city TEXT, state TEXT, description TEXT)
+        time TEXT, city TEXT, state TEXT, description TEXT, image_path TEXT)
     </string>
 
     <string name="DROP_SIGHTINGS_SQL">

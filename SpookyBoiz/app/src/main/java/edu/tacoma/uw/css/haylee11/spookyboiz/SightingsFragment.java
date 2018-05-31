@@ -125,7 +125,11 @@ public class SightingsFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param columnCount The number of columns in list
+<<<<<<< HEAD
      * @return A new instance of fragment MonsterFragment.
+=======
+     * @return A new instance of fragment NotifySettingsFragment.
+>>>>>>> fc037e21956dd954c3a22ecbede52dc2bba55988
      */
     public static SightingsFragment newInstance(int columnCount) {
         SightingsFragment fragment = new SightingsFragment();
@@ -586,6 +590,7 @@ public class SightingsFragment extends Fragment {
                 String user2 = mSharedPref.getString(getString(R.string.PROFILE_VIEW), "null");
                 mSightingList = Sighting.parseCourseJSON(result, mFlag, user1, user2);
             } catch (JSONException e) {
+                Log.d("TAG", Log.getStackTraceString(e));
                 Toast.makeText(getActivity().getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
                         .show();
                 return;
@@ -608,7 +613,8 @@ public class SightingsFragment extends Fragment {
                             sighting.getmTime(),
                             sighting.getmCity(),
                             sighting.getmState(),
-                            sighting.getmDesc());
+                            sighting.getmDesc(),
+                            sighting.getmURL());
                 }
                 mRecyclerView.setAdapter(new MySightingsRecyclerViewAdapter(mSightingList, mListener));
             }

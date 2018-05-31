@@ -61,6 +61,7 @@ public class Sighting implements Serializable {
      */
     public static final String DESC = "description";
 
+
     //Username of who reported
     private String mUsername;
 
@@ -88,7 +89,14 @@ public class Sighting implements Serializable {
     private int mUserFlag;
 
 
+    /**
+     * URL for the image.
+     */
+    public static final String URL = "image_path";
 
+
+    //URL for the image
+    private String mURL;
 
     /**
      * Constructs a new Sighting item
@@ -101,7 +109,8 @@ public class Sighting implements Serializable {
      * @param state State where sighting was
      * @param desc Description of sighting
      */
-    public Sighting(int id, String un, String monster, String date, String time, String city, String state, String desc, int flag) {
+
+    public Sighting(int id, String un, String monster, String date, String time, String city, String state, String desc, int flag, String URL) {
         mUsername = un;
         mId = id;
         mDate = date;
@@ -111,8 +120,9 @@ public class Sighting implements Serializable {
         mMonster = monster;
         mDesc = desc;
         mUserFlag = flag;
-
+        mURL = URL;
     }
+
 
     public int getmId() { return mId; }
 
@@ -172,6 +182,7 @@ public class Sighting implements Serializable {
         this.mDesc = mDesc;
     }
 
+
     public int getmUserFlag() {
         return mUserFlag;
     }
@@ -179,6 +190,10 @@ public class Sighting implements Serializable {
     public void setmUserFlag(int mUserFlag) {
         this.mUserFlag = mUserFlag;
     }
+
+    public String getmURL() { return mURL; }
+
+    public void setmURL(String URL) { this.mURL = URL; }
 
     /**
      * Takes a JSON and parses it into strings, then putting those in a list
@@ -198,7 +213,8 @@ public class Sighting implements Serializable {
                 String[] date_time = obj.getString(Sighting.DATE).split("\\s+");
                 Sighting sight = new Sighting(obj.getInt(Sighting.ID), obj.getString(Sighting.USERNAME), obj.getString(Sighting.MONSTER)
                         , date_time[0], date_time[1], obj.getString(Sighting.CITY), obj.getString(Sighting.STATE),
-                        obj.getString(Sighting.DESC), flag);
+                        obj.getString(Sighting.DESC), flag, obj.getString(Sighting.URL));
+
                 if (flag == 1) {
                     if (obj.getString(Sighting.USERNAME).equals(user1)) {
                         sightList.add(sight);
