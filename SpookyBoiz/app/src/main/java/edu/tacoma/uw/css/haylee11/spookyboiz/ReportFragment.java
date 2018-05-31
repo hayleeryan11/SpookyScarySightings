@@ -315,14 +315,8 @@ public class ReportFragment extends Fragment {
             public void onClick(View v) {
                 String url = buildSightingURL(v);
                 mSightListener.addSighting(url, mMonster.getSelectedItem().toString(),
-                        mDate.getText().toString(), mTime.getText().toString(),
-<<<<<<< HEAD
-                        mCity.getText().toString(), mState.getSelectedItem().toString(),
-                        mDetails.getText().toString());
-=======
-                        mCity.getText().toString(), mState.getText().toString(),
+                        mDate.getText().toString(), mTime.getText().toString(), mCity.getText().toString(), mState.getSelectedItem().toString(),
                         mDetails.getText().toString(), mImage);
->>>>>>> 0c4a4462b8263fac622c2525d9f417b69a1d4f5f
             }
         });
 
