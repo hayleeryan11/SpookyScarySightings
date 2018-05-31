@@ -4,23 +4,39 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLEncoder;
 
 import edu.tacoma.uw.css.haylee11.spookyboiz.Profile.Profile;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Builds the current user's profile for viewing
@@ -56,6 +72,9 @@ public class ProfileFragment extends Fragment {
     private TextView mSightings;
     private TextView mFavorite;
     private TextView mBio;
+
+    private ImageButton mPic;
+    private Bitmap mImage;
 
     private Profile mProfile;
 
@@ -130,6 +149,7 @@ public class ProfileFragment extends Fragment {
         mSightings = (TextView) v.findViewById(R.id.sightings);
         mFavorite = (TextView) v.findViewById(R.id.favorite);
         mBio = (TextView) v.findViewById(R.id.bio);
+        mPic = (ImageButton) v.findViewById(R.id.profile_pic);
 
         getActivity().setTitle("Profile");
 
@@ -143,6 +163,16 @@ public class ProfileFragment extends Fragment {
         mBio.setText(mSharedPref.getString(getString(R.string.BIO), "None"));
 
         //Set up buttons for changing attributes (opens dialog fragment)
+        mPic.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Image From Gallery"), 1);
+            }
+        });
 
         Button fav = (Button) v.findViewById(R.id.fav_change);
         fav.setOnClickListener(new View.OnClickListener() {
@@ -167,6 +197,7 @@ public class ProfileFragment extends Fragment {
 
         return v;
     }
+
 
 
     /**
@@ -214,6 +245,39 @@ public class ProfileFragment extends Fragment {
         return sb.toString();
     }
 
+    /**
+     * Processes requests for changing a profile picture.
+     *
+     * @param RQC Request ode for action.
+     * @param RC A returned code for if the request went though
+     * @param data Intent Holds access to the data.
+     */
+    @Override
+    public void onActivityResult(int RQC, int RC, Intent data) {
+        super.onActivityResult(RQC, RC, data);
+
+        if (RQC == 1 && RC == RESULT_OK && data != null && data.getData() != null) {
+            Uri uri = data.getData();
+            try {
+                mImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                mPic.setImageBitmap(mImage);
+            } catch (IOException e) {
+                Log.d("Tag", Log.getStackTraceString(e));
+            }
+        }
+    }
+
+    /**
+     * This method will push the current profile picture to the database, so it may be used when
+     * returning to the app, and for others to see.
+     */
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        UploadAsync uploadTask = new UploadAsync();
+        uploadTask.execute();
+    }
     /**
      * When the fragment is attached to the app, this instantiates the listener
      * @param context The context the fragment is in
@@ -330,6 +394,41 @@ public class ProfileFragment extends Fragment {
 
             // Create the AlertDialog object and return it
             return builder.create();
+        }
+    }
+
+    private class UploadTask extends AsyncTask<String, Void, String> {
+
+        /**
+         * Sends a POST request to the database in order to save the profile picture
+         * @param urls The URL
+         * @return A String
+         */
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+
+                    InputStream content = urlConnection.getInputStream();
+
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+                } catch (Exception e) {
+                    response = "Unable to download the list of courses, Reason: " + e.getMessage();
+                } finally {
+                    if (urlConnection != null) {
+                        urlConnection.disconnect();
+                    }
+                }
+            }
+            return response;
         }
     }
 

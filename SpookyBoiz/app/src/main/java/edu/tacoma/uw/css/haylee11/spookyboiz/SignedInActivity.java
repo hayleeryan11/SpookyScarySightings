@@ -498,8 +498,6 @@ public class SignedInActivity extends AppCompatActivity
                         Toast.makeText(getApplicationContext(), "Sighting Added!",
                                 Toast.LENGTH_LONG)
                                 .show();
-
-
                     } else {
                         Toast.makeText(getApplicationContext(), "failed: " + jsonObject.get("error"), //Sighting failed
                                 Toast.LENGTH_LONG)
