@@ -11,6 +11,7 @@ import java.util.List;
 import edu.tacoma.uw.css.haylee11.spookyboiz.Monster.Monster;
 import edu.tacoma.uw.css.haylee11.spookyboiz.OtherProfilesFragment;
 import edu.tacoma.uw.css.haylee11.spookyboiz.ProfileFragment;
+import edu.tacoma.uw.css.haylee11.spookyboiz.Sighting.Sighting;
 
 /**
  * Created by hayleeryan on 5/13/18.
@@ -51,6 +52,11 @@ public class Profile  implements Serializable {
      */
     public static final String BIO = "bio";
 
+    /**
+     * URL for the image.
+     */
+    public static final String URL = "image_path";
+
 
     //Username
     private String mUsername;
@@ -71,6 +77,16 @@ public class Profile  implements Serializable {
     //Bio of user
     private String mBio;
 
+    private String mURL;
+
+
+    public String getmURL() {
+        return mURL;
+    }
+
+    public void setmURL(String mURL) {
+        this.mURL = mURL;
+    }
 
     /**
      * Constructor for Profile object
@@ -82,7 +98,7 @@ public class Profile  implements Serializable {
      * @param favorite Favorite monster
      * @param bio Short bio of user
      */
-    public Profile(String un, String f_name, String l_name, int sightings, String favorite, String bio) {
+    public Profile(String un, String f_name, String l_name, int sightings, String favorite, String bio, String URL) {
         if (un.isEmpty()) {
             throw new IllegalArgumentException("Cannot create profile: There is no username");
         } else if (f_name.isEmpty()) {
@@ -96,6 +112,8 @@ public class Profile  implements Serializable {
             mSightings = sightings;
             mFavorite = favorite;
             mBio = bio;
+            mURL = URL;
+
         }
     }
 
@@ -160,7 +178,7 @@ public class Profile  implements Serializable {
         if (profileJSON != null) {
             JSONObject obj = new JSONObject(profileJSON);
             Profile prof = new Profile(obj.getString(Profile.USERNAME), obj.getString(Profile.F_NAME), obj.getString(Profile.L_NAME), obj.getInt(Profile.SIGHTINGS),
-                    obj.getString(Profile.FAVORITE), obj.getString(Profile.BIO));
+                    obj.getString(Profile.FAVORITE), obj.getString(Profile.BIO), obj.getString(Profile.URL));
 
             return prof;
 
@@ -184,7 +202,7 @@ public class Profile  implements Serializable {
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject obj = arr.getJSONObject(i);
                 Profile profile = new Profile(obj.getString(Profile.USERNAME), obj.getString(Profile.F_NAME), obj.getString(Profile.L_NAME), obj.getInt(Profile.SIGHTINGS),
-                        obj.getString(Profile.FAVORITE), obj.getString(Profile.BIO));
+                        obj.getString(Profile.FAVORITE), obj.getString(Profile.BIO), obj.getString(Profile.URL));
                 profileList.add(profile);
             }
         }

@@ -123,6 +123,7 @@
     <string name="SIGHTINGS">sightings</string>
     <string name="FAVORITE">favorite</string>
     <string name="BIO">bio</string>
+    <string name="URL">url</string>
 
     <string name="MONSTER_ARR">monsters</string>
 

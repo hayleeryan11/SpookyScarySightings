@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -72,9 +73,13 @@ public class ProfileFragment extends Fragment {
     private TextView mSightings;
     private TextView mFavorite;
     private TextView mBio;
+    private String mURL;
+
+    private boolean mImageFlag;
 
     private ImageButton mPic;
     private Bitmap mImage;
+
 
     private Profile mProfile;
 
@@ -141,6 +146,7 @@ public class ProfileFragment extends Fragment {
 
         getActivity().setTitle("My Profile");
 
+        mImageFlag = false;
         mSharedPref = getActivity().getSharedPreferences(getString(R.string.LOGIN_PREFS),
                 Context.MODE_PRIVATE);
 
@@ -161,6 +167,7 @@ public class ProfileFragment extends Fragment {
         mSightings.setText(Integer.toString(mSharedPref.getInt(getString(R.string.SIGHTINGS), 0)));
         mFavorite.setText(mSharedPref.getString(getString(R.string.FAVORITE), "None"));
         mBio.setText(mSharedPref.getString(getString(R.string.BIO), "None"));
+        mURL = mSharedPref.getString(getString(R.string.URL), "https://spookyscarysightings.000webhostapp.com/images/no_image.png");
 
         //Set up buttons for changing attributes (opens dialog fragment)
         mPic.setOnClickListener(new View.OnClickListener() {
@@ -171,6 +178,9 @@ public class ProfileFragment extends Fragment {
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Select Image From Gallery"), 1);
+
+
+
             }
         });
 
@@ -193,8 +203,8 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        mView = v;
 
+        mView = v;
         return v;
     }
 
@@ -210,6 +220,16 @@ public class ProfileFragment extends Fragment {
         StringBuilder sb;
         String user = mSharedPref.getString(getString(R.string.CURRENT_USER), null);
         if (action.equals("profile")) { //If we are getting profile info
+            sb = new StringBuilder(PROFILE_URL);
+            try {
+                sb.append("&username=");
+                sb.append(URLEncoder.encode(user, "UTF-8"));
+
+            } catch(Exception e) {
+                Toast.makeText(v.getContext(), "Something wrong with the url" + e.getMessage(), Toast.LENGTH_LONG)
+                        .show();
+            }
+        } else if (action.equals("profile_image")) { //If we are getting profile info
             sb = new StringBuilder(PROFILE_URL);
             try {
                 sb.append("&username=");
@@ -261,9 +281,26 @@ public class ProfileFragment extends Fragment {
             try {
                 mImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
                 mPic.setImageBitmap(mImage);
+                mImageFlag = true;
+
             } catch (IOException e) {
                 Log.d("Tag", Log.getStackTraceString(e));
             }
+        }
+    }
+
+    @Override
+    public void onResume() {
+
+        super.onResume();
+
+        DownloadAsync asyync = new DownloadAsync();
+        asyync.execute();
+
+        if (mImageFlag) {
+            String url2 = buildProfileURL(mView, "profile_image");
+            mListener.profileImage(url2, mImage);
+            mImageFlag = false;
         }
     }
 
@@ -274,9 +311,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-
-        UploadAsync uploadTask = new UploadAsync();
-        uploadTask.execute();
     }
     /**
      * When the fragment is attached to the app, this instantiates the listener
@@ -301,6 +335,7 @@ public class ProfileFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
 
     /**
      * Dialog pop up that allows user to enter new attribute which is then changed in profile
@@ -397,6 +432,11 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    /**
+     * Class that uploads photos to the database
+     *
+     * @author Haylee Ryan, Kai Stansfield, Matt Frazier
+     */
     private class UploadTask extends AsyncTask<String, Void, String> {
 
         /**
@@ -432,6 +472,33 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    /**
+     * Takes the url and downloads the image from the file system in order to display the image.
+     *
+     * @author Haylee Ryan, Matt Frazier, Kai Stansfield
+     */
+    class DownloadAsync extends AsyncTask<Void,Void,String> {
+
+        private Bitmap bmp;
+
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                InputStream in = new URL(mURL).openStream();
+                bmp = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.d("Tag", Log.getStackTraceString(e));
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String string1) {
+            if (bmp != null)
+                mPic.setImageBitmap(bmp);
+        }
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this
@@ -441,5 +508,6 @@ public class ProfileFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void profileView(String url);
+        void profileImage(String url, Bitmap image);
     }
 }

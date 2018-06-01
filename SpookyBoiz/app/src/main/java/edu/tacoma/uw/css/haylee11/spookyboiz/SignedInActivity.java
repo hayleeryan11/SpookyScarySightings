@@ -275,6 +275,18 @@ public class SignedInActivity extends AppCompatActivity
         }
 
         /**
+         * Starts the AsyncTask to view a profile
+         * @param url The url sent to the webservice to retrieve information
+         */
+        @Override
+        public void profileImage(String url, Bitmap image) {
+
+            ProfileImageTask task = new ProfileImageTask(image);
+            task.execute(new String[]{url.toString()});
+
+        }
+
+        /**
          * Handles when the Profile Detail Fragment is interacted with, sending the
          * user to the detail of the profile from the list
          * @param item The profile the user chose
@@ -595,6 +607,7 @@ public class SignedInActivity extends AppCompatActivity
 
             SharedPreferences mSharedPrefs;
 
+
             /**
              * Overrides onPreExecute. Performs super task
              */
@@ -603,23 +616,25 @@ public class SignedInActivity extends AppCompatActivity
                 super.onPreExecute();
             }
 
+
             /**
              * Creates a URL connection to which we can send our URL carrying the data we want
              * to put into the database. This does all work in the background for the user when
              * generating a report.
+             *
              * @param urls The URLs to be sent through the connection that hold the information
              *             to be passed to the database
              * @return The successful or failed result of connecting with the URL
              */
             @Override
             protected String doInBackground(String... urls) {
+
                 String response = "";
                 HttpURLConnection urlConnection = null;
                 for (String url : urls) {
                     try {
                         URL urlObject = new URL(url);
                         urlConnection = (HttpURLConnection) urlObject.openConnection();
-
 
 
                         InputStream content = urlConnection.getInputStream();
@@ -634,7 +649,7 @@ public class SignedInActivity extends AppCompatActivity
                     } catch (Exception e) {
                         response = "Unable to make report, Reason: " + e.getMessage();
                     } finally {
-                        if(urlConnection != null) {
+                        if (urlConnection != null) {
                             urlConnection.disconnect();
                         }
                     }
@@ -646,6 +661,7 @@ public class SignedInActivity extends AppCompatActivity
              * After the background work has been executed, the result comes into this method
              * to be read. From there, we determine what to do (has it succeeded? Failed? Is
              * the data wrong?)
+             *
              * @param result The result from doInBackground (If the insertion/retrieving was
              *               successful or not.
              */
@@ -664,16 +680,17 @@ public class SignedInActivity extends AppCompatActivity
                 }
 
                 try {
-                   Profile prof = Profile.parseCourseJSON(result);
+                    Profile prof = Profile.parseCourseJSON(result);
 
-                   //Put current user info into SharedPreferences for access
-                   mSharedPrefs
+                    //Put current user info into SharedPreferences for access
+                    mSharedPrefs
                             .edit()
                             .putString(getString(R.string.CURRENT_USER), prof.getmUsername())
                             .putString(getString(R.string.NAME), prof.getmFName() + " " + prof.getmLName())
                             .putInt(getString(R.string.SIGHTINGS), prof.getmSightings())
                             .putString(getString(R.string.FAVORITE), prof.getmFavorite())
                             .putString(getString(R.string.BIO), prof.getmBio())
+                            .putString(getString(R.string.URL), prof.getmURL())
                             .apply();
 
                 } catch (JSONException e) {
@@ -686,5 +703,164 @@ public class SignedInActivity extends AppCompatActivity
 
             }
         }
+
+            /**
+             * Inner class that extends AsynchTask. This class handles the creation of a profile
+             * based on the information of the current user logged in.
+             *
+             * @author Haylee Ryan, Matt Frazier, Kai Stansfield
+             */
+            private class ProfileImageTask extends AsyncTask<String, Void, String> {
+
+
+                SharedPreferences mSharedPrefs;
+
+                Bitmap mImage;
+                String convertedImage;
+                HashMap<String, String> mHash;
+                String mPOSTURL;
+
+                //
+                ProfileImageTask(Bitmap image) {
+                    mImage = image;
+                }
+
+                /**
+                 * Overrides onPreExecute. Performs super task
+                 */
+                @Override
+                protected void onPreExecute() {
+                    super.onPreExecute();
+
+                    ByteArrayOutputStream byteArrayOutputStreamObject;
+                    byteArrayOutputStreamObject = new ByteArrayOutputStream();
+                    mImage.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStreamObject);
+                    byte[] byteArrayVar = byteArrayOutputStreamObject.toByteArray();
+                    convertedImage = Base64.encodeToString(byteArrayVar, Base64.DEFAULT);
+                    Log.e("Size of converted", String.valueOf(convertedImage.length()));
+                    mPOSTURL = "image_path=" + convertedImage;
+                    Log.d("Tag", mPOSTURL);
+                    Log.d("TAG", String.valueOf(byteArrayVar.length));
+                }
+
+
+                /**
+                 * Creates a URL connection to which we can send our URL carrying the data we want
+                 * to put into the database. This does all work in the background for the user when
+                 * generating a report.
+                 *
+                 * @param urls The URLs to be sent through the connection that hold the information
+                 *             to be passed to the database
+                 * @return The successful or failed result of connecting with the URL
+                 */
+                @Override
+                protected String doInBackground(String... urls) {
+                    String response = "";
+                    HttpURLConnection urlConnection = null;
+                    HashMap<String, String> hash = new HashMap<String, String>();
+                    hash.put("image_path", convertedImage);
+                    for (String url : urls) {
+                        try {
+                            URL urlObject = new URL(url);
+                            urlConnection = (HttpURLConnection) urlObject.openConnection();
+                            urlConnection.setRequestMethod("POST");
+                            urlConnection.setDoInput(true);
+                            urlConnection.setDoOutput(true);
+
+                            OutputStream OPS = urlConnection.getOutputStream();
+                            BufferedWriter bufferedWriterObject = new BufferedWriter(
+                                    new OutputStreamWriter(OPS, "UTF-8"));
+                            bufferedWriterObject.write(setupPOST(hash));
+                            bufferedWriterObject.flush();
+                            bufferedWriterObject.close();
+                            OPS.close();
+
+                            InputStream content = urlConnection.getInputStream();
+
+                            BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+
+                            String s = "";
+                            while ((s = buffer.readLine()) != null) {
+                                response += s;
+                            }
+                        } catch (Exception e) {
+                            response = "Unable to make profile, Reason: " + e.getMessage();
+                        } finally {
+                            if (urlConnection != null) {
+                                urlConnection.disconnect();
+                            }
+                        }
+                    }
+                    //Log.i(TAG, response);
+                    return response;
+
+
+                }
+
+                /**
+                 * After the background work has been executed, the result comes into this method
+                 * to be read. From there, we determine what to do (has it succeeded? Failed? Is
+                 * the data wrong?)
+                 *
+                 * @param result The result from doInBackground (If the insertion/retrieving was
+                 *               successful or not.
+                 */
+                @Override
+                protected void onPostExecute(String result) {
+                    Log.d("tag", result);
+                    //Initialize SharedPreferences
+                    mSharedPrefs = getSharedPreferences(getString(R.string.LOGIN_PREFS),
+                            Context.MODE_PRIVATE);
+
+
+                    if (result.startsWith("Unable to")) {   //Failed to get info
+                        Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT)
+                                .show();
+                        return;
+                    }
+
+                    try {
+                        Profile prof = Profile.parseCourseJSON(result);
+
+                        //Put current user info into SharedPreferences for access
+                        mSharedPrefs
+                                .edit()
+                                .putString(getString(R.string.URL), prof.getmURL())
+                                .apply();
+
+                    } catch (JSONException e) {
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
+                                .show();
+                        return;
+                    }
+
+                    return;
+
+                }
+//
+
+                /**
+                 * Puts together the POST message and encodes it for URL safety
+                 *
+                 * @param Hash A has containing both the prefix for the POST and the data
+                 * @return A concatenated POST string
+                 */
+                public String setupPOST(HashMap<String, String> Hash) {
+                    StringBuilder builder = new StringBuilder();
+
+                    for (Map.Entry<String, String> KEY : Hash.entrySet()) {
+                        try {
+                            builder.append(URLEncoder.encode(KEY.getKey(), "UTF-8"));
+                            builder.append("=");
+                            builder.append(URLEncoder.encode(KEY.getValue(), "UTF-8"));
+                        } catch (Exception e) {
+                            Log.e("ERROR!", Log.getStackTraceString(e));
+                        }
+                    }
+
+                    return builder.toString();
+                }
+            }
+
 }
 

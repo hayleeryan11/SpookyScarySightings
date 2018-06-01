@@ -2,13 +2,21 @@ package edu.tacoma.uw.css.haylee11.spookyboiz;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.InputStream;
+import java.net.URL;
 
 import edu.tacoma.uw.css.haylee11.spookyboiz.Profile.Profile;
 
@@ -46,6 +54,12 @@ public class ProfileDetailFragment extends Fragment {
     TextView mBio;
 
     Button mSightButton;
+
+    //Picture (if taken) of the sighting
+    private ImageView mPicture;
+    //URL for the image
+    private String mURL;
+
 
     private String mParam1;
     private String mParam2;
@@ -133,6 +147,8 @@ public class ProfileDetailFragment extends Fragment {
         mFavorite = (TextView) v.findViewById(R.id.favorite);
         mBio = (TextView) v.findViewById(R.id.bio);
 
+        mPicture = (ImageView) v.findViewById(R.id.profile_pic);
+
         return v;
     }
 
@@ -189,6 +205,10 @@ public class ProfileDetailFragment extends Fragment {
             mSightings.setText(Integer.toString(profile.getmSightings()));
             mFavorite.setText(profile.getmFavorite());
             mBio.setText(profile.getmBio());
+            mURL = profile.getmURL();
+
+            DownloadAsync asyync = new DownloadAsync();
+            asyync.execute();
         }
     }
 
@@ -198,6 +218,33 @@ public class ProfileDetailFragment extends Fragment {
      * to the activity and potentially other fragments contained in that
      * activity.
      */
+
+    /**
+     * Takes the url and downloads the image from the file system in order to display the image.
+     *
+     * @author Haylee Ryan, Matt Frazier, Kai Stansfield
+     */
+    class DownloadAsync extends AsyncTask<Void,Void,String> {
+
+        private Bitmap bmp;
+
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                InputStream in = new URL(mURL).openStream();
+                bmp = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.d("Tag", Log.getStackTraceString(e));
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String string1) {
+            if (bmp != null)
+                mPicture.setImageBitmap(bmp);
+        }
+    }
     public interface OnFragmentInteractionListener {
 
     }

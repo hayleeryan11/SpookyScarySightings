@@ -325,6 +325,7 @@ public class SignInFragment extends Fragment {
                             .putString(getString(R.string.BIO), p.getmBio())
                             .putString(getString(R.string.NAME), p.getmFName() + " " + p.getmLName())
                             .putInt(getString(R.string.SIGHTINGS), p.getmSightings())
+                            .putString(getString(R.string.URL), p.getmURL())
                             .apply();
 
                     Intent i = new Intent(getActivity(), SignedInActivity.class);
