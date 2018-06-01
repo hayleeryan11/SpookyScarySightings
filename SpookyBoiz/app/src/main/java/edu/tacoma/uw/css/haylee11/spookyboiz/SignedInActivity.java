@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,6 +64,9 @@ public class SignedInActivity extends AppCompatActivity
 
     SharedPreferences mSharedPref;
 
+    private ImageView mNavImage;
+    private String mURL;
+
     /**
      *Method for creating the activity, and what should be done on creation.
      * @param savedInstanceState The saved instance state as a bundle
@@ -90,6 +95,7 @@ public class SignedInActivity extends AppCompatActivity
                 getSharedPreferences(getString(R.string.LOGIN_PREFS), Context.MODE_PRIVATE);
 
 
+        mURL = mSharedPref.getString(getString(R.string.URL), null);
         //Starts sighting view fragment (as a homepage)
         ProfileFragment home = new ProfileFragment();
         getSupportFragmentManager().beginTransaction()
@@ -126,11 +132,45 @@ public class SignedInActivity extends AppCompatActivity
         TextView mNavName = (TextView) findViewById(R.id.name_nav);
         TextView mNavUsername = (TextView) findViewById(R.id.user_nav);
         TextView mNavSightings = (TextView) findViewById(R.id.sightings_nav);
+        mNavImage = (ImageView) findViewById(R.id.imageView);
+
+        DownloadAsync downTask = new DownloadAsync();
+        downTask.execute();
 
         mNavName.setText(mSharedPref.getString(getString(R.string.NAME), null));
         mNavUsername.setText(mSharedPref.getString(getString(R.string.CURRENT_USER), null));
         mNavSightings.setText("Sightings: " + Integer.toString(mSharedPref.getInt(getString(R.string.SIGHTINGS), 0)));
         return true;
+    }
+
+    /**
+     * Takes the url and downloads the image from the file system in order to display the image.
+     *
+     * @author Haylee Ryan, Matt Frazier, Kai Stansfield
+     */
+    class DownloadAsync extends AsyncTask<Void,Void,String> {
+
+        private Bitmap bmp;
+
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                InputStream in = new URL(mURL).openStream();
+                bmp = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.d("Tag", Log.getStackTraceString(e));
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String string1) {
+            if (bmp != null)
+                mNavImage.setImageBitmap(bmp);
+        }
+    }
+    public interface OnFragmentInteractionListener {
+
     }
 
     /**
@@ -791,7 +831,7 @@ public class SignedInActivity extends AppCompatActivity
                             }
                         }
                     }
-                    //Log.i(TAG, response);
+
                     return response;
 
 

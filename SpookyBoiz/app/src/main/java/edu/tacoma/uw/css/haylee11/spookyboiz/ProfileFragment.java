@@ -232,7 +232,7 @@ public class ProfileFragment extends Fragment {
         } else if (action.equals("profile_image")) { //If we are getting profile info
             sb = new StringBuilder(PROFILE_URL);
             try {
-                sb.append("&username=");
+                sb.append("_image&username=");
                 sb.append(URLEncoder.encode(user, "UTF-8"));
 
             } catch(Exception e) {
@@ -282,6 +282,9 @@ public class ProfileFragment extends Fragment {
                 mImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
                 mPic.setImageBitmap(mImage);
                 mImageFlag = true;
+
+                String url = buildProfileURL(mView, "profile_image");
+                mListener.profileImage(url, mImage);
 
             } catch (IOException e) {
                 Log.d("Tag", Log.getStackTraceString(e));

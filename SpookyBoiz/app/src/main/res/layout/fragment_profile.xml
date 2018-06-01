@@ -182,7 +182,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        android:id="@+id/view5"
+        android:id="@+id/view6"
         android:layout_width="match_parent"
         android:layout_height="3dp"
         android:layout_marginTop="20dp"

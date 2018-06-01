@@ -8,16 +8,16 @@
 
     <TextView
         android:id="@+id/monster"
-        android:background="@drawable/border"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="35dp"
         android:layout_marginTop="30dp"
-        android:padding="5dp"
+        android:background="@drawable/border"
         android:fontFamily="serif-monospace"
+        android:padding="5dp"
         android:text="test"
         android:textColor="@color/onyx"
-        android:textSize="35dp"
+        android:textSize="25dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -204,29 +204,25 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-
     <Button
         android:id="@+id/delete"
         style="@style/ButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
+        android:layout_marginTop="100dp"
         android:text="Delete"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="93dp" />
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/monster_image"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginBottom="50dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginLeft="137dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginStart="137dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginBottom="48dp"
+        android:layout_marginEnd="36dp"
         android:src="@drawable/eye"
         app:layout_constraintBottom_toTopOf="@+id/view6"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/monster"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
